@@ -1,0 +1,95 @@
+# Continuous Deployment - Déploiement automatique sur VPS
+#
+# Ce workflow se déclenche automatiquement après le succès du CI sur main.
+# Il peut aussi être déclenché manuellement via workflow_dispatch.
+#
+# Les assets sont buildés dans GitHub Actions puis transférés sur le serveur.
+# Node.js/npm ne sont pas nécessaires en production.
+#
+# Prérequis serveur :
+#   - deploy dans le groupe www-data (sudo usermod -aG www-data deploy)
+#   - Projet : chown www-data:www-data, chmod 775/664, SGID sur les répertoires
+#   - PHP-FPM : UMask=0002 via systemd override
+#
+# Secrets GitHub requis (Settings > Secrets and variables > Actions) :
+#   - SSH_HOST : adresse IP ou domaine du serveur
+#   - SSH_USER : utilisateur SSH (ex: deploy)
+#   - SSH_KEY : clé privée SSH ed25519
+#   - SSH_PORT : port SSH (si différent de 22)
+#   - SSH_PATH : chemin du projet sur le serveur (ex: /var/www/secret-drop)
+
+name: CD
+
+on:
+  workflow_run:
+    workflows: ["CI"]
+    types: [completed]
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+    if: >
+      github.event_name == 'workflow_dispatch' ||
+      github.event.workflow_run.conclusion == 'success'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Build assets
+        run: npm ci && npm run build
+
+      - name: Clean old build assets
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          port: ${{ secrets.SSH_PORT }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          script: rm -rf ${{ secrets.SSH_PATH }}/public/build/
+
+      - name: Transfer built assets to server
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          port: ${{ secrets.SSH_PORT }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          source: "public/build/"
+          target: ${{ secrets.SSH_PATH }}
+          overwrite: true
+
+      - name: Deploy to server
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          port: ${{ secrets.SSH_PORT }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            set -e
+            umask 002
+            cd ${{ secrets.SSH_PATH }}
+
+            php artisan down --retry=60 || true
+
+            git checkout -- .
+            git pull --ff-only origin main
+
+            rm -f bootstrap/cache/*.php
+            composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader
+
+            php artisan migrate --force
+            php artisan optimize:clear
+            php artisan optimize
+
+            php artisan up

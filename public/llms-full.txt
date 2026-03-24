@@ -1,0 +1,141 @@
+# Secret Drop — Full Documentation
+
+> Zero-knowledge secret sharing application with end-to-end encryption
+
+## Overview
+
+Secret Drop allows users to securely share secrets (text or files) with end-to-end encryption. The server never sees plaintext data. It uses a zero-knowledge architecture where encryption keys never touch the server.
+
+Secret Drop uses end-to-end encryption (E2E) to ensure that only the recipient can read your secrets. The server only stores encrypted data and never has access to the plaintext content.
+
+## How It Works
+
+### Step 1: You write your secret
+You enter your message or select a file in your browser.
+
+### Step 2: Encryption in your browser
+Your browser generates a random key and encrypts the content locally with AES-256-GCM. The server only receives encrypted data.
+
+### Step 3: Server stores ciphertext
+The server only stores encrypted data. It cannot decrypt it because it never has access to the key.
+
+### Step 4: Key stays in the URL
+The decryption key is placed in the URL fragment (after #). This part is never sent to the server by the browser.
+
+### Step 5: Recipient decrypts
+When the recipient opens the link, their browser fetches the encrypted data and uses the key from the URL to decrypt locally.
+
+## What is Zero-Knowledge Encryption?
+
+- **Zero-knowledge**: The server can never read your secrets. Even under legal pressure, we can only provide useless encrypted data.
+- **Military-grade encryption**: AES-256-GCM is used by governments and military. It is the safest standard available.
+- **No account required**: No registration, no tracking. Your secrets are anonymous and cannot be linked to you.
+- **Auto-destruction**: Secrets automatically expire and can be limited to a single read. Data is permanently deleted.
+
+## Key Features
+
+- Client-side encryption (WebCrypto API, AES-256-GCM)
+- Zero-knowledge architecture
+- Optional passphrase protection (PBKDF2, 600,000 iterations)
+- Auto-expiration (1 hour to 90 days)
+- Single-use or limited views options (up to 100 reads)
+- File support up to 10 MB (encrypted metadata: filename, type, size)
+- Split mode: send the link and key through separate channels
+- QR code generation for mobile sharing
+- Admin dashboard via magic link (no account)
+- Available in 11 languages (English, French, German, Spanish, Italian, Portuguese, Dutch, Polish, Japanese, Korean, Arabic)
+- GDPR compliant by design
+
+## Use Cases
+
+### How to securely share a password
+Securely share credentials with colleagues, clients, or contractors without using insecure channels like email or messaging apps. Example: Send login credentials to a new team member, share Wi-Fi password with a guest.
+
+### Confidential documents
+Send sensitive documents (contracts, invoices, ID documents) without worrying about interception or storage on third-party servers. Example: Send ID to a bank, transmit a signed contract.
+
+### API keys and tokens
+Developers can securely share API keys, authentication tokens, or application secrets. Example: Share a Stripe key with a contractor, transmit environment variables.
+
+### SSH keys and certificates
+Securely transmit private SSH keys or SSL certificates to your system administrators. Example: Give temporary server access, share a signing certificate.
+
+### Wi-Fi passwords
+Easily share your network password with guests via a secure QR code. Example: Welcome visitors at the office, share Airbnb access.
+
+### Personal information
+Transmit sensitive personal data (account numbers, PIN codes) to trusted family members. Example: Share a credit card number for a purchase, transmit access codes in case of emergency.
+
+### Best practices
+- Use a short expiration (1 hour or 1 day) for highly sensitive information.
+- Enable the read limit to 1 to ensure the secret can only be read once.
+- For maximum security, use split mode and transmit the key through another channel.
+
+## Frequently Asked Questions
+
+### How does Secret Drop encrypt my data?
+Your browser generates a random encryption key and encrypts your content locally using AES-256-GCM via the Web Crypto API. The server only receives and stores encrypted data — it never sees the plaintext.
+
+### Can the server read my secrets?
+No. Secret Drop uses a zero-knowledge architecture. The decryption key is placed in the URL fragment (after #), which is never sent to the server.
+
+### Do I need an account to use Secret Drop?
+No. No registration, no tracking. Your secrets are anonymous and cannot be linked to you.
+
+### What happens after a secret is read?
+Secrets can be configured for single-use, limited views, or automatic expiration. Once expired or consumed, the data is permanently deleted from the server.
+
+### Is Secret Drop free?
+Yes, Secret Drop is completely free. No account, no subscription, no hidden fees. The service is available to everyone without any limitations.
+
+### What is the maximum file size?
+You can share files up to 10 MB and text messages up to 50,000 characters. Files are encrypted in your browser before upload.
+
+### Where is the data stored?
+All data is stored on servers located in France. Only encrypted data is retained — the server never has access to the plaintext content of your secrets.
+
+### Is Secret Drop GDPR compliant?
+Yes, by design. Secret Drop uses zero-knowledge encryption, does not track users, does not use advertising cookies, and automatically deletes expired data. No personal data is stored in plaintext.
+
+### How do I securely share a password?
+Paste your password, choose an expiration time, and optionally limit to a single read. Secret Drop encrypts it in your browser and gives you a secure link to share. The password is never visible to the server.
+
+### Is Secret Drop open source?
+Yes, Secret Drop's source code is publicly available under the Business Source License (BSL). You can inspect the encryption logic, verify there are no backdoors, and confirm that the zero-knowledge architecture works as described.
+
+### What is the difference between Secret Drop and encrypted email?
+Encrypted email (PGP, S/MIME) requires both parties to set up keys beforehand, which is complex. Secret Drop requires nothing from the recipient — just a link. Additionally, the secret self-destructs after reading and leaves no trace, unlike an email which remains in both inboxes indefinitely.
+
+## Technical Details
+
+- **Encryption**: AES-256-GCM via Web Crypto API
+- **Key derivation** (passphrase): PBKDF2 with SHA-256, 600,000 iterations
+- **IV**: 96 bits (12 bytes), randomly generated per encryption
+- **Salt**: 128 bits (16 bytes), randomly generated per passphrase derivation
+- **Key size**: 256 bits
+- **Encoding**: Base64URL (URL-safe, no padding)
+- **Double encryption**: When a passphrase is used, the content is first encrypted with a random key, then the result is encrypted with the passphrase-derived key
+- **Token entropy**: 128 bits (32 hex characters)
+- **Magic link tokens**: Stored as SHA-256 hashes (plain token sent by email, only hash in database)
+
+## Privacy
+
+- Encryption keys never touch the server
+- No tracking, no analytics
+- No advertising cookies
+- Minimal data retention
+- Automatic deletion of expired secrets
+- GDPR compliant by design
+- Servers located in France
+
+## About
+
+Secret Drop is an open source project built to provide a simple, free, and privacy-respecting alternative to sharing passwords and sensitive files via email or messaging apps. The source code is public and auditable.
+
+The zero-knowledge architecture ensures the server can never access the content of your secrets. AES-256-GCM encryption is performed entirely in your browser, and the decryption key is never transmitted to the server.
+
+Secret Drop is free to use, requires no account, and is available in 11 languages.
+
+## Contact
+
+See the legal notice page at /legal for contact information.
