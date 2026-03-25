@@ -17,6 +17,7 @@ class SetLocaleTest extends TestCase
         $this->middleware = new SetLocale();
     }
 
+    /** Vérifie le fallback sur le français sans header Accept-Language. */
     public function testDefaultsToFrenchWithoutHeader(): void
     {
         $request = Request::create('/test', 'GET');
@@ -28,6 +29,7 @@ class SetLocaleTest extends TestCase
         $this->assertEquals('fr', $response->headers->get('Content-Language'));
     }
 
+    /** Vérifie le fallback sur le français avec un header vide. */
     public function testDefaultsToFrenchWithEmptyHeader(): void
     {
         $request = Request::create('/test', 'GET');
@@ -39,6 +41,7 @@ class SetLocaleTest extends TestCase
         $this->assertEquals('fr', $response->headers->get('Content-Language'));
     }
 
+    /** Vérifie la détection de l'anglais depuis le header. */
     public function testDetectsEnglishFromHeader(): void
     {
         $request = Request::create('/test', 'GET');
@@ -50,6 +53,7 @@ class SetLocaleTest extends TestCase
         $this->assertEquals('en', $response->headers->get('Content-Language'));
     }
 
+    /** Vérifie la détection du français depuis le header. */
     public function testDetectsFrenchFromHeader(): void
     {
         $request = Request::create('/test', 'GET');
@@ -61,6 +65,7 @@ class SetLocaleTest extends TestCase
         $this->assertEquals('fr', $response->headers->get('Content-Language'));
     }
 
+    /** Vérifie la gestion des variantes régionales (en-US). */
     public function testHandlesRegionalVariants(): void
     {
         $request = Request::create('/test', 'GET');
@@ -72,6 +77,7 @@ class SetLocaleTest extends TestCase
         $this->assertEquals('en', $response->headers->get('Content-Language'));
     }
 
+    /** Vérifie la gestion des variantes régionales françaises (fr-CA). */
     public function testHandlesFrenchRegionalVariants(): void
     {
         $request = Request::create('/test', 'GET');
@@ -83,6 +89,7 @@ class SetLocaleTest extends TestCase
         $this->assertEquals('fr', $response->headers->get('Content-Language'));
     }
 
+    /** Vérifie le respect des valeurs de qualité (q=). */
     public function testRespectsQualityValues(): void
     {
         $request = Request::create('/test', 'GET');
@@ -94,6 +101,7 @@ class SetLocaleTest extends TestCase
         $this->assertEquals('en', $response->headers->get('Content-Language'));
     }
 
+    /** Vérifie le fallback sur le français pour une langue non supportée. */
     public function testFallsBackToFrenchForUnsupportedLanguage(): void
     {
         $request = Request::create('/test', 'GET');
@@ -105,6 +113,7 @@ class SetLocaleTest extends TestCase
         $this->assertEquals('fr', $response->headers->get('Content-Language'));
     }
 
+    /** Vérifie la préférence du français quand sa qualité est plus élevée. */
     public function testPrefersFrenchOverEnglishWhenHigherQuality(): void
     {
         $request = Request::create('/test', 'GET');
@@ -116,6 +125,7 @@ class SetLocaleTest extends TestCase
         $this->assertEquals('fr', $response->headers->get('Content-Language'));
     }
 
+    /** Vérifie la préférence de l'anglais quand il est premier sans qualité. */
     public function testPrefersEnglishWhenFirstWithoutQuality(): void
     {
         $request = Request::create('/test', 'GET');
@@ -127,6 +137,7 @@ class SetLocaleTest extends TestCase
         $this->assertEquals('en', $response->headers->get('Content-Language'));
     }
 
+    /** Vérifie la gestion de headers Accept-Language complexes. */
     public function testHandlesComplexAcceptLanguageHeader(): void
     {
         $request = Request::create('/test', 'GET');
@@ -138,6 +149,7 @@ class SetLocaleTest extends TestCase
         $this->assertEquals('de', $response->headers->get('Content-Language'));
     }
 
+    /** Vérifie la présence du header Content-Language. */
     public function testSetsContentLanguageHeader(): void
     {
         $request = Request::create('/test', 'GET');
@@ -149,6 +161,7 @@ class SetLocaleTest extends TestCase
         $this->assertEquals('en', $response->headers->get('Content-Language'));
     }
 
+    /** Vérifie la détection de toutes les locales supportées. */
     #[\PHPUnit\Framework\Attributes\DataProvider('supportedLocalesProvider')]
     public function testDetectsAllSupportedLocales(string $locale): void
     {
@@ -179,6 +192,7 @@ class SetLocaleTest extends TestCase
         ];
     }
 
+    /** Vérifie la détection de la locale depuis le segment d'URL. */
     public function testDetectsLocaleFromUrlSegment(): void
     {
         $request = Request::create('/en/test', 'GET');
@@ -189,6 +203,7 @@ class SetLocaleTest extends TestCase
         $this->assertEquals('en', app()->getLocale());
     }
 
+    /** Vérifie que le segment d'URL a priorité sur le header. */
     public function testUrlSegmentTakesPriorityOverHeader(): void
     {
         $request = Request::create('/de/something', 'GET');
@@ -200,6 +215,7 @@ class SetLocaleTest extends TestCase
         $this->assertEquals('de', $response->headers->get('Content-Language'));
     }
 
+    /** Vérifie le fallback sur le header quand le segment URL n'est pas une locale. */
     public function testFallsBackToHeaderWhenUrlSegmentIsNotLocale(): void
     {
         $request = Request::create('/s/some-token', 'GET');
@@ -210,6 +226,7 @@ class SetLocaleTest extends TestCase
         $this->assertEquals('es', app()->getLocale());
     }
 
+    /** Vérifie les constantes de configuration des locales. */
     public function testLocaleConfigConstants(): void
     {
         $this->assertContains('fr', LocaleConfig::SUPPORTED_LOCALES);

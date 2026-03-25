@@ -16,6 +16,7 @@ class StatsServiceTest extends TestCase
         $this->statsService = new StatsService();
     }
 
+    /** Vérifie que increment crée un nouvel enregistrement. */
     public function testIncrementCreatesNewRecord(): void
     {
         DB::table('stats_daily')->where('metric', 'test_metric')->delete();
@@ -31,6 +32,7 @@ class StatsServiceTest extends TestCase
         DB::table('stats_daily')->where('metric', 'test_metric')->delete();
     }
 
+    /** Vérifie que increment met à jour un enregistrement existant. */
     public function testIncrementUpdatesExistingRecord(): void
     {
         DB::table('stats_daily')->where('metric', 'test_increment')->delete();
@@ -48,6 +50,7 @@ class StatsServiceTest extends TestCase
         DB::table('stats_daily')->where('metric', 'test_increment')->delete();
     }
 
+    /** Vérifie l'incrémentation par un montant spécifique. */
     public function testIncrementByAmount(): void
     {
         DB::table('stats_daily')->where('metric', 'test_amount')->delete();
@@ -63,6 +66,7 @@ class StatsServiceTest extends TestCase
         DB::table('stats_daily')->where('metric', 'test_amount')->delete();
     }
 
+    /** Vérifie que getStats retourne la bonne structure. */
     public function testGetStatsReturnsCorrectStructure(): void
     {
         $stats = $this->statsService->getStats('7d');
@@ -78,6 +82,7 @@ class StatsServiceTest extends TestCase
         $this->assertEquals(7, $stats['days']);
     }
 
+    /** Vérifie getStats avec différentes périodes. */
     public function testGetStatsWithDifferentPeriods(): void
     {
         $stats7d = $this->statsService->getStats('7d');
@@ -91,6 +96,7 @@ class StatsServiceTest extends TestCase
         $this->assertEquals(365, $stats1y['days']);
     }
 
+    /** Vérifie que getTotals retourne les sommes des métriques. */
     public function testGetTotalsReturnsMetricSums(): void
     {
         DB::table('stats_daily')->where('metric', 'test_totals')->delete();
@@ -107,6 +113,7 @@ class StatsServiceTest extends TestCase
         DB::table('stats_daily')->where('metric', 'test_totals')->delete();
     }
 
+    /** Vérifie les totaux all-time. */
     public function testGetAllTimeTotals(): void
     {
         DB::table('stats_daily')->where('metric', 'test_alltime')->delete();
@@ -123,6 +130,7 @@ class StatsServiceTest extends TestCase
         DB::table('stats_daily')->where('metric', 'test_alltime')->delete();
     }
 
+    /** Vérifie que les constantes de métriques sont définies. */
     public function testConstantsAreDefined(): void
     {
         $this->assertEquals('secrets_created_text', StatsService::SECRETS_CREATED_TEXT);

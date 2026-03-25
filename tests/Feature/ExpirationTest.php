@@ -8,6 +8,7 @@ use Tests\TestCase;
 
 class ExpirationTest extends TestCase
 {
+    /** Vérifie l'expiration à 1 heure. */
     public function testExpirationOneHour(): void
     {
         $response = $this->postJson('/api/secrets', $this->getValidPayload('1h'));
@@ -24,6 +25,7 @@ class ExpirationTest extends TestCase
         $secret->delete();
     }
 
+    /** Vérifie l'expiration à 1 jour. */
     public function testExpirationOneDay(): void
     {
         $response = $this->postJson('/api/secrets', $this->getValidPayload('1d'));
@@ -40,6 +42,7 @@ class ExpirationTest extends TestCase
         $secret->delete();
     }
 
+    /** Vérifie l'expiration à 7 jours. */
     public function testExpirationSevenDays(): void
     {
         $response = $this->postJson('/api/secrets', $this->getValidPayload('7d'));
@@ -56,6 +59,7 @@ class ExpirationTest extends TestCase
         $secret->delete();
     }
 
+    /** Vérifie l'expiration à 30 jours. */
     public function testExpirationThirtyDays(): void
     {
         $response = $this->postJson('/api/secrets', $this->getValidPayload('30d'));
@@ -72,6 +76,7 @@ class ExpirationTest extends TestCase
         $secret->delete();
     }
 
+    /** Vérifie le rejet d'un format d'expiration invalide. */
     public function testInvalidExpirationFormatIsRejected(): void
     {
         $response = $this->postJson('/api/secrets', $this->getValidPayload('24h'));
@@ -80,6 +85,7 @@ class ExpirationTest extends TestCase
         $response->assertJsonValidationErrors(['expiration']);
     }
 
+    /** Vérifie qu'un secret devient inaccessible après expiration. */
     public function testSecretBecomesInaccessibleAfterExpiration(): void
     {
         // Create secret that expires in 1 hour
@@ -104,6 +110,7 @@ class ExpirationTest extends TestCase
         Secret::where('token', $token)->delete();
     }
 
+    /** Vérifie que confirm-read échoue après expiration. */
     public function testConfirmReadFailsAfterExpiration(): void
     {
         // Create secret
@@ -124,6 +131,7 @@ class ExpirationTest extends TestCase
         Secret::where('token', $token)->delete();
     }
 
+    /** Vérifie que la page show charge même pour un secret expiré. */
     public function testShowPageStillLoadsForExpiredSecret(): void
     {
         // Create and expire a secret
@@ -142,6 +150,7 @@ class ExpirationTest extends TestCase
         Secret::where('token', $token)->delete();
     }
 
+    /** Vérifie que expire_at est stocké correctement en base. */
     public function testExpireAtIsStoredCorrectly(): void
     {
         $response = $this->postJson('/api/secrets', $this->getValidPayload('7d'));
@@ -157,6 +166,7 @@ class ExpirationTest extends TestCase
         $secret->delete();
     }
 
+    /** Vérifie que expire_at est casté en Carbon. */
     public function testExpireAtIsCastToCarbon(): void
     {
         $response = $this->postJson('/api/secrets', $this->getValidPayload('7d'));
@@ -170,6 +180,7 @@ class ExpirationTest extends TestCase
         $secret->delete();
     }
 
+    /** Vérifie qu'un secret est accessible juste avant expiration. */
     public function testSecretAccessibleJustBeforeExpiration(): void
     {
         // Create secret

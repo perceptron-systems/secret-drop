@@ -21,6 +21,7 @@ class FileSecretTest extends TestCase
         $this->storage = app(SecretStorageService::class);
     }
 
+    /** Vérifie la création d'un secret fichier. */
     public function testCanCreateFileSecret(): void
     {
         $file = UploadedFile::fake()->create('encrypted', 1024, 'application/octet-stream');
@@ -53,6 +54,7 @@ class FileSecretTest extends TestCase
         $secret->delete();
     }
 
+    /** Vérifie que le fichier chiffré est requis. */
     public function testFileSecretRequiresEncryptedFile(): void
     {
         $response = $this->postJson('/api/secrets', [
@@ -69,6 +71,7 @@ class FileSecretTest extends TestCase
         $response->assertJsonValidationErrors(['encrypted_file']);
     }
 
+    /** Vérifie le rejet d'un fichier trop volumineux (> 100 Mo). */
     public function testFileSecretRejectsFileTooLarge(): void
     {
         // 101MB file (limit is 100MB)
@@ -89,6 +92,7 @@ class FileSecretTest extends TestCase
         $response->assertJsonValidationErrors(['encrypted_file']);
     }
 
+    /** Vérifie le téléchargement du fichier chiffré. */
     public function testCanDownloadEncryptedFile(): void
     {
         $file = UploadedFile::fake()->create('encrypted', 512, 'application/octet-stream');
@@ -119,6 +123,7 @@ class FileSecretTest extends TestCase
         $secret->delete();
     }
 
+    /** Vérifie que max_views est null par défaut pour les fichiers. */
     public function testFileSecretDefaultsToUnlimitedViews(): void
     {
         $file = UploadedFile::fake()->create('encrypted', 256);

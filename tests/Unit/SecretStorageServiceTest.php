@@ -23,6 +23,7 @@ class SecretStorageServiceTest extends TestCase
         parent::tearDown();
     }
 
+    /** Vérifie que store crée un fichier sur le disque. */
     public function testStoreCreatesFileOnDisk(): void
     {
         $file = UploadedFile::fake()->create('test.bin', 100);
@@ -34,11 +35,13 @@ class SecretStorageServiceTest extends TestCase
         $this->assertTrue($this->storage->exists($path));
     }
 
+    /** Vérifie que exists retourne false pour un fichier inexistant. */
     public function testExistsReturnsFalseForNonExistentFile(): void
     {
         $this->assertFalse($this->storage->exists('nonexistent_file'));
     }
 
+    /** Vérifie que exists retourne true pour un fichier existant. */
     public function testExistsReturnsTrueForExistingFile(): void
     {
         $file = UploadedFile::fake()->create('test.bin', 50);
@@ -49,6 +52,7 @@ class SecretStorageServiceTest extends TestCase
         $this->assertTrue($this->storage->exists($path));
     }
 
+    /** Vérifie que size retourne la taille du fichier. */
     public function testSizeReturnsFileSize(): void
     {
         $content = str_repeat('x', 1024);
@@ -61,6 +65,7 @@ class SecretStorageServiceTest extends TestCase
         $this->assertEquals(1024, $size);
     }
 
+    /** Vérifie que delete supprime le fichier et le répertoire vide. */
     public function testDeleteRemovesFileAndEmptyDirectory(): void
     {
         $file = UploadedFile::fake()->create('test.bin', 100);
@@ -76,6 +81,7 @@ class SecretStorageServiceTest extends TestCase
         $this->assertFalse($this->storage->disk()->exists(dirname($path)));
     }
 
+    /** Vérifie que delete retourne false pour un fichier inexistant. */
     public function testDeleteReturnsFalseForNonExistentFile(): void
     {
         $result = $this->storage->delete('nonexistent_file');
@@ -83,6 +89,7 @@ class SecretStorageServiceTest extends TestCase
         $this->assertFalse($result);
     }
 
+    /** Vérifie que download retourne une réponse streamée. */
     public function testDownloadReturnsStreamedResponse(): void
     {
         $file = UploadedFile::fake()->create('test.bin', 100);
@@ -95,6 +102,7 @@ class SecretStorageServiceTest extends TestCase
         $this->assertInstanceOf(\Symfony\Component\HttpFoundation\StreamedResponse::class, $response);
     }
 
+    /** Vérifie que readStream retourne une ressource. */
     public function testReadStreamReturnsResource(): void
     {
         $file = UploadedFile::fake()->create('test.bin', 100);
@@ -108,6 +116,7 @@ class SecretStorageServiceTest extends TestCase
         fclose($stream);
     }
 
+    /** Vérifie que disk retourne une instance Filesystem. */
     public function testDiskReturnsFilesystemInstance(): void
     {
         $disk = $this->storage->disk();

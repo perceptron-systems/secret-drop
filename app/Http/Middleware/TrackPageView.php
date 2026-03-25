@@ -45,11 +45,11 @@ class TrackPageView
     {
         $route = $request->route();
 
-        if (! $route || ! $route->getName()) {
+        $name = $route?->getName();
+
+        if (! $name || str_starts_with($name, 'generated::')) {
             return null;
         }
-
-        $name = $route->getName();
 
         if ($name === 'page.show') {
             $slug = $route->parameter('pageSlug', 'unknown');

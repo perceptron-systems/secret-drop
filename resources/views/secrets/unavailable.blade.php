@@ -7,9 +7,7 @@
     <div class="w-full max-w-md">
         <x-card class="p-8 text-center">
             <div class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-amber-100 dark:bg-amber-500/10 mb-6 transition-colors" aria-hidden="true">
-                <svg class="w-7 h-7 text-amber-500 dark:text-amber-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
+                <x-icon.clock class="w-7 h-7 text-amber-500 dark:text-amber-300" />
             </div>
 
             <h1 class="text-xl font-bold text-gray-900 dark:text-white mb-2 transition-colors">

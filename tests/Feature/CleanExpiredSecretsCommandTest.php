@@ -22,6 +22,7 @@ class CleanExpiredSecretsCommandTest extends TestCase
         $this->storage = app(SecretStorageService::class);
     }
 
+    /** Vérifie la suppression des secrets expirés. */
     public function testDeletesExpiredSecrets(): void
     {
         $expiredSecret = Secret::create([
@@ -51,6 +52,7 @@ class CleanExpiredSecretsCommandTest extends TestCase
         $validSecret->delete();
     }
 
+    /** Vérifie la suppression des secrets révoqués. */
     public function testDeletesRevokedSecrets(): void
     {
         $revokedSecret = Secret::create([
@@ -69,6 +71,7 @@ class CleanExpiredSecretsCommandTest extends TestCase
         $this->assertNull(Secret::find($revokedSecret->id));
     }
 
+    /** Vérifie la suppression des secrets ayant atteint le max de vues. */
     public function testDeletesMaxViewsReachedSecrets(): void
     {
         $maxViewsSecret = Secret::create([
@@ -88,6 +91,7 @@ class CleanExpiredSecretsCommandTest extends TestCase
         $this->assertNull(Secret::find($maxViewsSecret->id));
     }
 
+    /** Vérifie la suppression des secrets usage unique déjà lus. */
     public function testDeletesSingleUseSecretsAlreadyRead(): void
     {
         $singleUseSecret = Secret::create([
@@ -107,6 +111,7 @@ class CleanExpiredSecretsCommandTest extends TestCase
         $this->assertNull(Secret::find($singleUseSecret->id));
     }
 
+    /** Vérifie la suppression du fichier du storage. */
     public function testDeletesFileFromStorage(): void
     {
         $token = $this->tokenService->generatePublicToken();
@@ -131,6 +136,7 @@ class CleanExpiredSecretsCommandTest extends TestCase
         $this->assertFalse($this->storage->exists($filePath));
     }
 
+    /** Vérifie que --dry-run ne supprime rien. */
     public function testDryRunDoesNotDelete(): void
     {
         $expiredSecret = Secret::create([
@@ -150,6 +156,7 @@ class CleanExpiredSecretsCommandTest extends TestCase
         $expiredSecret->delete();
     }
 
+    /** Vérifie le message quand il n'y a rien à nettoyer. */
     public function testOutputsNothingToCleanMessage(): void
     {
         // Delete any existing expired secrets first
@@ -161,6 +168,7 @@ class CleanExpiredSecretsCommandTest extends TestCase
             ->assertSuccessful();
     }
 
+    /** Vérifie la suppression des magic links expirés. */
     public function testDeletesExpiredMagicLinks(): void
     {
         $expiredLink = MagicLink::create([
@@ -184,6 +192,7 @@ class CleanExpiredSecretsCommandTest extends TestCase
         $validLink->delete();
     }
 
+    /** Vérifie la suppression des magic links utilisés. */
     public function testDeletesUsedMagicLinks(): void
     {
         $usedLink = MagicLink::create([
@@ -199,6 +208,7 @@ class CleanExpiredSecretsCommandTest extends TestCase
         $this->assertNull(MagicLink::find($usedLink->id));
     }
 
+    /** Vérifie que --dry-run ne supprime pas les magic links. */
     public function testDryRunDoesNotDeleteMagicLinks(): void
     {
         $expiredLink = MagicLink::create([

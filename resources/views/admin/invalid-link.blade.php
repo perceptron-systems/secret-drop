@@ -9,6 +9,6 @@
     :retryLabel="__('messages.btn_request_new_link')"
     color="violet"
     iconColor="amber"
-    icon="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+    iconName="icon.clock"
 />
 @endsection

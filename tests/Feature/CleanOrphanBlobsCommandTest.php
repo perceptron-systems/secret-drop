@@ -27,6 +27,7 @@ class CleanOrphanBlobsCommandTest extends TestCase
         parent::tearDown();
     }
 
+    /** Vérifie la suppression des blobs orphelins. */
     public function testCommandDeletesOrphanBlobs(): void
     {
         $orphanPath = 'orphan_file_'.bin2hex(random_bytes(8));
@@ -41,6 +42,7 @@ class CleanOrphanBlobsCommandTest extends TestCase
         $this->assertFalse($this->storage->exists($orphanPath));
     }
 
+    /** Vérifie que les fichiers avec secret associé sont conservés. */
     public function testCommandKeepsFilesWithCorrespondingSecrets(): void
     {
         $token = bin2hex(random_bytes(16));
@@ -67,6 +69,7 @@ class CleanOrphanBlobsCommandTest extends TestCase
         Secret::where('token', $token)->delete();
     }
 
+    /** Vérifie la suppression des orphelins tout en gardant les valides. */
     public function testCommandDeletesOrphanButKeepsValid(): void
     {
         $validToken = bin2hex(random_bytes(16));
@@ -98,6 +101,7 @@ class CleanOrphanBlobsCommandTest extends TestCase
         Secret::where('token', $validToken)->delete();
     }
 
+    /** Vérifie que --dry-run ne supprime pas les fichiers. */
     public function testDryRunDoesNotDeleteFiles(): void
     {
         $orphanPath = 'orphan_dry_run_'.bin2hex(random_bytes(8));
@@ -114,6 +118,7 @@ class CleanOrphanBlobsCommandTest extends TestCase
         $this->storage->delete($orphanPath);
     }
 
+    /** Vérifie la gestion du storage vide. */
     public function testCommandHandlesEmptyStorage(): void
     {
         $files = $this->storage->disk()->allFiles();

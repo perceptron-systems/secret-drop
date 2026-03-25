@@ -7,6 +7,7 @@ use Tests\TestCase;
 
 class LocalizedRoutingTest extends TestCase
 {
+    /** Vérifie la redirection racine vers la locale détectée. */
     public function testRootRedirectsToDetectedLocale(): void
     {
         $response = $this->withHeader('Accept-Language', 'fr')
@@ -16,6 +17,7 @@ class LocalizedRoutingTest extends TestCase
         $this->assertStringEndsWith('/fr/', $response->headers->get('Location'));
     }
 
+    /** Vérifie la redirection racine vers la locale anglaise. */
     public function testRootRedirectsToEnglishLocale(): void
     {
         $response = $this->withHeader('Accept-Language', 'en')
@@ -25,6 +27,7 @@ class LocalizedRoutingTest extends TestCase
         $this->assertStringEndsWith('/en/', $response->headers->get('Location'));
     }
 
+    /** Vérifie le fallback racine vers le français sans header. */
     public function testRootDefaultsToFrenchWithoutHeader(): void
     {
         $response = $this->withHeader('Accept-Language', '')
@@ -34,6 +37,7 @@ class LocalizedRoutingTest extends TestCase
         $this->assertStringEndsWith('/fr/', $response->headers->get('Location'));
     }
 
+    /** Vérifie que la page d'accueil se charge avec une locale. */
     public function testHomePageRendersWithLocale(): void
     {
         $response = $this->get('/fr');
@@ -41,6 +45,7 @@ class LocalizedRoutingTest extends TestCase
         $response->assertOk();
     }
 
+    /** Vérifie que la page d'accueil se charge pour toutes les locales. */
     public function testHomePageRendersForAllLocales(): void
     {
         foreach (LocaleConfig::SUPPORTED_LOCALES as $locale) {
@@ -50,6 +55,7 @@ class LocalizedRoutingTest extends TestCase
         }
     }
 
+    /** Vérifie le rendu avec un slug français. */
     public function testLocalizedPageRendersWithFrenchSlug(): void
     {
         $response = $this->get('/fr/comment-ca-marche');
@@ -57,6 +63,7 @@ class LocalizedRoutingTest extends TestCase
         $response->assertOk();
     }
 
+    /** Vérifie le rendu avec un slug anglais. */
     public function testLocalizedPageRendersWithEnglishSlug(): void
     {
         $response = $this->get('/en/how-it-works');
@@ -64,6 +71,7 @@ class LocalizedRoutingTest extends TestCase
         $response->assertOk();
     }
 
+    /** Vérifie le rendu avec un slug allemand. */
     public function testLocalizedPageRendersWithGermanSlug(): void
     {
         $response = $this->get('/de/so-funktioniert-es');
@@ -71,6 +79,7 @@ class LocalizedRoutingTest extends TestCase
         $response->assertOk();
     }
 
+    /** Vérifie le rendu des cas d'usage avec slug traduit. */
     public function testUseCasesRendersWithTranslatedSlug(): void
     {
         $response = $this->get('/fr/cas-d-usage');
@@ -78,6 +87,7 @@ class LocalizedRoutingTest extends TestCase
         $response->assertOk();
     }
 
+    /** Vérifie le rendu des mentions légales avec slug traduit. */
     public function testLegalRendersWithTranslatedSlug(): void
     {
         $response = $this->get('/fr/mentions-legales');
@@ -85,6 +95,7 @@ class LocalizedRoutingTest extends TestCase
         $response->assertOk();
     }
 
+    /** Vérifie qu'un slug invalide retourne 404. */
     public function testInvalidSlugReturns404(): void
     {
         $response = $this->get('/fr/nonexistent-page');
@@ -92,6 +103,7 @@ class LocalizedRoutingTest extends TestCase
         $response->assertNotFound();
     }
 
+    /** Vérifie qu'une locale invalide retourne 404. */
     public function testInvalidLocaleDoesNotMatchRoute(): void
     {
         $response = $this->get('/xx/how-it-works');
@@ -99,6 +111,7 @@ class LocalizedRoutingTest extends TestCase
         $response->assertNotFound();
     }
 
+    /** Vérifie la redirection 301 de l'ancien URL how-it-works. */
     public function testLegacyHowItWorksRedirects301(): void
     {
         $response = $this->withHeader('Accept-Language', 'fr')
@@ -111,6 +124,7 @@ class LocalizedRoutingTest extends TestCase
         );
     }
 
+    /** Vérifie la redirection 301 de l'ancien URL use-cases. */
     public function testLegacyUseCasesRedirects301(): void
     {
         $response = $this->withHeader('Accept-Language', 'en')
@@ -123,6 +137,7 @@ class LocalizedRoutingTest extends TestCase
         );
     }
 
+    /** Vérifie la redirection 301 de l'ancien URL legal. */
     public function testLegacyLegalRedirects301(): void
     {
         $response = $this->withHeader('Accept-Language', 'fr')
@@ -135,6 +150,7 @@ class LocalizedRoutingTest extends TestCase
         );
     }
 
+    /** Vérifie la redirection 301 quand le slug ne correspond pas à la locale. */
     public function testWrongSlugForLocaleRedirects301(): void
     {
         $response = $this->get('/fr/how-it-works');
@@ -146,6 +162,7 @@ class LocalizedRoutingTest extends TestCase
         );
     }
 
+    /** Vérifie que la route admin reste accessible. */
     public function testAdminRouteStillAccessible(): void
     {
         $response = $this->get('/fr/admin');
@@ -153,6 +170,7 @@ class LocalizedRoutingTest extends TestCase
         $response->assertOk();
     }
 
+    /** Vérifie la redirection /admin vers l'admin localisé. */
     public function testNonLocalizedAdminRedirectsToLocalizedAdmin(): void
     {
         $response = $this->withHeader('Accept-Language', 'fr')
@@ -161,6 +179,7 @@ class LocalizedRoutingTest extends TestCase
         $response->assertRedirect(route('admin.index', ['locale' => 'fr']));
     }
 
+    /** Vérifie la redirection /superadmin vers le superadmin localisé. */
     public function testNonLocalizedSuperadminRedirectsToLocalizedSuperadmin(): void
     {
         $response = $this->withHeader('Accept-Language', 'en')
@@ -169,6 +188,7 @@ class LocalizedRoutingTest extends TestCase
         $response->assertRedirect(route('superadmin.index', ['locale' => 'en']));
     }
 
+    /** Vérifie que route() génère une URL localisée. */
     public function testRouteHelperGeneratesLocalizedUrl(): void
     {
         app()->setLocale('fr');
@@ -179,6 +199,7 @@ class LocalizedRoutingTest extends TestCase
         $this->assertStringEndsWith('/fr', $url);
     }
 
+    /** Vérifie que localized_route() génère le bon slug. */
     public function testLocalizedRouteHelperGeneratesCorrectSlug(): void
     {
         app()->setLocale('fr');
@@ -188,6 +209,7 @@ class LocalizedRoutingTest extends TestCase
         $this->assertStringContainsString('/fr/comment-ca-marche', $url);
     }
 
+    /** Vérifie localized_route() avec une locale explicite. */
     public function testLocalizedRouteHelperWithExplicitLocale(): void
     {
         app()->setLocale('fr');
@@ -197,6 +219,7 @@ class LocalizedRoutingTest extends TestCase
         $this->assertStringContainsString('/de/so-funktioniert-es', $url);
     }
 
+    /** Vérifie que le sitemap contient toutes les variantes de locale. */
     public function testSitemapContainsAllLocaleVariants(): void
     {
         $response = $this->get('/sitemap.xml');
@@ -214,6 +237,7 @@ class LocalizedRoutingTest extends TestCase
         $this->assertStringContainsString('hreflang', $content);
     }
 
+    /** Vérifie les balises hreflang sur la page d'accueil. */
     public function testHreflangTagsOnHomePage(): void
     {
         $response = $this->get('/fr');
@@ -226,6 +250,7 @@ class LocalizedRoutingTest extends TestCase
         $this->assertStringContainsString('hreflang="x-default"', $content);
     }
 
+    /** Vérifie les balises hreflang sur une page localisée. */
     public function testHreflangTagsOnLocalizedPage(): void
     {
         $response = $this->get('/fr/comment-ca-marche');
@@ -238,6 +263,7 @@ class LocalizedRoutingTest extends TestCase
         $this->assertStringContainsString('/de/so-funktioniert-es', $content);
     }
 
+    /** Vérifie que le header Content-Language correspond à la locale. */
     public function testContentLanguageHeaderMatchesLocale(): void
     {
         $response = $this->get('/de');
@@ -246,6 +272,7 @@ class LocalizedRoutingTest extends TestCase
         $response->assertHeader('Content-Language', 'de');
     }
 
+    /** Vérifie que le japonais utilise les slugs anglais. */
     public function testJapaneseUsesEnglishSlugs(): void
     {
         $response = $this->get('/ja/how-it-works');
@@ -253,6 +280,7 @@ class LocalizedRoutingTest extends TestCase
         $response->assertOk();
     }
 
+    /** Vérifie la présence du sélecteur de langue sur la page d'accueil. */
     public function testLanguageSwitcherPresentOnHomePage(): void
     {
         $response = $this->get('/fr');
@@ -261,6 +289,7 @@ class LocalizedRoutingTest extends TestCase
         $response->assertSee('x-data="languageSwitcher"', false);
     }
 
+    /** Vérifie que le sélecteur de langue contient toutes les URLs. */
     public function testLanguageSwitcherContainsAllLocaleUrls(): void
     {
         $response = $this->get('/fr');
@@ -277,6 +306,7 @@ class LocalizedRoutingTest extends TestCase
         }
     }
 
+    /** Vérifie que le sélecteur pointe vers les pages traduites. */
     public function testLanguageSwitcherOnLocalizedPagePointsToTranslatedPages(): void
     {
         $response = $this->get('/fr/comment-ca-marche');
@@ -288,6 +318,7 @@ class LocalizedRoutingTest extends TestCase
         $this->assertStringContainsString('/de/so-funktioniert-es', $content);
     }
 
+    /** Vérifie que locale_switcher_urls() retourne toutes les locales. */
     public function testLocaleSwitcherUrlsHelperReturnsAllLocales(): void
     {
         $this->get('/fr');
@@ -302,6 +333,7 @@ class LocalizedRoutingTest extends TestCase
         }
     }
 
+    /** Vérifie que toutes les pages traduisibles fonctionnent pour toutes les locales. */
     public function testAllTranslatablePagesWorkForAllLocales(): void
     {
         foreach (LocaleConfig::SUPPORTED_LOCALES as $locale) {

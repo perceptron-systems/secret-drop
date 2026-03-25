@@ -1,11 +1,25 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="flex-1 flex items-center justify-center p-4 transition-colors">
+@php
+    $errColor = trim($__env->yieldContent('color', 'violet'));
+    $iconGradient = match($errColor) {
+        'red' => 'from-red-500/0 to-rose-600',
+        'amber' => 'from-amber-500/0 to-orange-600',
+        default => 'from-violet-500/0 to-indigo-600',
+    };
+    $accentRgb = match($errColor) {
+        'amber' => '217, 119, 6',
+        'red' => '239, 68, 68',
+        'emerald' => '16, 185, 129',
+        default => '139, 92, 246',
+    };
+@endphp
+<div class="flex-1 flex items-center justify-center p-4 transition-colors" style="--accent-rgb: {{ $accentRgb }}">
     <div class="w-full max-w-md">
         <div class="card-accent bg-white/80 dark:bg-slate-800/50 backdrop-blur-xl border border-gray-200 dark:border-slate-700/50 rounded-2xl shadow-2xl overflow-hidden transition-colors">
             <div class="p-8 lg:p-12 text-center">
-                <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-{{ $color ?? 'gray' }}-100 dark:bg-{{ $color ?? 'gray' }}-500/10 mb-6 transition-colors" aria-hidden="true">
+                <div class="logo-icon inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-linear-to-br {{ $iconGradient }} mb-6 transition-colors" aria-hidden="true">
                     @yield('icon')
                 </div>
 
@@ -22,9 +36,7 @@
                 </p>
 
                 <x-btn-primary :href="route('home')" class="gap-2">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-                    </svg>
+                    <x-icon.home class="w-5 h-5" />
                     {{ __('messages.error_back_home') }}
                 </x-btn-primary>
             </div>

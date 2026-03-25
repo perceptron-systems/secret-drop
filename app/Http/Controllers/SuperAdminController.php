@@ -36,7 +36,7 @@ class SuperAdminController extends Controller
         return view('superadmin.index');
     }
 
-    public function requestAccess(RequestSuperAdminAccessRequest $request): View
+    public function requestAccess(RequestSuperAdminAccessRequest $request): RedirectResponse
     {
         $email = strtolower(trim($request->validated('email')));
         $superAdminEmail = strtolower(trim(config('app.super_admin_email', '')));
@@ -58,7 +58,7 @@ class SuperAdminController extends Controller
             $this->stats->increment(StatsService::MAGIC_LINKS_REQUESTED);
         }
 
-        return view('superadmin.access-sent');
+        return redirect()->route('superadmin.accessSent');
     }
 
     public function verify(Request $request, string $locale, string $token): View|RedirectResponse
@@ -73,12 +73,18 @@ class SuperAdminController extends Controller
             return view('superadmin.invalid-link');
         }
 
+        if ($request->isMethod('GET')) {
+            return view('superadmin.verify-confirm', [
+                'token' => $token,
+            ]);
+        }
+
         $magicLink->markAsUsed();
         $this->stats->increment(StatsService::MAGIC_LINKS_USED);
 
         $request->session()->regenerate();
         $request->session()->put(self::SESSION_KEY, true);
-        $request->session()->put(self::SESSION_EXPIRES_KEY, now()->addMinutes(15)->timestamp);
+        $request->session()->put(self::SESSION_EXPIRES_KEY, now()->addHour()->timestamp);
 
         return redirect()->route('superadmin.dashboard');
     }
@@ -140,6 +146,8 @@ class SuperAdminController extends Controller
             'creatorConcentration' => $this->stats->getCreatorConcentration(),
             'systemHealth' => $this->stats->getSystemHealth(),
             'referrers' => $this->stats->getReferrers($startDate),
+            'botStats' => $this->stats->getBotStats($startDate),
+            'deviceStats' => $this->stats->getDeviceStats($startDate),
         ];
     }
 }

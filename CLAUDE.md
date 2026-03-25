@@ -6,7 +6,6 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 **Secret-drop** is a zero-knowledge secret/file sharing application. The server NEVER sees plaintext secrets.
 
-See `docs/spec.md` for the full specification.
 
 ### Core Principles (non-negotiable)
 

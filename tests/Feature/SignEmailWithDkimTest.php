@@ -11,6 +11,7 @@ use Tests\TestCase;
 
 class SignEmailWithDkimTest extends TestCase
 {
+    /** Vérifie que le listener ne fait rien sans configuration DKIM. */
     public function testDoesNothingWhenDkimNotConfigured(): void
     {
         Config::set('mail.dkim.domain', null);
@@ -32,6 +33,7 @@ class SignEmailWithDkimTest extends TestCase
         $this->assertSame($originalMessage, $event->message);
     }
 
+    /** Vérifie le warning quand le fichier de clé est introuvable. */
     public function testLogsWarningWhenKeyFileNotFound(): void
     {
         Config::set('mail.dkim.domain', 'example.com');
@@ -57,6 +59,7 @@ class SignEmailWithDkimTest extends TestCase
         $this->assertSame($originalMessage, $event->message);
     }
 
+    /** Vérifie la signature DKIM quand tout est correctement configuré. */
     public function testSignsMessageWhenProperlyConfigured(): void
     {
         $keyDir = storage_path('app/test-dkim');

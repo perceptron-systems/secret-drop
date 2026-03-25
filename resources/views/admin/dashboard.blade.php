@@ -9,11 +9,8 @@
         {{-- Header --}}
         <div class="flex items-center justify-between mb-8">
             <div class="flex items-center gap-4">
-                <div class="flex items-center justify-center w-12 h-12 rounded-xl bg-linear-to-br from-violet-500 to-indigo-600 shadow-lg shadow-violet-500/25 shrink-0">
-                    <svg class="w-6 h-6 text-white" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                    </svg>
+                <div class="logo-icon flex items-center justify-center w-12 h-12 rounded-xl bg-linear-to-br from-violet-500/0 to-indigo-600 shrink-0">
+                    <x-icon.settings class="w-6 h-6 text-white" />
                 </div>
                 <div>
                     <h1 class="text-xl font-bold text-gray-900 dark:text-white">{{ __('messages.admin_dashboard_title') }}</h1>
@@ -32,9 +29,7 @@
         @if($secrets->isEmpty())
             <div class="card-accent bg-white/80 dark:bg-slate-800/50 backdrop-blur-xl border border-gray-200 dark:border-slate-700/50 rounded-2xl shadow-xl p-12 text-center">
                 <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gray-100 dark:bg-slate-700 mb-4">
-                    <svg class="w-8 h-8 text-gray-400 dark:text-slate-500" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
-                    </svg>
+                    <x-icon.inbox class="w-8 h-8 text-gray-400 dark:text-slate-500" />
                 </div>
                 <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">{{ __('messages.admin_no_secrets') }}</h2>
                 <p class="text-gray-500 dark:text-slate-400 mb-6">{{ __('messages.admin_no_secrets_description') }}</p>
@@ -132,16 +127,14 @@
                                     @if($secret->type === 'text')
                                         <x-icon.document class="w-5 h-5 text-blue-600 dark:text-blue-300" />
                                     @else
-                                        <svg class="w-5 h-5 text-purple-600 dark:text-purple-400" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
-                                        </svg>
+                                        <x-icon.file class="w-5 h-5 text-purple-600 dark:text-purple-400" />
                                     @endif
                                 </div>
 
                                 <div>
                                     <div class="flex items-center gap-2">
                                         <span class="font-medium text-gray-900 dark:text-white">
-                                            {{ $secret->type === 'text' ? __('messages.type_text') : $secret->filename }}
+                                            {{ $secret->type === 'text' ? __('messages.type_text') : __('messages.type_file') }}
                                         </span>
                                         {{-- Status badge --}}
                                         @if($secret->isRevoked())
@@ -168,9 +161,7 @@
                                 </div>
                             </div>
 
-                            <svg class="w-5 h-5 text-gray-400 transition-transform" :class="{ 'rotate-180': expanded }" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                            </svg>
+                            <x-icon.chevron-down class="w-5 h-5 text-gray-400 transition-transform" x-bind:class="{ 'rotate-180': expanded }" />
                         </button>
 
                         {{-- Expanded content --}}

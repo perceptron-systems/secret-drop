@@ -1,4 +1,4 @@
-@props(['title', 'description' => null, 'formAction', 'icon', 'color' => 'violet'])
+@props(['title', 'description' => null, 'formAction', 'iconName' => 'icon.lock', 'color' => 'violet'])
 
 @php
     $ringColor = "focus:ring-{$color}-500/50 focus:border-{$color}-500/50";
@@ -7,16 +7,19 @@
         'emerald' => '16, 185, 129',
         default => '139, 92, 246',
     };
+    $iconGradient = match($color) {
+        'amber' => 'from-amber-500/0 to-orange-600',
+        'emerald' => 'from-emerald-500/0 to-teal-600',
+        default => 'from-violet-500/0 to-indigo-600',
+    };
 @endphp
 
 <div class="flex-1 flex items-center justify-center p-4 transition-colors" style="--accent-rgb: {{ $accentRgb }}">
     <div class="w-full max-w-md">
         <x-card class="p-8">
             <div class="text-center mb-8">
-                <div class="logo-icon inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-linear-to-br from-{{ $color }}-500 to-{{ $color === 'violet' ? 'indigo' : 'orange' }}-600 shadow-lg shadow-{{ $color }}-500/25 mb-4" aria-hidden="true">
-                    <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        {!! $icon !!}
-                    </svg>
+                <div class="logo-icon inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-linear-to-br {{ $iconGradient }} mb-4" aria-hidden="true">
+                    <x-dynamic-component :component="$iconName" class="w-7 h-7 text-white" />
                 </div>
                 <h1 class="text-2xl font-bold text-gray-900 dark:text-white">{{ $title }}</h1>
                 @if($description)
@@ -86,7 +89,7 @@
             </form>
 
             <div class="mt-6 text-center">
-                <a href="{{ route('home') }}" class="text-sm text-gray-500 dark:text-slate-400 hover:text-{{ $color }}-600 dark:hover:text-{{ $color }}-400 transition">
+                <a href="{{ route('home') }}" class="text-sm text-gray-500 dark:text-slate-400 hover:text-gray-900 dark:hover:text-white transition">
                     {{ __('messages.admin_back_home') }}
                 </a>
             </div>

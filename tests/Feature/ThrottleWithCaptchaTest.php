@@ -14,6 +14,7 @@ class ThrottleWithCaptchaTest extends TestCase
         Cache::flush();
     }
 
+    /** Vérifie que les requêtes sous la limite passent normalement. */
     public function test_requests_under_limit_pass_through(): void
     {
         $payload = $this->getValidSecretPayload();
@@ -24,6 +25,7 @@ class ThrottleWithCaptchaTest extends TestCase
         }
     }
 
+    /** Vérifie que les requêtes au-delà de la limite retournent un captcha. */
     public function test_requests_over_limit_return_captcha_challenge(): void
     {
         $payload = $this->getValidSecretPayload();
@@ -48,6 +50,7 @@ class ThrottleWithCaptchaTest extends TestCase
         ]);
     }
 
+    /** Vérifie qu'un captcha valide permet de contourner le rate limit. */
     public function test_valid_captcha_bypasses_rate_limit(): void
     {
         $payload = $this->getValidSecretPayload();
@@ -73,6 +76,7 @@ class ThrottleWithCaptchaTest extends TestCase
         $response->assertStatus(201);
     }
 
+    /** Vérifie qu'un captcha invalide retourne un nouveau challenge. */
     public function test_invalid_captcha_returns_new_challenge(): void
     {
         $payload = $this->getValidSecretPayload();
@@ -100,6 +104,7 @@ class ThrottleWithCaptchaTest extends TestCase
         $this->assertNotEquals($firstToken, $newToken);
     }
 
+    /** Vérifie le rate limiting sur les magic links admin. */
     public function test_admin_magic_link_has_rate_limiting(): void
     {
         // Exhaust the rate limit (3 per 10 minutes)
@@ -116,6 +121,7 @@ class ThrottleWithCaptchaTest extends TestCase
         $response->assertSessionHas('captcha_challenge');
     }
 
+    /** Vérifie que la validation du captcha admin fonctionne. */
     public function test_admin_captcha_validation_works(): void
     {
         // Exhaust the rate limit
@@ -137,10 +143,11 @@ class ThrottleWithCaptchaTest extends TestCase
             'captcha_answer' => $expectedAnswer,
         ]);
 
-        // Should proceed (will show access-sent view)
-        $response->assertViewIs('admin.access-sent');
+        // Should proceed (will redirect to access-sent page)
+        $response->assertRedirect(route('admin.accessSent'));
     }
 
+    /** Vérifie le rate limiting sur les magic links superadmin. */
     public function test_superadmin_magic_link_has_rate_limiting(): void
     {
         // Exhaust the rate limit (3 per 10 minutes)
@@ -155,6 +162,7 @@ class ThrottleWithCaptchaTest extends TestCase
         $response->assertSessionHas('captcha_required', true);
     }
 
+    /** Vérifie les headers X-Captcha-Required et Retry-After. */
     public function test_captcha_header_is_set_on_rate_limit(): void
     {
         $payload = $this->getValidSecretPayload();

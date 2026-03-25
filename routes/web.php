@@ -17,6 +17,7 @@ Route::get('/', [RedirectController::class, 'root']);
 Route::get('/how-it-works', [RedirectController::class, 'howItWorks']);
 Route::get('/use-cases', [RedirectController::class, 'useCases']);
 Route::get('/legal', [RedirectController::class, 'legal']);
+Route::get('/faq', [RedirectController::class, 'faq']);
 
 // Non-localized admin/superadmin redirects
 Route::get('/admin', [RedirectController::class, 'admin']);
@@ -39,7 +40,8 @@ Route::prefix('{locale}')
         Route::post('/admin/request-access', [AdminController::class, 'requestAccess'])
             ->middleware('throttle.captcha:3,10')
             ->name('admin.requestAccess');
-        Route::get('/admin/verify/{token}', [AdminController::class, 'verify'])
+        Route::get('/admin/access-sent', fn () => view('admin.access-sent'))->name('admin.accessSent');
+        Route::match(['GET', 'POST'], '/admin/verify/{token}', [AdminController::class, 'verify'])
             ->middleware('throttle:5,1')
             ->name('admin.verify');
         Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
@@ -52,7 +54,8 @@ Route::prefix('{locale}')
         Route::post('/superadmin/request-access', [SuperAdminController::class, 'requestAccess'])
             ->middleware('throttle.captcha:3,10')
             ->name('superadmin.requestAccess');
-        Route::get('/superadmin/verify/{token}', [SuperAdminController::class, 'verify'])
+        Route::get('/superadmin/access-sent', fn () => view('superadmin.access-sent'))->name('superadmin.accessSent');
+        Route::match(['GET', 'POST'], '/superadmin/verify/{token}', [SuperAdminController::class, 'verify'])
             ->middleware('throttle:5,1')
             ->name('superadmin.verify');
         Route::get('/superadmin/dashboard', [SuperAdminController::class, 'dashboard'])->name('superadmin.dashboard');

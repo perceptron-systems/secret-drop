@@ -124,7 +124,7 @@ return [
     | application-level DKIM signing here. Leave 'private_key_path' empty
     | to disable DKIM signing.
     |
-    | See docs/email-configuration.md for setup instructions.
+    | See README.md for DKIM setup instructions.
     |
     */
 

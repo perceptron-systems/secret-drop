@@ -27,6 +27,7 @@ class MagicLinkModelTest extends TestCase
         ], $attributes));
     }
 
+    /** Vérifie que isExpired retourne true quand le lien est expiré. */
     public function testIsExpiredReturnsTrueWhenExpired(): void
     {
         $magicLink = $this->createMagicLink(['expire_at' => now()->subMinute()]);
@@ -36,6 +37,7 @@ class MagicLinkModelTest extends TestCase
         $magicLink->delete();
     }
 
+    /** Vérifie que isExpired retourne false quand le lien est encore valide. */
     public function testIsExpiredReturnsFalseWhenNotExpired(): void
     {
         $magicLink = $this->createMagicLink(['expire_at' => now()->addMinutes(5)]);
@@ -45,6 +47,7 @@ class MagicLinkModelTest extends TestCase
         $magicLink->delete();
     }
 
+    /** Vérifie que isUsed retourne true quand le lien a été utilisé. */
     public function testIsUsedReturnsTrueWhenUsed(): void
     {
         $magicLink = $this->createMagicLink(['used_at' => now()]);
@@ -54,6 +57,7 @@ class MagicLinkModelTest extends TestCase
         $magicLink->delete();
     }
 
+    /** Vérifie que isUsed retourne false quand le lien n'a pas été utilisé. */
     public function testIsUsedReturnsFalseWhenNotUsed(): void
     {
         $magicLink = $this->createMagicLink();
@@ -63,6 +67,7 @@ class MagicLinkModelTest extends TestCase
         $magicLink->delete();
     }
 
+    /** Vérifie que isValid retourne true pour un lien frais. */
     public function testIsValidReturnsTrueForFreshLink(): void
     {
         $magicLink = $this->createMagicLink();
@@ -72,6 +77,7 @@ class MagicLinkModelTest extends TestCase
         $magicLink->delete();
     }
 
+    /** Vérifie que isValid retourne false quand le lien est expiré. */
     public function testIsValidReturnsFalseWhenExpired(): void
     {
         $magicLink = $this->createMagicLink(['expire_at' => now()->subMinute()]);
@@ -81,6 +87,7 @@ class MagicLinkModelTest extends TestCase
         $magicLink->delete();
     }
 
+    /** Vérifie que isValid retourne false quand le lien a été utilisé. */
     public function testIsValidReturnsFalseWhenUsed(): void
     {
         $magicLink = $this->createMagicLink(['used_at' => now()]);
@@ -90,6 +97,7 @@ class MagicLinkModelTest extends TestCase
         $magicLink->delete();
     }
 
+    /** Vérifie que isValid retourne false quand le lien est expiré ET utilisé. */
     public function testIsValidReturnsFalseWhenExpiredAndUsed(): void
     {
         $magicLink = $this->createMagicLink([
@@ -102,6 +110,7 @@ class MagicLinkModelTest extends TestCase
         $magicLink->delete();
     }
 
+    /** Vérifie que markAsUsed définit correctement used_at. */
     public function testMarkAsUsedSetsUsedAt(): void
     {
         $magicLink = $this->createMagicLink();
@@ -117,6 +126,7 @@ class MagicLinkModelTest extends TestCase
         $magicLink->delete();
     }
 
+    /** Vérifie que findByToken retrouve le bon lien. */
     public function testFindByTokenReturnsCorrectLink(): void
     {
         $tokenData = $this->tokenService->generateMagicLinkToken();
@@ -135,6 +145,7 @@ class MagicLinkModelTest extends TestCase
         $magicLink->delete();
     }
 
+    /** Vérifie que findByToken retourne null pour un token invalide. */
     public function testFindByTokenReturnsNullForInvalidToken(): void
     {
         $this->createMagicLink();
@@ -146,6 +157,7 @@ class MagicLinkModelTest extends TestCase
         MagicLink::query()->delete();
     }
 
+    /** Vérifie que hashEmail est déterministe (insensible à la casse et aux espaces). */
     public function testHashEmailIsDeterministic(): void
     {
         $hash1 = MagicLink::hashEmail('Test@Example.com');
@@ -156,6 +168,7 @@ class MagicLinkModelTest extends TestCase
         $this->assertEquals($hash2, $hash3);
     }
 
+    /** Vérifie que hashEmail produit un SHA-256 valide. */
     public function testHashEmailProducesSha256(): void
     {
         $hash = MagicLink::hashEmail('test@example.com');
@@ -163,6 +176,7 @@ class MagicLinkModelTest extends TestCase
         $this->assertMatchesRegularExpression('/^[a-f0-9]{64}$/', $hash);
     }
 
+    /** Vérifie que deux emails différents produisent des hash différents. */
     public function testHashEmailIsDifferentForDifferentEmails(): void
     {
         $hash1 = MagicLink::hashEmail('user1@example.com');
@@ -171,6 +185,7 @@ class MagicLinkModelTest extends TestCase
         $this->assertNotEquals($hash1, $hash2);
     }
 
+    /** Vérifie que expire_at est casté en datetime. */
     public function testExpireAtIsCastToDatetime(): void
     {
         $magicLink = $this->createMagicLink();
@@ -180,6 +195,7 @@ class MagicLinkModelTest extends TestCase
         $magicLink->delete();
     }
 
+    /** Vérifie que used_at est casté en datetime. */
     public function testUsedAtIsCastToDatetime(): void
     {
         $magicLink = $this->createMagicLink(['used_at' => now()]);

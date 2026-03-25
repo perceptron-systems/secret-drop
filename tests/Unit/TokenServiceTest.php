@@ -16,6 +16,7 @@ class TokenServiceTest extends TestCase
         $this->tokenService = new TokenService();
     }
 
+    /** Vérifie que le token public fait 32 caractères. */
     #[Test]
     public function publicTokenHasCorrectLength(): void
     {
@@ -24,6 +25,7 @@ class TokenServiceTest extends TestCase
         $this->assertSame(32, strlen($token));
     }
 
+    /** Vérifie que le token public est en hexadécimal. */
     #[Test]
     public function publicTokenIsHexadecimal(): void
     {
@@ -32,6 +34,7 @@ class TokenServiceTest extends TestCase
         $this->assertMatchesRegularExpression('/^[a-f0-9]{32}$/', $token);
     }
 
+    /** Vérifie que 100 tokens publics générés sont tous uniques. */
     #[Test]
     public function publicTokensAreUnique(): void
     {
@@ -43,6 +46,7 @@ class TokenServiceTest extends TestCase
         $this->assertCount(100, array_unique($tokens));
     }
 
+    /** Vérifie que le token admin retourne un token et son hash. */
     #[Test]
     public function adminTokenReturnsTokenAndHash(): void
     {
@@ -54,6 +58,7 @@ class TokenServiceTest extends TestCase
         $this->assertSame(64, strlen($result['hash']));
     }
 
+    /** Vérifie que le token admin et son hash sont en hexadécimal. */
     #[Test]
     public function adminTokenIsHexadecimal(): void
     {
@@ -63,6 +68,7 @@ class TokenServiceTest extends TestCase
         $this->assertMatchesRegularExpression('/^[a-f0-9]{64}$/', $result['hash']);
     }
 
+    /** Vérifie que le token magic link retourne un token et son hash. */
     #[Test]
     public function magicLinkTokenReturnsTokenAndHash(): void
     {
@@ -72,6 +78,7 @@ class TokenServiceTest extends TestCase
         $this->assertArrayHasKey('hash', $result);
     }
 
+    /** Vérifie que le token magic link a les bonnes longueurs. */
     #[Test]
     public function magicLinkTokenHasCorrectLength(): void
     {
@@ -81,6 +88,7 @@ class TokenServiceTest extends TestCase
         $this->assertSame(64, strlen($result['hash']));
     }
 
+    /** Vérifie que le hash du magic link est un SHA-256 valide. */
     #[Test]
     public function magicLinkHashIsSha256(): void
     {
@@ -89,6 +97,7 @@ class TokenServiceTest extends TestCase
         $this->assertMatchesRegularExpression('/^[a-f0-9]{64}$/', $result['hash']);
     }
 
+    /** Vérifie que hashToken produit un SHA-256 correct. */
     #[Test]
     public function hashTokenProducesSha256(): void
     {
@@ -98,6 +107,7 @@ class TokenServiceTest extends TestCase
         $this->assertSame(hash('sha256', $token), $hash);
     }
 
+    /** Vérifie que verifyToken retourne true pour un token valide. */
     #[Test]
     public function verifyTokenReturnsTrueForValidToken(): void
     {
@@ -108,6 +118,7 @@ class TokenServiceTest extends TestCase
         );
     }
 
+    /** Vérifie que verifyToken retourne false pour un mauvais token. */
     #[Test]
     public function verifyTokenReturnsFalseForInvalidToken(): void
     {
@@ -118,6 +129,7 @@ class TokenServiceTest extends TestCase
         );
     }
 
+    /** Vérifie que verifyToken retourne false pour un hash altéré. */
     #[Test]
     public function verifyTokenReturnsFalseForTamperedHash(): void
     {

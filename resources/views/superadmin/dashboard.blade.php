@@ -8,7 +8,11 @@
     <div class="max-w-7xl mx-auto">
         <div class="sticky top-0 z-40 -mx-4 md:-mx-8 px-4 md:px-8 py-3 sm:py-4 mb-4 bg-gray-50/95 dark:bg-slate-900/95 backdrop-blur-sm">
             <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 sm:gap-4">
-                <div>
+                <div class="flex items-center gap-4">
+                    <div class="logo-icon flex items-center justify-center w-12 h-12 rounded-xl bg-linear-to-br from-amber-500/0 to-orange-600 shrink-0" style="--accent-rgb: 217, 119, 6">
+                        <x-icon.chart-bar class="w-6 h-6 text-white" />
+                    </div>
+                    <div>
                     <h1 class="text-xl sm:text-3xl font-bold text-gray-900 dark:text-white inline-flex items-center gap-2">
                         {{ __('messages.superadmin_dashboard_title') }}
                         <svg id="pollRing" class="shrink-0 -rotate-90" width="24" height="24" viewBox="0 0 28 28">
@@ -17,6 +21,7 @@
                         </svg>
                     </h1>
                     <p class="mt-0.5 sm:mt-1 text-sm sm:text-base text-gray-600 dark:text-slate-400">{{ __('messages.superadmin_dashboard_subtitle') }}</p>
+                    </div>
                 </div>
                 <div class="flex items-center gap-4">
                     <form method="GET" class="flex items-center gap-2" x-data>
@@ -177,12 +182,18 @@
                     'how-it-works' => __('messages.how_it_works_title'),
                     'use-cases' => __('messages.use_cases_title'),
                     'legal' => __('messages.legal_title'),
+                    'faq' => __('messages.faq_title'),
                     'secrets.show' => __('messages.view_secret_title'),
                     'secrets.download' => __('messages.stat_page_download'),
                     'admin.index' => __('messages.stat_page_admin_login'),
                     'admin.dashboard' => __('messages.stat_page_admin_dashboard'),
                     'superadmin.index' => __('messages.stat_page_superadmin_login'),
                     'superadmin.dashboard' => __('messages.stat_page_superadmin_dashboard'),
+                    'admin.verify' => __('messages.stat_page_admin_verify'),
+                    'admin.accessSent' => __('messages.stat_page_admin_access_sent'),
+                    'superadmin.verify' => __('messages.stat_page_superadmin_verify'),
+                    'superadmin.accessSent' => __('messages.stat_page_superadmin_access_sent'),
+                    'page.show' => __('messages.stat_page_content'),
                     // Legacy underscore variants
                     'admin' => __('messages.stat_page_admin_login'),
                     'admin_dashboard' => __('messages.stat_page_admin_dashboard'),
@@ -195,6 +206,7 @@
                     'how-it-works' => 'messages.how_it_works_title',
                     'use-cases' => 'messages.use_cases_title',
                     'legal' => 'messages.legal_title',
+                    'faq' => 'messages.faq_title',
                 ];
                 foreach (\App\Support\LocaleConfig::SUPPORTED_LOCALES as $loc) {
                     foreach ($slugTitleKeys as $routeName => $titleKey) {
@@ -332,6 +344,66 @@
                 </div>
             </x-card>
 
+            {{-- By device --}}
+            <x-card class="p-6">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">{{ __('messages.stat_by_device') }}</h3>
+                <div id="pollByDevice">
+                @if(count($deviceStats) > 0)
+                    @php
+                        $totalDevices = max(1, array_sum($deviceStats));
+                        $deviceIcons = ['desktop' => '🖥️', 'mobile' => '📱', 'tablet' => '📟'];
+                        $deviceLabels = ['desktop' => __('messages.stat_device_desktop'), 'mobile' => __('messages.stat_device_mobile'), 'tablet' => __('messages.stat_device_tablet')];
+                    @endphp
+                    <div class="space-y-3">
+                        @foreach($deviceStats as $device => $count)
+                            @php $pct = ($count / $totalDevices) * 100; @endphp
+                            <div>
+                                <div class="flex items-center justify-between text-sm mb-1">
+                                    <span class="text-gray-700 dark:text-slate-300 font-medium">{{ $deviceIcons[$device] ?? '❓' }} {{ $deviceLabels[$device] ?? $device }}</span>
+                                    <span class="text-gray-900 dark:text-white font-medium">{{ number_format($count) }} <span class="text-gray-400 dark:text-slate-500 text-xs">({{ number_format($pct, 1) }}%)</span></span>
+                                </div>
+                                <div class="w-full h-2 bg-gray-200 dark:bg-slate-700 rounded-full overflow-hidden">
+                                    <div class="h-full bg-indigo-500 rounded-full" style="width: {{ min($pct, 100) }}%"></div>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                @else
+                    <p class="text-sm text-gray-500 dark:text-slate-500">{{ __('messages.stat_no_data') }}</p>
+                @endif
+                </div>
+            </x-card>
+
+            {{-- Bots --}}
+            <x-card class="p-6">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">{{ __('messages.stat_by_bot') }}</h3>
+                <div id="pollByBot">
+                @if(count($botStats) > 0)
+                    <div class="space-y-2">
+                        @php
+                            $maxBotCount = max(1, max($botStats));
+                        @endphp
+                        @foreach(array_slice($botStats, 0, 20, true) as $botName => $count)
+                            @php
+                                $pct = ($count / $maxBotCount) * 100;
+                            @endphp
+                            <div class="flex items-center justify-between text-sm">
+                                <span class="text-gray-700 dark:text-slate-300 font-medium">{{ $botName }}</span>
+                                <div class="flex items-center gap-2">
+                                    <div class="w-20 h-1.5 bg-gray-200 dark:bg-slate-700 rounded-full overflow-hidden">
+                                        <div class="h-full bg-sky-500 rounded-full" style="width: {{ min($pct, 100) }}%"></div>
+                                    </div>
+                                    <span class="text-gray-900 dark:text-white font-medium w-10 text-right">{{ number_format($count) }}</span>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                @else
+                    <p class="text-sm text-gray-500 dark:text-slate-500">{{ __('messages.stat_no_data') }}</p>
+                @endif
+                </div>
+            </x-card>
+
             {{-- Referrers --}}
             <x-card class="p-6">
                 <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">{{ __('messages.stat_by_referrer') }}</h3>
@@ -382,6 +454,8 @@
         creatorConcentration: @json($creatorConcentration),
         systemHealth: @json($systemHealth),
         referrers: @json($referrers),
+        botStats: @json($botStats),
+        deviceStats: @json($deviceStats),
         pageviews: @json($pageviews),
         pageTitleMap: @json($pageTitleMap),
         localeMap: @json(\App\Support\LocaleConfig::FLAGS),

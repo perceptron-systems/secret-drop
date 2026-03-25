@@ -21,6 +21,7 @@ class DownloadSecurityTest extends TestCase
         $this->storage = app(SecretStorageService::class);
     }
 
+    /** Vérifie le Content-Type application/octet-stream du téléchargement. */
     public function testDownloadHasCorrectContentType(): void
     {
         $secret = $this->createFileSecret();
@@ -32,6 +33,7 @@ class DownloadSecurityTest extends TestCase
         $this->cleanup($secret);
     }
 
+    /** Vérifie la présence du header X-Content-Type-Options: nosniff. */
     public function testDownloadHasNoSniffHeader(): void
     {
         $secret = $this->createFileSecret();
@@ -43,6 +45,7 @@ class DownloadSecurityTest extends TestCase
         $this->cleanup($secret);
     }
 
+    /** Vérifie le Content-Disposition: attachment. */
     public function testDownloadHasAttachmentDisposition(): void
     {
         $secret = $this->createFileSecret();
@@ -55,6 +58,7 @@ class DownloadSecurityTest extends TestCase
         $this->cleanup($secret);
     }
 
+    /** Vérifie les headers no-cache/no-store. */
     public function testDownloadHasNoCacheHeaders(): void
     {
         $secret = $this->createFileSecret();
@@ -68,6 +72,7 @@ class DownloadSecurityTest extends TestCase
         $this->cleanup($secret);
     }
 
+    /** Vérifie le header Pragma: no-cache. */
     public function testDownloadHasPragmaNoCacheHeader(): void
     {
         $secret = $this->createFileSecret();
@@ -79,6 +84,7 @@ class DownloadSecurityTest extends TestCase
         $this->cleanup($secret);
     }
 
+    /** Vérifie le header X-Download-Options: noopen. */
     public function testDownloadHasNoOpenHeader(): void
     {
         $secret = $this->createFileSecret();
@@ -90,6 +96,7 @@ class DownloadSecurityTest extends TestCase
         $this->cleanup($secret);
     }
 
+    /** Vérifie que le nom de fichier original n'est pas exposé. */
     public function testDownloadDoesNotExposeOriginalFilename(): void
     {
         $secret = $this->createFileSecret('sensitive_document.pdf');
@@ -104,6 +111,7 @@ class DownloadSecurityTest extends TestCase
         $this->cleanup($secret);
     }
 
+    /** Vérifie que le download retourne 404 pour un secret texte. */
     public function testDownloadReturns404ForTextSecret(): void
     {
         $secret = Secret::create([
@@ -122,6 +130,7 @@ class DownloadSecurityTest extends TestCase
         $secret->delete();
     }
 
+    /** Vérifie que le download retourne 410 pour un secret expiré. */
     public function testDownloadReturns410ForExpiredSecret(): void
     {
         $token = $this->tokenService->generatePublicToken();
@@ -144,6 +153,7 @@ class DownloadSecurityTest extends TestCase
         $this->cleanup($secret);
     }
 
+    /** Vérifie que le download retourne 410 pour un secret révoqué. */
     public function testDownloadReturns410ForRevokedSecret(): void
     {
         $token = $this->tokenService->generatePublicToken();
@@ -167,6 +177,7 @@ class DownloadSecurityTest extends TestCase
         $this->cleanup($secret);
     }
 
+    /** Vérifie que le download retourne 404 pour un fichier manquant. */
     public function testDownloadReturns404ForMissingFile(): void
     {
         $secret = Secret::create([

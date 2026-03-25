@@ -7,6 +7,7 @@ use Tests\TestCase;
 
 class CreateSecretTest extends TestCase
 {
+    /** Vérifie que la racine redirige vers la page d'accueil localisée. */
     public function testRootRedirectsToLocalizedHome(): void
     {
         $response = $this->get('/');
@@ -14,6 +15,7 @@ class CreateSecretTest extends TestCase
         $response->assertRedirect();
     }
 
+    /** Vérifie que la page de création retourne un 200. */
     public function testCreatePageReturnsSuccessfulResponse(): void
     {
         $response = $this->get('/fr');
@@ -22,6 +24,7 @@ class CreateSecretTest extends TestCase
         $response->assertSee('Secret Drop');
     }
 
+    /** Vérifie la création d'un secret texte avec les bons paramètres. */
     public function testCanCreateTextSecret(): void
     {
         $response = $this->postJson('/api/secrets', [
@@ -53,6 +56,7 @@ class CreateSecretTest extends TestCase
         $secret->delete();
     }
 
+    /** Vérifie la création d'un secret avec toutes les options (salt, kdf, email). */
     public function testCanCreateSecretWithAllOptions(): void
     {
         $response = $this->postJson('/api/secrets', [
@@ -80,6 +84,7 @@ class CreateSecretTest extends TestCase
         $secret->delete();
     }
 
+    /** Vérifie que le ciphertext est requis pour un secret texte. */
     public function testRequiresCiphertextForTextSecrets(): void
     {
         $response = $this->postJson('/api/secrets', [
@@ -96,6 +101,7 @@ class CreateSecretTest extends TestCase
             ->assertJsonValidationErrors(['ciphertext']);
     }
 
+    /** Vérifie que cipher_meta est requis. */
     public function testRequiresCipherMeta(): void
     {
         $response = $this->postJson('/api/secrets', [
@@ -108,6 +114,7 @@ class CreateSecretTest extends TestCase
             ->assertJsonValidationErrors(['cipher_meta']);
     }
 
+    /** Vérifie le rejet d'une expiration invalide. */
     public function testRejectsInvalidExpiration(): void
     {
         $response = $this->postJson('/api/secrets', [
@@ -125,6 +132,7 @@ class CreateSecretTest extends TestCase
             ->assertJsonValidationErrors(['expiration']);
     }
 
+    /** Vérifie le rejet d'un email invalide. */
     public function testRejectsInvalidEmail(): void
     {
         $response = $this->postJson('/api/secrets', [
@@ -143,6 +151,7 @@ class CreateSecretTest extends TestCase
             ->assertJsonValidationErrors(['creator_email']);
     }
 
+    /** Vérifie que max_views doit être dans la plage autorisée. */
     public function testMaxViewsMustBeWithinRange(): void
     {
         $response = $this->postJson('/api/secrets', [

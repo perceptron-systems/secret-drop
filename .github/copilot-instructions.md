@@ -6,7 +6,6 @@ This file provides guidance to GitHub Copilot when working with code in this rep
 
 **Secret-drop** is a zero-knowledge secret/file sharing application. The server NEVER sees plaintext secrets.
 
-See `docs/spec.md` for the full specification.
 
 ### Core Principles (non-negotiable)
 

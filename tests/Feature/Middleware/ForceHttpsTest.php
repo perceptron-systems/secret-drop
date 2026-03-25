@@ -17,6 +17,7 @@ class ForceHttpsTest extends TestCase
         $this->middleware = new ForceHttps();
     }
 
+    /** Vérifie que le middleware ne redirige pas en environnement local. */
     public function testDoesNotRedirectInLocalEnvironment(): void
     {
         $this->app->detectEnvironment(fn () => 'local');
@@ -29,6 +30,7 @@ class ForceHttpsTest extends TestCase
         $this->assertEquals('OK', $response->getContent());
     }
 
+    /** Vérifie la redirection HTTP vers HTTPS en production. */
     public function testRedirectsHttpToHttpsInProduction(): void
     {
         $this->app->detectEnvironment(fn () => 'production');
@@ -42,6 +44,7 @@ class ForceHttpsTest extends TestCase
         $this->assertStringStartsWith('https://', $response->headers->get('Location'));
     }
 
+    /** Vérifie que HTTPS ne déclenche pas de redirection en production. */
     public function testDoesNotRedirectHttpsInProduction(): void
     {
         $this->app->detectEnvironment(fn () => 'production');
@@ -55,6 +58,7 @@ class ForceHttpsTest extends TestCase
         $this->assertEquals('OK', $response->getContent());
     }
 
+    /** Vérifie que le schéma HTTPS est forcé pour la génération d'URL. */
     public function testForcesHttpsSchemeInProduction(): void
     {
         $this->app->detectEnvironment(fn () => 'production');
@@ -68,6 +72,7 @@ class ForceHttpsTest extends TestCase
         $this->assertEquals('https', parse_url(URL::to('/'), PHP_URL_SCHEME));
     }
 
+    /** Vérifie que l'URI et les query params sont préservés lors de la redirection. */
     public function testPreservesRequestUriOnRedirect(): void
     {
         $this->app->detectEnvironment(fn () => 'production');

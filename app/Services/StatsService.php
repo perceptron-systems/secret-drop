@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Secret;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -196,7 +197,7 @@ class StatsService
 
     public function getActiveSecretsCount(): int
     {
-        return DB::table('secrets')
+        return Secret::query()
             ->whereNull('revoked_at')
             ->where(function ($q) {
                 $q->whereNull('expire_at')
@@ -211,7 +212,7 @@ class StatsService
 
     public function getReadRate(?string $startDate = null): ?float
     {
-        $query = DB::table('secrets');
+        $query = Secret::query();
 
         if ($startDate) {
             $query->where('created_at', '>=', $startDate);
@@ -233,7 +234,7 @@ class StatsService
      */
     public function getCreatorConcentration(): array
     {
-        $counts = DB::table('secrets')
+        $counts = Secret::query()
             ->whereNotNull('creator_email_hash')
             ->select('creator_email_hash', DB::raw('COUNT(*) as total'))
             ->groupBy('creator_email_hash')
@@ -269,7 +270,7 @@ class StatsService
 
         $totalFiles = count(Storage::disk('secrets')->allFiles());
 
-        $pendingCleanup = DB::table('secrets')
+        $pendingCleanup = Secret::query()
             ->where(function ($q) {
                 $q->where(function ($q2) {
                     $q2->whereNotNull('revoked_at');
@@ -404,6 +405,40 @@ class StatsService
         uasort($byDomain, fn ($a, $b) => $b['human'] <=> $a['human']);
 
         return $byDomain;
+    }
+
+    /**
+     * @return array<string, int>
+     */
+    public function getBotStats(?string $startDate = null): array
+    {
+        $query = DB::table('stats_bots')
+            ->select('bot_name', DB::raw('SUM(count) as total'))
+            ->groupBy('bot_name')
+            ->orderByDesc('total');
+
+        if ($startDate) {
+            $query->where('date', '>=', $startDate);
+        }
+
+        return $query->pluck('total', 'bot_name')->map(fn ($v) => (int) $v)->toArray();
+    }
+
+    /**
+     * @return array<string, int>
+     */
+    public function getDeviceStats(?string $startDate = null): array
+    {
+        $query = DB::table('stats_devices')
+            ->select('device_type', DB::raw('SUM(count) as total'))
+            ->groupBy('device_type')
+            ->orderByDesc('total');
+
+        if ($startDate) {
+            $query->where('date', '>=', $startDate);
+        }
+
+        return $query->pluck('total', 'device_type')->map(fn ($v) => (int) $v)->toArray();
     }
 
     /**

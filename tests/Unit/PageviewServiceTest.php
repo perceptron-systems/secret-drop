@@ -15,6 +15,7 @@ class PageviewServiceTest extends TestCase
         $this->service = new PageviewService();
     }
 
+    /** Vérifie la détection des user-agents de bots. */
     public function testDetectsBotUserAgents(): void
     {
         $this->assertTrue($this->service->isBot('Googlebot/2.1'));
@@ -24,6 +25,7 @@ class PageviewServiceTest extends TestCase
         $this->assertTrue($this->service->isBot(''));
     }
 
+    /** Vérifie la détection des user-agents humains. */
     public function testDetectsHumanUserAgents(): void
     {
         $this->assertFalse($this->service->isBot('Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120'));
@@ -31,6 +33,7 @@ class PageviewServiceTest extends TestCase
         $this->assertFalse($this->service->isBot('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) Firefox/120'));
     }
 
+    /** Vérifie que track insère une vue de page. */
     public function testTrackInsertsPageview(): void
     {
         $this->service->track('home', 'Mozilla/5.0 Chrome/120', 'fr-FR', -60);
@@ -42,6 +45,7 @@ class PageviewServiceTest extends TestCase
         ]);
     }
 
+    /** Vérifie que track incrémente une vue existante. */
     public function testTrackIncrementsExistingPageview(): void
     {
         $this->service->track('home', 'Mozilla/5.0 Chrome/120', 'fr-FR', -60);
@@ -55,6 +59,7 @@ class PageviewServiceTest extends TestCase
         ]);
     }
 
+    /** Vérifie que les bots ne créent pas d'entrée local_hour. */
     public function testTrackBotDoesNotCreateLocalHour(): void
     {
         $this->service->track('home', 'Googlebot/2.1', 'en-US', 0);
@@ -64,6 +69,7 @@ class PageviewServiceTest extends TestCase
         ]);
     }
 
+    /** Vérifie que les humains créent une entrée local_hour. */
     public function testTrackHumanCreatesLocalHour(): void
     {
         $this->service->track('home', 'Mozilla/5.0 Chrome/120', 'en-US', 300);
@@ -73,6 +79,7 @@ class PageviewServiceTest extends TestCase
         ]);
     }
 
+    /** Vérifie la détection du pays depuis Accept-Language. */
     public function testDetectsCountryFromAcceptLanguage(): void
     {
         $this->service->track('home', 'Mozilla/5.0 Chrome/120', 'de-DE,de;q=0.9', 0);
@@ -83,6 +90,7 @@ class PageviewServiceTest extends TestCase
         ]);
     }
 
+    /** Vérifie le fallback sur le code langue sans région. */
     public function testFallsBackToLanguageCodeWhenNoRegion(): void
     {
         $this->service->track('home', 'Mozilla/5.0 Chrome/120', 'ja', 0);
@@ -93,6 +101,7 @@ class PageviewServiceTest extends TestCase
         ]);
     }
 
+    /** Vérifie le fallback sur XX sans Accept-Language. */
     public function testFallsBackToXxWhenNoAcceptLanguage(): void
     {
         $this->service->track('home', 'Mozilla/5.0 Chrome/120', '', 0);

@@ -28,6 +28,7 @@ class SecretModelTest extends TestCase
         ], $attributes));
     }
 
+    /** Vérifie que isExpired retourne true quand le secret est expiré. */
     public function testIsExpiredReturnsTrueWhenExpired(): void
     {
         $secret = $this->createSecret(['expire_at' => now()->subHour()]);
@@ -37,6 +38,7 @@ class SecretModelTest extends TestCase
         $secret->delete();
     }
 
+    /** Vérifie que isExpired retourne false quand le secret n'est pas expiré. */
     public function testIsExpiredReturnsFalseWhenNotExpired(): void
     {
         $secret = $this->createSecret(['expire_at' => now()->addDay()]);
@@ -46,6 +48,7 @@ class SecretModelTest extends TestCase
         $secret->delete();
     }
 
+    /** Vérifie que isRevoked retourne true quand le secret est révoqué. */
     public function testIsRevokedReturnsTrueWhenRevoked(): void
     {
         $secret = $this->createSecret(['revoked_at' => now()]);
@@ -55,6 +58,7 @@ class SecretModelTest extends TestCase
         $secret->delete();
     }
 
+    /** Vérifie que isRevoked retourne false quand le secret n'est pas révoqué. */
     public function testIsRevokedReturnsFalseWhenNotRevoked(): void
     {
         $secret = $this->createSecret();
@@ -64,6 +68,7 @@ class SecretModelTest extends TestCase
         $secret->delete();
     }
 
+    /** Vérifie que hasReachedMaxViews retourne true quand la limite est atteinte. */
     public function testHasReachedMaxViewsReturnsTrueWhenReached(): void
     {
         $secret = $this->createSecret([
@@ -76,6 +81,7 @@ class SecretModelTest extends TestCase
         $secret->delete();
     }
 
+    /** Vérifie que hasReachedMaxViews retourne true quand la limite est dépassée. */
     public function testHasReachedMaxViewsReturnsTrueWhenExceeded(): void
     {
         $secret = $this->createSecret([
@@ -88,6 +94,7 @@ class SecretModelTest extends TestCase
         $secret->delete();
     }
 
+    /** Vérifie que hasReachedMaxViews retourne false quand sous la limite. */
     public function testHasReachedMaxViewsReturnsFalseWhenUnderLimit(): void
     {
         $secret = $this->createSecret([
@@ -100,6 +107,7 @@ class SecretModelTest extends TestCase
         $secret->delete();
     }
 
+    /** Vérifie que hasReachedMaxViews retourne false sans limite de vues. */
     public function testHasReachedMaxViewsReturnsFalseWhenNoLimit(): void
     {
         $secret = $this->createSecret([
@@ -112,6 +120,7 @@ class SecretModelTest extends TestCase
         $secret->delete();
     }
 
+    /** Vérifie que isAccessible retourne true pour un secret valide. */
     public function testIsAccessibleReturnsTrueForValidSecret(): void
     {
         $secret = $this->createSecret();
@@ -121,6 +130,7 @@ class SecretModelTest extends TestCase
         $secret->delete();
     }
 
+    /** Vérifie que isAccessible retourne false quand le secret est expiré. */
     public function testIsAccessibleReturnsFalseWhenExpired(): void
     {
         $secret = $this->createSecret(['expire_at' => now()->subHour()]);
@@ -130,6 +140,7 @@ class SecretModelTest extends TestCase
         $secret->delete();
     }
 
+    /** Vérifie que isAccessible retourne false quand le secret est révoqué. */
     public function testIsAccessibleReturnsFalseWhenRevoked(): void
     {
         $secret = $this->createSecret(['revoked_at' => now()]);
@@ -139,6 +150,7 @@ class SecretModelTest extends TestCase
         $secret->delete();
     }
 
+    /** Vérifie que isAccessible retourne false quand le max de vues est atteint. */
     public function testIsAccessibleReturnsFalseWhenMaxViewsReached(): void
     {
         $secret = $this->createSecret([
@@ -151,6 +163,7 @@ class SecretModelTest extends TestCase
         $secret->delete();
     }
 
+    /** Vérifie que isAccessible retourne true quand sous la limite de vues. */
     public function testIsAccessibleReturnsTrueWhenUnderMaxViews(): void
     {
         $secret = $this->createSecret([
@@ -163,6 +176,7 @@ class SecretModelTest extends TestCase
         $secret->delete();
     }
 
+    /** Vérifie que incrementReadCount incrémente le compteur. */
     public function testIncrementReadCountIncrementsCounter(): void
     {
         $secret = $this->createSecret(['read_count' => 0]);
@@ -180,6 +194,7 @@ class SecretModelTest extends TestCase
         $secret->delete();
     }
 
+    /** Vérifie que la première lecture définit first_read_at. */
     public function testIncrementReadCountSetsFirstReadAt(): void
     {
         $secret = $this->createSecret(['read_count' => 0]);
@@ -194,6 +209,7 @@ class SecretModelTest extends TestCase
         $secret->delete();
     }
 
+    /** Vérifie que first_read_at n'est pas écrasé lors des lectures suivantes. */
     public function testIncrementReadCountDoesNotOverwriteFirstReadAt(): void
     {
         $secret = $this->createSecret(['read_count' => 0]);
@@ -203,7 +219,6 @@ class SecretModelTest extends TestCase
 
         $firstReadAt = $secret->first_read_at;
 
-        // Wait a tiny bit to ensure time difference
         usleep(10000);
 
         $secret->incrementReadCount();
@@ -214,6 +229,7 @@ class SecretModelTest extends TestCase
         $secret->delete();
     }
 
+    /** Vérifie que cipher_meta est casté en tableau. */
     public function testCipherMetaIsCastToArray(): void
     {
         $secret = $this->createSecret([
@@ -226,6 +242,7 @@ class SecretModelTest extends TestCase
         $secret->delete();
     }
 
+    /** Vérifie que expire_at est casté en datetime. */
     public function testExpireAtIsCastToDatetime(): void
     {
         $secret = $this->createSecret(['expire_at' => now()->addDays(7)]);
@@ -235,6 +252,7 @@ class SecretModelTest extends TestCase
         $secret->delete();
     }
 
+    /** Vérifie que revoked_at est casté en datetime. */
     public function testRevokedAtIsCastToDatetime(): void
     {
         $secret = $this->createSecret(['revoked_at' => now()]);
@@ -244,6 +262,7 @@ class SecretModelTest extends TestCase
         $secret->delete();
     }
 
+    /** Vérifie que first_read_at est casté en datetime. */
     public function testFirstReadAtIsCastToDatetime(): void
     {
         $secret = $this->createSecret();
@@ -255,6 +274,7 @@ class SecretModelTest extends TestCase
         $secret->delete();
     }
 
+    /** Vérifie que shouldBeDestroyed retourne true quand le max de vues est atteint. */
     public function testShouldBeDestroyedReturnsTrueWhenMaxViewsReached(): void
     {
         $secret = $this->createSecret([
@@ -267,6 +287,7 @@ class SecretModelTest extends TestCase
         $secret->delete();
     }
 
+    /** Vérifie que shouldBeDestroyed retourne false quand sous la limite. */
     public function testShouldBeDestroyedReturnsFalseWhenUnderLimit(): void
     {
         $secret = $this->createSecret([
@@ -279,6 +300,7 @@ class SecretModelTest extends TestCase
         $secret->delete();
     }
 
+    /** Vérifie que shouldBeDestroyed retourne false sans limite de vues. */
     public function testShouldBeDestroyedReturnsFalseForUnlimitedViews(): void
     {
         $secret = $this->createSecret([
@@ -291,6 +313,7 @@ class SecretModelTest extends TestCase
         $secret->delete();
     }
 
+    /** Vérifie que destroyContent efface le ciphertext d'un secret texte. */
     public function testDestroyContentClearsCiphertextForTextType(): void
     {
         $secret = $this->createSecret([
@@ -308,6 +331,7 @@ class SecretModelTest extends TestCase
         $secret->delete();
     }
 
+    /** Vérifie que destroyContent efface le chemin du fichier. */
     public function testDestroyContentClearsFileMetadata(): void
     {
         $secret = $this->createSecret([
@@ -324,6 +348,7 @@ class SecretModelTest extends TestCase
         $secret->delete();
     }
 
+    /** Vérifie que hasCreatorEmail retourne true quand l'email est défini. */
     public function testHasCreatorEmailReturnsTrueWhenSet(): void
     {
         $secret = $this->createSecret([
@@ -335,6 +360,7 @@ class SecretModelTest extends TestCase
         $secret->delete();
     }
 
+    /** Vérifie que hasCreatorEmail retourne false quand l'email n'est pas défini. */
     public function testHasCreatorEmailReturnsFalseWhenNotSet(): void
     {
         $secret = $this->createSecret(['creator_email_hash' => null]);
@@ -344,6 +370,7 @@ class SecretModelTest extends TestCase
         $secret->delete();
     }
 
+    /** Vérifie que verifyCreatorEmail fonctionne (insensible à la casse). */
     public function testVerifyCreatorEmailReturnsTrueForCorrectEmail(): void
     {
         $email = 'test@example.com';
@@ -358,6 +385,7 @@ class SecretModelTest extends TestCase
         $secret->delete();
     }
 
+    /** Vérifie que verifyCreatorEmail retourne false pour un mauvais email. */
     public function testVerifyCreatorEmailReturnsFalseForWrongEmail(): void
     {
         $secret = $this->createSecret([
@@ -369,6 +397,7 @@ class SecretModelTest extends TestCase
         $secret->delete();
     }
 
+    /** Vérifie que verifyCreatorEmail retourne false sans email défini. */
     public function testVerifyCreatorEmailReturnsFalseWhenNoEmailSet(): void
     {
         $secret = $this->createSecret(['creator_email_hash' => null]);
@@ -378,6 +407,7 @@ class SecretModelTest extends TestCase
         $secret->delete();
     }
 
+    /** Vérifie que last_read_at est mis à jour à chaque lecture. */
     public function testLastReadAtUpdatesOnEachRead(): void
     {
         $secret = $this->createSecret(['read_count' => 0]);

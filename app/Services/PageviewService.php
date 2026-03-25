@@ -17,6 +17,53 @@ class PageviewService
         'ahrefs', 'mj12bot', 'dotbot', 'yandex', 'baidu',
     ];
 
+    /** @var array<string, string> */
+    private const BOT_NAMES = [
+        'googlebot' => 'Googlebot',
+        'google-inspectiontool' => 'Google Inspection',
+        'adsbot-google' => 'Google Ads',
+        'mediapartners-google' => 'Google AdSense',
+        'bingbot' => 'Bingbot',
+        'msnbot' => 'Bingbot',
+        'slurp' => 'Yahoo',
+        'duckduckbot' => 'DuckDuckGo',
+        'baiduspider' => 'Baidu',
+        'yandexbot' => 'Yandex',
+        'yandex.com/bots' => 'Yandex',
+        'facebot' => 'Facebook',
+        'facebookexternalhit' => 'Facebook',
+        'twitterbot' => 'Twitter',
+        'linkedinbot' => 'LinkedIn',
+        'telegrambot' => 'Telegram',
+        'whatsapp' => 'WhatsApp',
+        'discordbot' => 'Discord',
+        'slackbot' => 'Slack',
+        'applebot' => 'Apple',
+        'semrushbot' => 'SEMrush',
+        'ahrefsbot' => 'Ahrefs',
+        'mj12bot' => 'Majestic',
+        'dotbot' => 'Moz',
+        'petalbot' => 'Huawei',
+        'bytespider' => 'ByteDance',
+        'gptbot' => 'OpenAI',
+        'claudebot' => 'Anthropic',
+        'claude-web' => 'Anthropic',
+        'chatgpt-user' => 'OpenAI',
+        'perplexitybot' => 'Perplexity',
+        'lighthouse' => 'Lighthouse',
+        'pagespeed' => 'PageSpeed',
+        'headlesschrome' => 'HeadlessChrome',
+        'curl' => 'curl',
+        'wget' => 'wget',
+        'python-requests' => 'Python',
+        'python-urllib' => 'Python',
+        'scrapy' => 'Scrapy',
+        'go-http-client' => 'Go',
+        'node-fetch' => 'Node.js',
+        'axios' => 'Axios',
+        'postman' => 'Postman',
+    ];
+
     public function track(string $page, string $userAgent, string $acceptLanguage, int $tzOffset = 0, string $locale = '', string $referrer = ''): void
     {
         $now = now();
@@ -38,7 +85,35 @@ class PageviewService
             ['count' => DB::raw('count + 1'), 'updated_at' => $now]
         );
 
+        if ($isBot) {
+            $botName = $this->identifyBot($userAgent);
+
+            DB::table('stats_bots')->upsert(
+                [
+                    'date' => $now->toDateString(),
+                    'bot_name' => $botName,
+                    'count' => 1,
+                    'created_at' => $now,
+                    'updated_at' => $now,
+                ],
+                ['date', 'bot_name'],
+                ['count' => DB::raw('count + 1'), 'updated_at' => $now]
+            );
+        }
+
         if (! $isBot) {
+            DB::table('stats_devices')->upsert(
+                [
+                    'date' => $now->toDateString(),
+                    'device_type' => $this->detectDevice($userAgent),
+                    'count' => 1,
+                    'created_at' => $now,
+                    'updated_at' => $now,
+                ],
+                ['date', 'device_type'],
+                ['count' => DB::raw('count + 1'), 'updated_at' => $now]
+            );
+
             $localHour = $this->getLocalHour($now, $tzOffset);
 
             DB::table('stats_local_hours')->upsert(
@@ -87,6 +162,34 @@ class PageviewService
         }
 
         return false;
+    }
+
+    public function detectDevice(string $userAgent): string
+    {
+        $ua = strtolower($userAgent);
+
+        if (str_contains($ua, 'tablet') || str_contains($ua, 'ipad')) {
+            return 'tablet';
+        }
+
+        if (str_contains($ua, 'mobile') || str_contains($ua, 'android') || str_contains($ua, 'iphone')) {
+            return 'mobile';
+        }
+
+        return 'desktop';
+    }
+
+    public function identifyBot(string $userAgent): string
+    {
+        $ua = strtolower($userAgent);
+
+        foreach (self::BOT_NAMES as $pattern => $name) {
+            if (str_contains($ua, $pattern)) {
+                return $name;
+            }
+        }
+
+        return 'Other';
     }
 
     private function detectCountry(string $acceptLanguage): string

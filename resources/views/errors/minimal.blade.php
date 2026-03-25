@@ -34,13 +34,14 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            width: 4rem;
-            height: 4rem;
+            width: 3.5rem;
+            height: 3.5rem;
             border-radius: 1rem;
-            background: rgba(239, 68, 68, 0.1);
+            background: linear-gradient(135deg, #ef4444, #e11d48);
+            box-shadow: 0 10px 15px -3px rgba(239, 68, 68, 0.25);
             margin-bottom: 1.5rem;
         }
-        .icon svg { width: 2rem; height: 2rem; color: #ef4444; }
+        .icon svg { width: 1.75rem; height: 1.75rem; color: #fff; }
         .code {
             font-size: 4.5rem;
             font-weight: 700;
@@ -79,17 +80,13 @@
 <body>
     <div class="card">
         <div class="icon" aria-hidden="true">
-            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
+            <x-icon.exclamation-circle />
         </div>
         <p class="code">{{ $code ?? '500' }}</p>
         <h1>{{ $title ?? __('messages.error_server_title') }}</h1>
         <p class="message">{{ $message ?? __('messages.error_server_message') }}</p>
         <a href="/" class="btn">
-            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-            </svg>
+            <x-icon.home />
             {{ __('messages.error_back_home') }}
         </a>
     </div>

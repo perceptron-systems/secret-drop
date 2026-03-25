@@ -40,7 +40,7 @@ class LocaleConfig
     ];
 
     /** @var array<int, string> */
-    private const TRANSLATABLE_PAGES = ['how-it-works', 'use-cases', 'legal'];
+    private const TRANSLATABLE_PAGES = ['how-it-works', 'use-cases', 'legal', 'faq'];
 
     public static function isSupported(string $locale): bool
     {

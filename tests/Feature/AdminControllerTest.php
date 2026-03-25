@@ -11,6 +11,7 @@ use Tests\TestCase;
 
 class AdminControllerTest extends TestCase
 {
+    /** Vérifie que la page d'index admin se charge correctement. */
     public function testAdminIndexPageLoads(): void
     {
         $response = $this->get('/fr/admin');
@@ -19,6 +20,7 @@ class AdminControllerTest extends TestCase
         $response->assertViewIs('admin.index');
     }
 
+    /** Vérifie que la page de confirmation s'affiche même pour un email sans secrets. */
     public function testRequestAccessShowsConfirmationEvenForNonExistentEmail(): void
     {
         Mail::fake();
@@ -27,11 +29,11 @@ class AdminControllerTest extends TestCase
             'email' => 'nonexistent@example.com',
         ]);
 
-        $response->assertStatus(200);
-        $response->assertViewIs('admin.access-sent');
+        $response->assertRedirect(route('admin.accessSent'));
         Mail::assertNothingSent();
     }
 
+    /** Vérifie qu'un magic link est envoyé quand l'email a des secrets associés. */
     public function testRequestAccessSendsMagicLinkForExistingSecrets(): void
     {
         Mail::fake();
@@ -42,8 +44,7 @@ class AdminControllerTest extends TestCase
             'email' => 'test@example.com',
         ]);
 
-        $response->assertStatus(200);
-        $response->assertViewIs('admin.access-sent');
+        $response->assertRedirect(route('admin.accessSent'));
 
         Mail::assertSent(MagicLinkMail::class, function ($mail) {
             return $mail->hasTo('test@example.com');
@@ -54,6 +55,7 @@ class AdminControllerTest extends TestCase
         $secret->delete();
     }
 
+    /** Vérifie que le magic link expire dans un délai de 5 minutes. */
     public function testMagicLinkExpireIn5Minutes(): void
     {
         Mail::fake();
@@ -71,7 +73,8 @@ class AdminControllerTest extends TestCase
         $secret->delete();
     }
 
-    public function testVerifyValidMagicLinkRedirectsToDashboard(): void
+    /** Vérifie que GET verify affiche la page de confirmation sans consommer le token. */
+    public function testVerifyGetShowsConfirmationPage(): void
     {
         $secret = $this->createSecretWithEmail('test@example.com');
         $tokenService = app(TokenService::class);
@@ -85,12 +88,87 @@ class AdminControllerTest extends TestCase
 
         $response = $this->get("/fr/admin/verify/{$tokenData['token']}");
 
+        $response->assertStatus(200);
+        $response->assertViewIs('admin.verify-confirm');
+        $response->assertViewHas('token', $tokenData['token']);
+
+        $secret->delete();
+    }
+
+    /** Vérifie que GET verify ne marque pas le token comme utilisé (protection scanner email). */
+    public function testVerifyGetDoesNotConsumeToken(): void
+    {
+        $secret = $this->createSecretWithEmail('test@example.com');
+        $tokenService = app(TokenService::class);
+        $tokenData = $tokenService->generateMagicLinkToken();
+
+        MagicLink::create([
+            'email_hash' => MagicLink::hashEmail('test@example.com'),
+            'token_hash' => $tokenData['hash'],
+            'expire_at' => now()->addMinutes(5),
+        ]);
+
+        $this->get("/fr/admin/verify/{$tokenData['token']}");
+
+        $magicLink = MagicLink::findByToken($tokenData['token']);
+        $this->assertNull($magicLink->used_at);
+
+        $secret->delete();
+    }
+
+    /** Vérifie que POST verify consomme le token et redirige vers le dashboard. */
+    public function testVerifyPostRedirectsToDashboard(): void
+    {
+        $secret = $this->createSecretWithEmail('test@example.com');
+        $tokenService = app(TokenService::class);
+        $tokenData = $tokenService->generateMagicLinkToken();
+
+        MagicLink::create([
+            'email_hash' => MagicLink::hashEmail('test@example.com'),
+            'token_hash' => $tokenData['hash'],
+            'expire_at' => now()->addMinutes(5),
+        ]);
+
+        $response = $this->post("/fr/admin/verify/{$tokenData['token']}");
+
         $response->assertRedirect(route('admin.dashboard', ['locale' => 'fr']));
         $this->assertTrue(session()->has('admin_email_hash'));
 
         $secret->delete();
     }
 
+    /** Vérifie le flux complet : POST verify puis accès au dashboard avec session persistante. */
+    public function testVerifyPostThenDashboardFlowWorksEndToEnd(): void
+    {
+        $secret = $this->createSecretWithEmail('test@example.com');
+        $tokenService = app(TokenService::class);
+        $tokenData = $tokenService->generateMagicLinkToken();
+
+        MagicLink::create([
+            'email_hash' => MagicLink::hashEmail('test@example.com'),
+            'token_hash' => $tokenData['hash'],
+            'expire_at' => now()->addMinutes(5),
+        ]);
+
+        $this->post("/fr/admin/verify/{$tokenData['token']}");
+
+        $dashboard = $this->get('/fr/admin/dashboard');
+        $dashboard->assertStatus(200);
+        $dashboard->assertViewIs('admin.dashboard');
+
+        $secret->delete();
+    }
+
+    /** Vérifie qu'un token invalide affiche la page d'erreur (POST). */
+    public function testVerifyPostWithInvalidTokenShowsError(): void
+    {
+        $response = $this->post('/fr/admin/verify/invalid-token');
+
+        $response->assertStatus(200);
+        $response->assertViewIs('admin.invalid-link');
+    }
+
+    /** Vérifie qu'un magic link expiré affiche la page d'erreur. */
     public function testVerifyExpiredMagicLinkShowsInvalidPage(): void
     {
         $tokenService = app(TokenService::class);
@@ -108,6 +186,7 @@ class AdminControllerTest extends TestCase
         $response->assertViewIs('admin.invalid-link');
     }
 
+    /** Vérifie qu'un magic link déjà utilisé affiche la page d'erreur. */
     public function testVerifyUsedMagicLinkShowsInvalidPage(): void
     {
         $tokenService = app(TokenService::class);
@@ -126,6 +205,7 @@ class AdminControllerTest extends TestCase
         $response->assertViewIs('admin.invalid-link');
     }
 
+    /** Vérifie que le dashboard redirige vers le login sans authentification. */
     public function testDashboardRequiresAuthentication(): void
     {
         $response = $this->get('/fr/admin/dashboard');
@@ -133,6 +213,7 @@ class AdminControllerTest extends TestCase
         $response->assertRedirect(route('admin.index', ['locale' => 'fr']));
     }
 
+    /** Vérifie que le dashboard affiche les secrets de l'utilisateur authentifié. */
     public function testDashboardShowsSecretsForAuthenticatedUser(): void
     {
         $emailHash = MagicLink::hashEmail('test@example.com');
@@ -148,6 +229,7 @@ class AdminControllerTest extends TestCase
         $secret->delete();
     }
 
+    /** Vérifie que le logout détruit la session et redirige vers le login. */
     public function testLogoutClearsSession(): void
     {
         $emailHash = MagicLink::hashEmail('test@example.com');
@@ -159,6 +241,7 @@ class AdminControllerTest extends TestCase
         $this->assertFalse(session()->has('admin_email_hash'));
     }
 
+    /** Vérifie que la révocation nécessite une authentification. */
     public function testRevokeRequiresAuthentication(): void
     {
         $secret = $this->createSecretWithEmail('test@example.com');
@@ -170,6 +253,7 @@ class AdminControllerTest extends TestCase
         $secret->delete();
     }
 
+    /** Vérifie que la révocation d'un secret fonctionne correctement. */
     public function testRevokeSecretWorks(): void
     {
         $emailHash = MagicLink::hashEmail('test@example.com');
@@ -187,6 +271,7 @@ class AdminControllerTest extends TestCase
         $secret->delete();
     }
 
+    /** Vérifie que la prolongation nécessite une authentification. */
     public function testExtendRequiresAuthentication(): void
     {
         $secret = $this->createSecretWithEmail('test@example.com');
@@ -200,6 +285,7 @@ class AdminControllerTest extends TestCase
         $secret->delete();
     }
 
+    /** Vérifie que la prolongation d'un secret fonctionne correctement. */
     public function testExtendSecretWorks(): void
     {
         $emailHash = MagicLink::hashEmail('test@example.com');
@@ -220,6 +306,7 @@ class AdminControllerTest extends TestCase
         $secret->delete();
     }
 
+    /** Vérifie qu'un utilisateur ne peut pas révoquer les secrets d'un autre utilisateur. */
     public function testCannotAccessOtherUsersSecrets(): void
     {
         $emailHash = MagicLink::hashEmail('attacker@example.com');

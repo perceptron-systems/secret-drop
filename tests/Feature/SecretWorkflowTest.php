@@ -21,6 +21,7 @@ class SecretWorkflowTest extends TestCase
         $this->storage = app(SecretStorageService::class);
     }
 
+    /** Vérifie le workflow complet : création, lecture et destruction du secret texte. */
     public function testCompleteTextSecretWorkflow(): void
     {
         // Step 1: Create secret with max_views = 1 (single use)
@@ -70,6 +71,7 @@ class SecretWorkflowTest extends TestCase
         $secret->delete();
     }
 
+    /** Vérifie le workflow complet : création, téléchargement et destruction du secret fichier. */
     public function testCompleteFileSecretWorkflow(): void
     {
         // Step 1: Create file secret with max_views = 1 (single use)
@@ -119,6 +121,7 @@ class SecretWorkflowTest extends TestCase
         $secret->delete();
     }
 
+    /** Vérifie le workflow multi-lectures avec max_views. */
     public function testMultiUseSecretWithMaxViewsWorkflow(): void
     {
         // Create secret with 3 max views
@@ -164,6 +167,7 @@ class SecretWorkflowTest extends TestCase
         Secret::where('token', $token)->delete();
     }
 
+    /** Vérifie le workflow avec passphrase (salt + kdf). */
     public function testSecretWithPassphraseWorkflow(): void
     {
         // Create secret with passphrase metadata (salt + kdf indicate passphrase)
@@ -193,6 +197,7 @@ class SecretWorkflowTest extends TestCase
         Secret::where('token', $token)->delete();
     }
 
+    /** Vérifie le workflow avec email du créateur. */
     public function testSecretWithCreatorEmailWorkflow(): void
     {
         // Create secret with creator email
@@ -221,6 +226,7 @@ class SecretWorkflowTest extends TestCase
         $secret->delete();
     }
 
+    /** Vérifie le workflow de révocation via admin token. */
     public function testRevocationWorkflowViaAdminToken(): void
     {
         // Create secret directly with a known admin token
@@ -263,6 +269,7 @@ class SecretWorkflowTest extends TestCase
         $secret->delete();
     }
 
+    /** Vérifie que les accès concurrents ne corrompent pas le compteur de lectures. */
     public function testConcurrentAccessDoesNotCorruptReadCount(): void
     {
         // Create unlimited secret
@@ -295,6 +302,7 @@ class SecretWorkflowTest extends TestCase
         $secret->delete();
     }
 
+    /** Vérifie que first_read_at n'est défini qu'une seule fois. */
     public function testFirstReadAtIsSetOnlyOnce(): void
     {
         // Create secret
@@ -334,6 +342,7 @@ class SecretWorkflowTest extends TestCase
         $secret->delete();
     }
 
+    /** Vérifie que l'admin token hash est différent du token public. */
     public function testAdminTokenHashIsDifferentFromPublicToken(): void
     {
         $createResponse = $this->postJson('/api/secrets', [

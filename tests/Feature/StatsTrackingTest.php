@@ -38,6 +38,7 @@ class StatsTrackingTest extends TestCase
             ->value('count') ?? 0);
     }
 
+    /** Vérifie que la création d'un secret texte incrémente les stats. */
     public function testTextSecretCreationIncrementsStats(): void
     {
         $initialCount = $this->getMetricTotal(StatsService::SECRETS_CREATED_TEXT);
@@ -60,6 +61,7 @@ class StatsTrackingTest extends TestCase
         Secret::orderBy('id', 'desc')->first()->delete();
     }
 
+    /** Vérifie que la création d'un secret fichier incrémente les stats. */
     public function testFileSecretCreationIncrementsStats(): void
     {
         $initialFileCount = $this->getMetricTotal(StatsService::SECRETS_CREATED_FILE);
@@ -94,6 +96,7 @@ class StatsTrackingTest extends TestCase
         $secret->delete();
     }
 
+    /** Vérifie que la création avec max_views incrémente les stats. */
     public function testMaxViewsSecretIncrementsStats(): void
     {
         $initialCount = $this->getMetricTotal(StatsService::SECRETS_WITH_MAX_VIEWS);
@@ -117,6 +120,7 @@ class StatsTrackingTest extends TestCase
         Secret::orderBy('id', 'desc')->first()->delete();
     }
 
+    /** Vérifie que confirm-read incrémente la stat de lectures. */
     public function testConfirmReadIncrementsSecretsReadStats(): void
     {
         $secret = $this->createTextSecret();
@@ -131,6 +135,7 @@ class StatsTrackingTest extends TestCase
         $secret->delete();
     }
 
+    /** Vérifie que l'atteinte du max_views incrémente les stats. */
     public function testMaxViewsReachedIncrementsStats(): void
     {
         $initialCount = $this->getMetricTotal(StatsService::SECRETS_MAX_VIEWS_REACHED);
@@ -160,6 +165,7 @@ class StatsTrackingTest extends TestCase
         Secret::where('token', $token)->delete();
     }
 
+    /** Vérifie que la heatmap de création est incrémentée. */
     public function testHeatmapCreatedIsIncremented(): void
     {
         $dayOfWeek = (int) now()->format('w');
@@ -188,6 +194,7 @@ class StatsTrackingTest extends TestCase
         Secret::orderBy('id', 'desc')->first()->delete();
     }
 
+    /** Vérifie que la heatmap de lecture est incrémentée. */
     public function testHeatmapReadIsIncremented(): void
     {
         $secret = $this->createTextSecret();
@@ -208,6 +215,7 @@ class StatsTrackingTest extends TestCase
         $secret->delete();
     }
 
+    /** Vérifie que le délai de première lecture est suivi. */
     public function testFirstReadDelayIsTracked(): void
     {
         // Get initial stats
@@ -238,6 +246,7 @@ class StatsTrackingTest extends TestCase
         Secret::where('token', $token)->delete();
     }
 
+    /** Vérifie que le délai n'est pas suivi sur les lectures suivantes. */
     public function testFirstReadDelayNotTrackedOnSubsequentReads(): void
     {
         $secret = $this->createTextSecret();

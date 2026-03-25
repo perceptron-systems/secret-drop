@@ -199,11 +199,17 @@ input:focus, textarea:focus, select:focus {
 
 /* ── Logo icon breathe ── */
 .logo-icon {
-    animation: logo-breathe 4s ease-in-out infinite;
+    animation: logo-breathe 4s ease-in-out infinite alternate;
+    box-shadow: 0 10px 15px -3px rgba(var(--accent-rgb, 139, 92, 246), 0.25);
 }
 @keyframes logo-breathe {
-    0%, 100% { box-shadow: 0 10px 15px -3px rgba(var(--accent-rgb, 139, 92, 246), 0.25); }
-    50% { box-shadow: 0 10px 25px -3px rgba(var(--accent-rgb, 139, 92, 246), 0.45); }
+    0% { box-shadow: 0 10px 15px -3px rgba(var(--accent-rgb, 139, 92, 246), 0.25); }
+    100% { box-shadow: 0 10px 25px -3px rgba(var(--accent-rgb, 139, 92, 246), 0.45); }
+}
+@media (prefers-reduced-motion: reduce) {
+    .logo-icon {
+        animation: none;
+    }
 }
 
 /* Custom scrollbar */

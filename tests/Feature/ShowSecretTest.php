@@ -17,6 +17,7 @@ class ShowSecretTest extends TestCase
         $this->tokenService = app(TokenService::class);
     }
 
+    /** Vérifie que la page de consultation retourne 200 avec un token valide. */
     public function testShowPageReturns200WithToken(): void
     {
         $secret = Secret::create([
@@ -36,6 +37,7 @@ class ShowSecretTest extends TestCase
         $secret->delete();
     }
 
+    /** Vérifie que la page retourne 200 même pour un token inexistant. */
     public function testShowPageReturns200EvenForNonExistentToken(): void
     {
         $response = $this->get('/s/nonexistenttoken12345678901');
@@ -43,6 +45,7 @@ class ShowSecretTest extends TestCase
         $response->assertStatus(200);
     }
 
+    /** Vérifie que l'API retourne les données chiffrées du secret. */
     public function testApiFetchReturnsSecretData(): void
     {
         $secret = Secret::create([
@@ -71,6 +74,7 @@ class ShowSecretTest extends TestCase
         $secret->delete();
     }
 
+    /** Vérifie que la confirmation de lecture incrémente le compteur. */
     public function testApiConfirmReadIncrementsReadCount(): void
     {
         $secret = Secret::create([
@@ -94,6 +98,7 @@ class ShowSecretTest extends TestCase
         $secret->delete();
     }
 
+    /** Vérifie que l'API retourne 404 pour un secret inexistant. */
     public function testApiFetchReturns404ForNonExistentSecret(): void
     {
         $response = $this->getJson('/api/secrets/nonexistenttoken12345678901');
@@ -102,6 +107,7 @@ class ShowSecretTest extends TestCase
         $response->assertJson(['error' => 'not_found']);
     }
 
+    /** Vérifie que l'API retourne 404 pour un secret expiré. */
     public function testApiFetchReturns404ForExpiredSecret(): void
     {
         $secret = Secret::create([
@@ -121,6 +127,7 @@ class ShowSecretTest extends TestCase
         $secret->delete();
     }
 
+    /** Vérifie que l'API retourne 404 pour un secret révoqué. */
     public function testApiFetchReturns404ForRevokedSecret(): void
     {
         $secret = Secret::create([
@@ -141,6 +148,7 @@ class ShowSecretTest extends TestCase
         $secret->delete();
     }
 
+    /** Vérifie que l'API retourne 404 quand le max de vues est atteint. */
     public function testApiFetchReturns404WhenMaxViewsReached(): void
     {
         $secret = Secret::create([
@@ -162,6 +170,7 @@ class ShowSecretTest extends TestCase
         $secret->delete();
     }
 
+    /** Vérifie que le fetch API n'incrémente pas le compteur de lectures. */
     public function testApiFetchDoesNotIncrementReadCount(): void
     {
         $secret = Secret::create([
@@ -184,6 +193,7 @@ class ShowSecretTest extends TestCase
         $secret->delete();
     }
 
+    /** Vérifie que la confirmation de lecture incrémente le compteur plusieurs fois. */
     public function testApiConfirmReadIncrementsReadCountMultipleTimes(): void
     {
         $secret = Secret::create([
@@ -206,6 +216,7 @@ class ShowSecretTest extends TestCase
         $secret->delete();
     }
 
+    /** Vérifie qu'un secret usage unique devient inaccessible après lecture. */
     public function testApiSingleUseSecretBecomesInaccessibleAfterConfirmRead(): void
     {
         $secret = Secret::create([
@@ -230,6 +241,7 @@ class ShowSecretTest extends TestCase
         $secret->delete();
     }
 
+    /** Vérifie que confirm-read retourne 404 pour un secret inexistant. */
     public function testApiConfirmReadReturns404ForNonExistentSecret(): void
     {
         $response = $this->postJson('/api/secrets/nonexistenttoken12345678901/read');
@@ -238,6 +250,7 @@ class ShowSecretTest extends TestCase
         $response->assertJson(['error' => 'not_found']);
     }
 
+    /** Vérifie que confirm-read retourne 404 pour un secret expiré. */
     public function testApiConfirmReadReturns404ForExpiredSecret(): void
     {
         $secret = Secret::create([
@@ -257,6 +270,7 @@ class ShowSecretTest extends TestCase
         $secret->delete();
     }
 
+    /** Vérifie que le ciphertext est détruit après lecture d'un secret usage unique. */
     public function testSingleUseSecretCiphertextIsDestroyedAfterRead(): void
     {
         $secret = Secret::create([
@@ -281,6 +295,7 @@ class ShowSecretTest extends TestCase
         $secret->delete();
     }
 
+    /** Vérifie que le ciphertext est détruit après la dernière lecture autorisée. */
     public function testMaxViewsSecretCiphertextIsDestroyedAfterLastRead(): void
     {
         $secret = Secret::create([
@@ -304,6 +319,7 @@ class ShowSecretTest extends TestCase
         $secret->delete();
     }
 
+    /** Vérifie que l'API retourne les métadonnées d'un secret fichier. */
     public function testApiFetchReturnsFileMetadata(): void
     {
         $secret = Secret::create([
@@ -328,6 +344,7 @@ class ShowSecretTest extends TestCase
         $secret->delete();
     }
 
+    /** Vérifie que le fichier est supprimé après lecture d'un secret fichier usage unique. */
     public function testSingleUseFileSecretIsDeletedAfterRead(): void
     {
         Storage::fake('secrets');
@@ -356,6 +373,7 @@ class ShowSecretTest extends TestCase
         $secret->delete();
     }
 
+    /** Vérifie que la révocation supprime le ciphertext et marque le secret comme révoqué. */
     public function testRevokeSecretDeletesCiphertextAndMarksRevoked(): void
     {
         $adminToken = bin2hex(random_bytes(16));
@@ -380,6 +398,7 @@ class ShowSecretTest extends TestCase
         $secret->delete();
     }
 
+    /** Vérifie que la révocation supprime le fichier associé. */
     public function testRevokeSecretDeletesFile(): void
     {
         Storage::fake('secrets');
@@ -411,6 +430,7 @@ class ShowSecretTest extends TestCase
         $secret->delete();
     }
 
+    /** Vérifie que la révocation retourne 404 pour un admin token invalide. */
     public function testRevokeReturns404ForInvalidAdminToken(): void
     {
         $response = $this->postJson('/api/secrets/invalidtoken123/revoke');
@@ -419,6 +439,7 @@ class ShowSecretTest extends TestCase
         $response->assertJson(['error' => 'not_found']);
     }
 
+    /** Vérifie que la révocation retourne 409 pour un secret déjà révoqué. */
     public function testRevokeReturns409ForAlreadyRevokedSecret(): void
     {
         $adminToken = bin2hex(random_bytes(16));
@@ -440,6 +461,7 @@ class ShowSecretTest extends TestCase
         $secret->delete();
     }
 
+    /** Vérifie qu'un secret révoqué est inaccessible. */
     public function testRevokedSecretIsInaccessible(): void
     {
         $adminToken = bin2hex(random_bytes(16));

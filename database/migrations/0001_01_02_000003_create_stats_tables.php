@@ -70,5 +70,27 @@ return new class () extends Migration {
             $table->unique(['date', 'referrer_domain', 'is_bot']);
             $table->index('date');
         });
+
+        Schema::create('stats_devices', function (Blueprint $table) {
+            $table->id();
+            $table->date('date');
+            $table->string('device_type', 10);
+            $table->unsignedInteger('count')->default(1);
+            $table->timestamps();
+
+            $table->unique(['date', 'device_type']);
+            $table->index('date');
+        });
+
+        Schema::create('stats_bots', function (Blueprint $table) {
+            $table->id();
+            $table->date('date');
+            $table->string('bot_name', 50);
+            $table->unsignedInteger('count')->default(1);
+            $table->timestamps();
+
+            $table->unique(['date', 'bot_name']);
+            $table->index('date');
+        });
     }
 };

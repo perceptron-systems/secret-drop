@@ -25,7 +25,7 @@
                     x-show="isNotFound()" x-cloak
                     color="red"
                     :title="__('messages.error_not_found')"
-                    icon="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                    iconName="icon.warning"
                 >
                     <p class="text-gray-600 dark:text-slate-400 mb-6 transition-colors" x-text="loadErrorMessage()"></p>
                     <x-btn-primary :href="route('home')">
@@ -38,7 +38,7 @@
                     x-show="isUnavailable()" x-cloak
                     color="amber"
                     :title="__('messages.error_unavailable')"
-                    icon="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                    iconName="icon.clock"
                 >
                     <p class="text-gray-600 dark:text-slate-400 mb-6 transition-colors" x-text="loadErrorMessage()"></p>
                     <x-btn-primary :href="route('home')">
@@ -51,7 +51,7 @@
                     x-show="isGenericError()" x-cloak
                     color="red"
                     :title="__('messages.error_generic')"
-                    icon="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                    iconName="icon.exclamation-circle"
                 >
                     <p class="text-gray-600 dark:text-slate-400 mb-6 transition-colors" x-text="loadErrorMessage()"></p>
                     <x-btn-primary type="button" @click="reload()">
@@ -63,17 +63,12 @@
                 <div x-show="!isLoading && !loadError" x-cloak>
                     {{-- Header --}}
                     <div class="text-center mb-5 sm:mb-8">
-                        <div class="logo-icon inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-linear-to-br from-violet-500 to-indigo-600 mb-4 sm:mb-6 shadow-lg shadow-violet-500/25" aria-hidden="true">
+                        <div class="logo-icon inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-linear-to-br from-violet-500/0 to-indigo-600 mb-4 sm:mb-6" aria-hidden="true">
                             <template x-if="type === 'text'">
-                                <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                                </svg>
+                                <x-icon.eye class="w-7 h-7 text-white" />
                             </template>
                             <template x-if="type === 'file'">
-                                <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
-                                </svg>
+                                <x-icon.file class="w-7 h-7 text-white" />
                             </template>
                         </div>
                         <h1 class="text-2xl font-bold text-gray-900 dark:text-white tracking-tight transition-colors">
@@ -204,8 +199,8 @@
                     {{-- Decrypted file content --}}
                     <div x-show="decrypted && type === 'file'" x-cloak class="space-y-6">
                         <div class="p-6 bg-gray-50 dark:bg-slate-900/50 border border-gray-300 dark:border-slate-600/50 rounded-xl text-center transition-colors">
-                            <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-emerald-100 dark:bg-emerald-500/10 mb-4" aria-hidden="true">
-                                <x-icon.check class="w-6 h-6 text-emerald-600 dark:text-emerald-300" />
+                            <div class="logo-icon inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-linear-to-br from-emerald-500/0 to-teal-600 mb-4" aria-hidden="true">
+                                <x-icon.check class="w-7 h-7 text-white" />
                             </div>
                             <p class="text-gray-900 dark:text-white font-medium mb-1">{{ __('messages.file_decrypted') }}</p>
                             <p class="text-sm text-gray-500 dark:text-slate-400" x-text="filename"></p>
