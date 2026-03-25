@@ -72,7 +72,7 @@ php artisan migrate --force
 php artisan optimize
 ```
 
-Add the Laravel scheduler to your crontab:
+Add the Laravel scheduler to crontab (required for automatic cleanup of expired secrets):
 ```cron
 * * * * * cd /path/to/secret-drop && php artisan schedule:run >> /dev/null 2>&1
 ```
@@ -89,4 +89,4 @@ AGPL-3.0 — see [LICENSE](LICENSE)
 
 ---
 
-Built by [Perceptron Systems](https://www.orsal.fr) · [Guillaume Orsal](https://github.com/perceptron-systems)
+Built by [Perceptron Systems](https://github.com/perceptron-systems) · [Guillaume Orsal](https://www.orsal.fr)
