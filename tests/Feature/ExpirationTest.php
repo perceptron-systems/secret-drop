@@ -101,7 +101,7 @@ class ExpirationTest extends TestCase
             'expire_at' => now()->subMinute(),
         ]);
 
-        // Verify it's no longer accessible (uniform 404 to prevent enumeration)
+        // Verify it's no longer accessible (uniform 404)
         $expiredResponse = $this->getJson("/api/secrets/{$token}");
         $expiredResponse->assertStatus(404);
         $expiredResponse->assertJson(['error' => 'not_found']);
@@ -207,10 +207,10 @@ class ExpirationTest extends TestCase
     {
         return [
             'type' => 'text',
-            'ciphertext' => 'test_content_'.uniqid(),
+            'ciphertext' => 'ZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGQ', // 32 bytes
             'cipher_meta' => [
                 'alg' => 'AES-256-GCM',
-                'iv' => 'randomiv12345',
+                'iv' => 'YWFhYWFhYWFhYWFh', // 12 bytes
                 'version' => 1,
             ],
             'expiration' => $expiration,

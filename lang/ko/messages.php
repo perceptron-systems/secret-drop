@@ -3,8 +3,9 @@
 return [
     // App
     'app_description' => '비밀번호와 기밀 파일을 노출 없이 공유하세요. 종단간 암호화. 자동 삭제. 서버는 아무것도 볼 수 없습니다.',
+    'home_title' => '제로 지식 암호화로 비밀을 안전하게 공유',
     'home_hook' => '비밀번호를 평문으로 보내지 마세요.',
-    'home_meta_description' => '비밀번호, API 키 또는 기밀 파일을 안전한 자동 삭제 링크로 공유하세요. 종단간 암호화 — 서버는 데이터를 볼 수 없습니다.',
+    'home_meta_description' => '자동 삭제 링크를 통한 기밀 데이터의 안전한 교환. 비밀번호, API 키, 파일 — 종단간 암호화, 서버는 아무것도 볼 수 없습니다.',
     'home_view_source' => '소스 코드 보기',
 
     // Features
@@ -12,6 +13,9 @@ return [
     'feature_zero_knowledge' => '설계 수준의 보안: 우리조차 읽을 수 없습니다',
     'feature_auto_destroy' => '자동 삭제 시점은 당신이 결정합니다',
     'feature_expiration' => '계정 없음, 비밀번호 없음: 해킹할 것이 없음',
+    'feature_hosted_eu' => '프랑스 호스팅, EU 관할권',
+    'feature_no_tracking' => '서드파티 쿠키 없음, 추적 서비스 없음',
+    'feature_hosted_no_tracking' => '프랑스 호스팅, 추적 서비스 없음',
 
     // Form labels
     'your_secret' => '비밀',
@@ -101,7 +105,7 @@ return [
     'error_not_found' => '비밀을 찾을 수 없습니다',
     'error_unavailable' => '비밀을 사용할 수 없습니다',
     'error_generic' => '오류',
-    'secret_not_exist' => '이 비밀은 존재하지 않거나 삭제되었을 수 있습니다.',
+    'secret_not_exist' => '이 비밀을 찾을 수 없거나 더 이상 이용할 수 없습니다.',
     'secret_expired' => '이 비밀은 만료되어 더 이상 접근할 수 없습니다.',
     'secret_revoked' => '이 비밀은 작성자에 의해 취소되었습니다.',
     'secret_max_views' => '이 비밀은 최대 조회 수에 도달하여 더 이상 접근할 수 없습니다.',
@@ -147,8 +151,9 @@ return [
 
     // How it works page
     'how_it_works_title' => '작동 방식',
-    'how_it_works_meta_description' => 'Secret Drop이 종단 간 암호화로 데이터를 보호하는 방법을 알아보세요. 서버는 비밀을 평문으로 볼 수 없습니다.',
-    'how_it_works_intro' => '이메일이나 Slack으로 비밀번호를 공유하면 모든 중간자가 읽을 수 있습니다. Secret Drop은 반대로 작동합니다: 비밀은 화면을 떠나기 전에 브라우저에서 암호화됩니다. 서버가 받는 것은 노이즈뿐입니다.',
+    'how_it_works_meta_title' => '제로 지식 암호화가 데이터를 보호하는 방법',
+    'how_it_works_meta_description' => 'Secret Drop이 종단간 암호화를 통해 기밀 데이터의 안전한 교환을 보장하는 방법을 알아보세요. 서버는 비밀을 평문으로 볼 수 없습니다.',
+    'how_it_works_intro' => '이메일이나 Slack으로 비밀번호를 공유하면 모든 중간자가 읽을 수 있습니다. Secret Drop은 기밀 데이터의 안전한 교환을 보장합니다: 모든 것이 화면을 떠나기 전에 브라우저에서 암호화됩니다. 서버가 받는 것은 노이즈뿐입니다.',
     'how_it_works_diagram_title' => '당신의 비밀이 보호되는 방법',
     'how_step1_title' => '비밀 작성',
     'how_step1_desc' => '브라우저에서 메시지를 입력하거나 파일을 선택합니다.',
@@ -176,6 +181,7 @@ return [
 
     // FAQ (structured data)
     'faq_title' => '자주 묻는 질문',
+    'faq_meta_title' => 'FAQ — 암호화된 비밀 및 파일 공유 안내',
     'faq_intro' => '비밀을 맡기기 전에 알아야 할 모든 것.',
     'faq_cta' => '비밀 만들기',
     'faq_q1' => 'Secret Drop은 무료인가요?',
@@ -214,11 +220,21 @@ return [
     'sbd_fragment_desc' => '복호화 키는 URL 프래그먼트(# 뒤)에 있습니다. HTTP 프로토콜 설계상 이 부분은 서버로 전송되지 않습니다 — 요청에도, 로그에도, 어디에도.',
     'sbd_destroy_title' => '영구 파괴',
     'sbd_destroy_desc' => '읽힌 비밀은 더 이상 존재하지 않습니다. 암호화된 콘텐츠는 서버에서 삭제되며, 존재의 흔적만 남습니다. 만료와 조회 제한으로 노출 시간을 최소한으로 줄입니다.',
+    'sbd_hosted_title' => '프랑스 호스팅',
+    'sbd_hosted_desc' => '프랑스에 위치한 인프라로, 유럽연합 관할권이 적용됩니다. 데이터는 GDPR의 보호를 받으며 EU 밖으로 나가지 않습니다. 제3국으로의 이전은 없습니다.',
+    'sbd_notrack_title' => '추적 없음',
+    'sbd_notrack_desc' => '서드파티 쿠키, 추적 픽셀, 외부 서비스를 사용하지 않습니다. 어떤 데이터도 제3자와 공유하지 않습니다. 이 사이트에서의 활동은 프로파일링, 판매 또는 수익화되지 않습니다.',
+
+    // Trust badges (footer)
+    'trust_hosted_fr' => '프랑스 호스팅',
+    'trust_no_tracking' => '추적기 없음',
+    'trust_client_encryption' => '클라이언트 측 암호화',
 
     // Use cases page
     'use_cases_title' => '사용 사례',
-    'use_cases_meta_description' => 'Secret Drop 사용 방법: 비밀번호 공유, 기밀 문서, API 키 등.',
-    'use_cases_intro' => '매일 비밀번호가 이메일, Slack, SMS를 통해 평문으로 전송됩니다. Secret Drop이 이러한 위험한 습관을 어떻게 대체하는지 소개합니다.',
+    'use_cases_meta_title' => '활용 사례: 비밀번호, 파일, API 키 등',
+    'use_cases_meta_description' => '모든 상황에서 기밀 데이터를 안전하게 교환: 비밀번호, 민감한 문서, API 키 등.',
+    'use_cases_intro' => '매일 기밀 데이터가 이메일, Slack, SMS를 통해 평문으로 전송됩니다. Secret Drop은 이를 종단간 암호화된 안전한 교환으로 대체합니다.',
     'usecase1_title' => '비밀번호와 자격 증명',
     'usecase1_desc' => '새 팀원에게 액세스가 필요합니다. 누구나 읽을 수 있는 이메일 대신, 열람 후 자동 삭제되는 링크를 보내세요.',
     'usecase1_example' => 'CMS 액세스, 공유 계정, 계약자용 Wi-Fi 자격 증명.',
@@ -266,7 +282,7 @@ return [
     'legal_data_not_stored' => '저장되지 않는 데이터:',
     'legal_data_not_item_plaintext' => '비밀의 평문 내용',
     'legal_data_not_item_key' => '암호화 키 (링크의 개인 부분을 통해서만 전송)',
-    'legal_data_not_item_file_meta' => '파일 이름, 유형 및 크기 (콘텐츠와 함께 암호화)',
+    'legal_data_not_item_file_meta' => '파일 이름 및 유형 (콘텐츠와 함께 암호화)',
     'legal_cookies_title' => '쿠키',
     'legal_cookies_text' => '이 웹사이트는 필수 기술 쿠키만 사용합니다 (세션, 테마 설정). 추적이나 광고 쿠키는 사용하지 않습니다.',
     'legal_cookies_cnil' => 'CNIL(프랑스 개인정보 보호 기관) 권고에 따라 이러한 필수 쿠키는 동의 요건에서 면제됩니다.',
@@ -305,11 +321,19 @@ return [
     'admin_mode' => '모드',
     'admin_limited_views' => '최대 :count회 조회',
     'admin_unlimited' => '무제한',
+    'admin_hour' => '시간',
     'admin_day' => '일',
     'admin_days' => '일',
     'admin_extend' => '연장',
     'admin_revoke' => '취소',
     'admin_revoke_confirm' => '이 비밀을 취소하시겠습니까? 이 작업은 되돌릴 수 없습니다.',
+    'admin_error_connection' => '연결 오류가 발생했습니다. 다시 시도해 주세요.',
+    'admin_error_not_found' => '비밀을 찾을 수 없습니다.',
+    'admin_error_already_revoked' => '이 비밀은 이미 취소되었습니다.',
+    'admin_error_already_consumed' => '이 비밀은 이미 조회되었습니다.',
+    'admin_error_revoked' => '이 비밀은 취소되었습니다.',
+    'admin_error_revoke' => '취소 중 오류가 발생했습니다.',
+    'admin_error_extend' => '연장 중 오류가 발생했습니다.',
 
     // Magic link email
     'email_magic_link_subject' => 'Secret Drop 접근 링크',
@@ -328,6 +352,7 @@ return [
     'superadmin_dashboard_subtitle' => 'Secret Drop 인스턴스의 익명 사용 데이터.',
 
     // Periods
+    'period_today' => '오늘',
     'period_7d' => '최근 7일',
     'period_30d' => '최근 30일',
     'period_90d' => '최근 90일',
@@ -500,4 +525,26 @@ return [
     'val_days_integer' => '일수는 정수여야 합니다.',
     'val_days_min' => '일수는 최소 1이어야 합니다.',
     'val_days_max' => '일수는 30을 초과할 수 없습니다.',
+
+    // Monitoring
+    'monitoring_title' => '모니터링',
+    'stat_errors_4xx' => '클라이언트 오류 (4xx)',
+    'stat_errors_5xx' => '서버 오류 (5xx)',
+    'stat_errors_422' => '유효성 검사 (422)',
+    'stat_errors_429' => '속도 제한 (429)',
+    'chart_error_trends' => '오류 추세',
+    'chart_error_breakdown' => '오류 세부 분석',
+    'stat_total_errors' => '합계',
+    'no_errors' => '이 기간 동안 오류 없음',
+    'hint_errors_4xx' => '총 클라이언트 오류(400-499). 페이지 미발견, 유효성 검사 실패, 속도 제한을 포함합니다. 높은 수치는 스캐닝이나 잘못 구성된 링크를 나타낼 수 있습니다.',
+    'hint_errors_5xx' => '총 서버 오류(500-599). 0보다 큰 값은 버그 또는 인프라 문제를 의미합니다 — 즉시 로그를 확인하세요.',
+    'hint_errors_422' => '유효성 검사에 의해 거부된 요청(잘못된 페이로드 형식, 잘못된 암호화 필드 크기). 급증은 API 오용이나 잘못된 데이터로의 공격을 나타낼 수 있습니다.',
+    'hint_errors_429' => '속도 제한에 의해 차단된 요청. 급증은 서비스에 대한 남용 또는 자동화된 공격을 나타냅니다.',
+
+    // 구조적 암호화 유효성 검사
+    'val_invalid_base64url' => '값은 유효한 Base64URL 인코딩 문자열이어야 합니다.',
+    'val_invalid_byte_length' => '잘못된 바이트 길이: :expected 바이트가 예상되었으나 :actual을(를) 수신했습니다.',
+    'val_min_byte_length' => '최소 바이트 길이는 :min이며, :actual을(를) 수신했습니다.',
+    'val_salt_iv2_consistency' => 'Salt와 IV2는 둘 다 있거나 둘 다 없어야 합니다.',
+    'val_passphrase_requires_salt' => '패스프레이즈 플래그는 Salt와 IV2가 존재해야 합니다.',
 ];

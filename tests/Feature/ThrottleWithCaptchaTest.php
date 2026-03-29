@@ -182,10 +182,10 @@ class ThrottleWithCaptchaTest extends TestCase
     {
         return [
             'type' => 'text',
-            'ciphertext' => base64_encode('encrypted-content'),
+            'ciphertext' => 'ZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGQ', // 32 bytes
             'cipher_meta' => [
                 'alg' => 'AES-256-GCM',
-                'iv' => base64_encode(random_bytes(12)),
+                'iv' => 'YWFhYWFhYWFhYWFh', // 12 bytes
                 'version' => 1,
             ],
             'expiration' => '7d',

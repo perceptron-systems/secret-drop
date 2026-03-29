@@ -7,6 +7,7 @@ use App\Models\Secret;
 use App\Services\SecretStorageService;
 use App\Services\StatsService;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Cache;
 
 class CleanExpiredSecretsCommand extends Command
 {
@@ -68,6 +69,10 @@ class CleanExpiredSecretsCommand extends Command
 
             $prefix = $dryRun ? '[DRY RUN] Would delete' : 'Deleted';
             $this->info("{$prefix} {$deletedSecrets} secrets and {$deletedFiles} files.");
+
+            if (! $dryRun && $deletedFiles > 0) {
+                Cache::forget('disk_usage_secrets');
+            }
         }
 
         $this->cleanMagicLinks($dryRun);

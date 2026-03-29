@@ -27,7 +27,7 @@
                     @yield('code')
                 </p>
 
-                <h1 class="text-xl font-bold text-gray-900 dark:text-white mb-3 transition-colors">
+                <h1 class="text-2xl font-bold text-gray-900 dark:text-white mb-3 transition-colors">
                     @yield('title')
                 </h1>
 

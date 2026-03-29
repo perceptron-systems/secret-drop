@@ -10,6 +10,8 @@
 @section('header-bg-dark-start', 'rgba(217, 119, 6, 0.12)')
 @section('header-bg-dark-end', 'rgba(234, 88, 12, 0.04)')
 
+@section('logo', 'icon-192-amber.png')
+
 @section('badge')
             <span class="badge">{{ __('messages.superadmin_title') }}</span>
 @endsection

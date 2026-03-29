@@ -248,7 +248,7 @@ class AdminControllerTest extends TestCase
 
         $response = $this->postJson("/fr/admin/secrets/{$secret->id}/revoke");
 
-        $response->assertStatus(403);
+        $response->assertStatus(401);
 
         $secret->delete();
     }
@@ -277,10 +277,10 @@ class AdminControllerTest extends TestCase
         $secret = $this->createSecretWithEmail('test@example.com');
 
         $response = $this->postJson("/fr/admin/secrets/{$secret->id}/extend", [
-            'days' => 7,
+            'hours' => 168,
         ]);
 
-        $response->assertStatus(403);
+        $response->assertStatus(401);
 
         $secret->delete();
     }
@@ -294,7 +294,7 @@ class AdminControllerTest extends TestCase
 
         $response = $this->withSession(['admin_email_hash' => $emailHash])
             ->postJson("/fr/admin/secrets/{$secret->id}/extend", [
-                'days' => 7,
+                'hours' => 168,
             ]);
 
         $response->assertStatus(200);
@@ -319,6 +319,81 @@ class AdminControllerTest extends TestCase
 
         $secret->refresh();
         $this->assertFalse($secret->isRevoked());
+
+        $secret->delete();
+    }
+
+    /** Vérifie que le poll nécessite une authentification. */
+    public function testPollRequiresAuthentication(): void
+    {
+        $response = $this->getJson('/fr/admin/dashboard/poll');
+
+        $response->assertStatus(401);
+    }
+
+    /** Vérifie que le poll retourne les secrets en JSON pour un utilisateur authentifié. */
+    public function testPollReturnsSecretsForAuthenticatedUser(): void
+    {
+        $emailHash = MagicLink::hashEmail('test@example.com');
+        $secret = $this->createSecretWithEmail('test@example.com');
+
+        $response = $this->withSession([
+            'admin_email_hash' => $emailHash,
+            'admin_expires_at' => now()->addMinutes(30)->timestamp,
+        ])->getJson('/fr/admin/dashboard/poll');
+
+        $response->assertStatus(200);
+        $response->assertJsonStructure([
+            'secrets' => [
+                ['id', 'read_count', 'max_views', 'first_read_at', 'expire_at', 'is_revoked', 'is_expired', 'has_reached_max_views', 'is_accessible'],
+            ],
+        ]);
+
+        $data = $response->json('secrets.0');
+        $this->assertEquals($secret->id, $data['id']);
+        $this->assertEquals(0, $data['read_count']);
+        $this->assertFalse($data['is_revoked']);
+        $this->assertTrue($data['is_accessible']);
+
+        $secret->delete();
+    }
+
+    /** Vérifie que le poll ne retourne pas les secrets d'un autre utilisateur. */
+    public function testPollDoesNotReturnOtherUsersSecrets(): void
+    {
+        $emailHash = MagicLink::hashEmail('alice@example.com');
+        $secret = $this->createSecretWithEmail('bob@example.com');
+
+        $response = $this->withSession([
+            'admin_email_hash' => $emailHash,
+            'admin_expires_at' => now()->addMinutes(30)->timestamp,
+        ])->getJson('/fr/admin/dashboard/poll');
+
+        $response->assertStatus(200);
+        $response->assertJsonCount(0, 'secrets');
+
+        $secret->delete();
+    }
+
+    /** Vérifie que le poll reflète les changements de statut d'un secret lu. */
+    public function testPollReflectsReadCountChanges(): void
+    {
+        $emailHash = MagicLink::hashEmail('test@example.com');
+        $secret = $this->createSecretWithEmail('test@example.com');
+        $secret->update(['max_views' => 1]);
+
+        $secret->incrementReadCount();
+
+        $response = $this->withSession([
+            'admin_email_hash' => $emailHash,
+            'admin_expires_at' => now()->addMinutes(30)->timestamp,
+        ])->getJson('/fr/admin/dashboard/poll');
+
+        $data = $response->json('secrets.0');
+        $this->assertEquals(1, $data['read_count']);
+        $this->assertTrue($data['has_reached_max_views']);
+        $this->assertFalse($data['is_accessible']);
+        $this->assertNotNull($data['first_read_at']);
 
         $secret->delete();
     }

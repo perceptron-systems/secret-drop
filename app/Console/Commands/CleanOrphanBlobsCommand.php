@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use App\Models\Secret;
 use App\Services\SecretStorageService;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Cache;
 
 class CleanOrphanBlobsCommand extends Command
 {
@@ -55,6 +56,10 @@ class CleanOrphanBlobsCommand extends Command
 
         $prefix = $dryRun ? '[DRY RUN] Would delete' : 'Deleted';
         $this->info("{$prefix} {$deleted} orphan blobs.");
+
+        if (! $dryRun) {
+            Cache::forget('disk_usage_secrets');
+        }
 
         return Command::SUCCESS;
     }

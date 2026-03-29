@@ -1,4 +1,5 @@
 import './bootstrap';
+import './console-banner';
 
 import Alpine from '@alpinejs/csp';
 import collapse from '@alpinejs/collapse';

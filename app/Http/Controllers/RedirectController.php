@@ -9,6 +9,7 @@ class RedirectController extends Controller
     public function root(): RedirectResponse
     {
         return redirect(route('home', ['locale' => app()->getLocale()]).'/');
+
     }
 
     public function howItWorks(): RedirectResponse

@@ -7,6 +7,10 @@ Zero-knowledge secret sharing — end-to-end encrypted, self-destructing, open s
 
 **[Live demo](https://secret.orsal.fr)** · **[How it works](https://secret.orsal.fr/en/how-it-works)**
 
+## Screenshot
+
+![Secret Drop — Create a secret](screenshots/home.png)
+
 ## Why
 
 Passwords sent over email or Slack remain readable by every intermediary — indefinitely. Secret Drop encrypts everything in the browser before it ever leaves your screen. The server only ever sees noise.
@@ -49,7 +53,7 @@ composer dev      # start dev server
 ## Tests
 
 ```bash
-composer test                          # full suite (340+ tests)
+composer test                          # full suite (370+ tests)
 php artisan test --filter=SecretTest   # run a single test
 ```
 
@@ -89,4 +93,4 @@ AGPL-3.0 — see [LICENSE](LICENSE)
 
 ---
 
-Built by [Perceptron Systems](https://github.com/perceptron-systems) · [Guillaume Orsal](https://www.orsal.fr)
+Built by [Perceptron Systems](https://github.com/perceptron-systems) · [Guillaume Orsal](https://www.orsal.fr) · © 2026

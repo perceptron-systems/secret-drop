@@ -3,8 +3,9 @@
 return [
     // App
     'app_description' => 'Share passwords and confidential files without ever exposing them. End-to-end encrypted. Self-destructing. The server sees nothing.',
+    'home_title' => 'Share secrets securely with zero-knowledge encryption',
     'home_hook' => 'Stop sending passwords in plain text.',
-    'home_meta_description' => 'Share a password, API key or confidential file via a secure, self-destructing link. End-to-end encrypted — the server never sees your data.',
+    'home_meta_description' => 'Secure exchange of confidential data via a self-destructing link. Passwords, API keys, files — end-to-end encrypted, the server sees nothing.',
     'home_view_source' => 'View source code',
 
     // Features
@@ -12,6 +13,9 @@ return [
     'feature_zero_knowledge' => 'Secure by design: unreadable, even to us',
     'feature_auto_destroy' => 'You decide when it self-destructs',
     'feature_expiration' => 'No account, no password: nothing to hack',
+    'feature_hosted_eu' => 'Hosted in France, EU jurisdiction',
+    'feature_no_tracking' => 'No third-party cookies, no tracking services',
+    'feature_hosted_no_tracking' => 'Hosted in France, no tracking services',
 
     // Form labels
     'your_secret' => 'Your secret',
@@ -101,7 +105,7 @@ return [
     'error_not_found' => 'Secret not found',
     'error_unavailable' => 'Secret unavailable',
     'error_generic' => 'Error',
-    'secret_not_exist' => 'This secret does not exist or may have been deleted.',
+    'secret_not_exist' => 'This secret could not be found or is no longer available.',
     'secret_expired' => 'This secret has expired and is no longer accessible.',
     'secret_revoked' => 'This secret was revoked by its creator.',
     'secret_max_views' => 'This secret has reached its maximum number of views and is no longer accessible.',
@@ -147,8 +151,9 @@ return [
 
     // How it works page
     'how_it_works_title' => 'How it works',
-    'how_it_works_meta_description' => 'Learn how Secret Drop protects your data with end-to-end encryption. The server never sees your secrets in plaintext.',
-    'how_it_works_intro' => 'When you share a password by email or Slack, it remains readable by every intermediary. Secret Drop does the opposite: your secret is encrypted in your browser before it leaves your screen. The server only receives noise.',
+    'how_it_works_meta_title' => 'How zero-knowledge encryption protects your data',
+    'how_it_works_meta_description' => 'Learn how Secret Drop ensures a secure exchange of confidential data through end-to-end encryption. The server never sees your secrets in plaintext.',
+    'how_it_works_intro' => 'When you share a password by email or Slack, it remains readable by every intermediary. Secret Drop ensures a secure exchange of your confidential data: everything is encrypted in your browser before it leaves your screen. The server only receives noise.',
     'how_it_works_diagram_title' => 'How your secret is protected',
     'how_step1_title' => 'You write your secret',
     'how_step1_desc' => 'You enter your message or select a file in your browser.',
@@ -176,6 +181,7 @@ return [
 
     // FAQ (structured data)
     'faq_title' => 'Frequently asked questions',
+    'faq_meta_title' => 'FAQ — Encrypted secret & file sharing explained',
     'faq_intro' => 'Everything you need to know before trusting us with a secret.',
     'faq_cta' => 'Create a secret',
     'faq_q1' => 'Is Secret Drop free?',
@@ -214,11 +220,21 @@ return [
     'sbd_fragment_desc' => 'The decryption key lives in the URL fragment (after the #). By HTTP protocol design, this part is never sent to the server — not in requests, not in logs, not anywhere.',
     'sbd_destroy_title' => 'Permanent destruction',
     'sbd_destroy_desc' => 'A secret that has been read no longer exists. The encrypted content is deleted from the server — only a trace of its existence remains. Expiration and read limits reduce the window of exposure to the strict minimum.',
+    'sbd_hosted_title' => 'Hosted in France',
+    'sbd_hosted_desc' => 'Infrastructure hosted in France, under European Union jurisdiction. Your data is subject to GDPR and never leaves the EU. No transfer to third countries, no exception.',
+    'sbd_notrack_title' => 'No tracking',
+    'sbd_notrack_desc' => 'No third-party cookies, no tracking pixels, no external services. No data is shared with third parties. Your activity on this site is not profiled, sold or monetized.',
+
+    // Trust badges (footer)
+    'trust_hosted_fr' => 'Hosted in France',
+    'trust_no_tracking' => 'No trackers',
+    'trust_client_encryption' => 'Client-side encryption',
 
     // Use cases page
     'use_cases_title' => 'Use cases',
-    'use_cases_meta_description' => 'Discover how to use Secret Drop: password sharing, confidential documents, API keys, and more.',
-    'use_cases_intro' => 'Every day, passwords travel in plaintext through email, Slack or SMS. Here is how Secret Drop replaces these risky habits.',
+    'use_cases_meta_title' => 'Use cases: passwords, files, API keys & more',
+    'use_cases_meta_description' => 'Secure exchange of confidential data for every situation: passwords, sensitive documents, API keys, and more.',
+    'use_cases_intro' => 'Every day, confidential data travels in plaintext through email, Slack or SMS. Secret Drop replaces these risky habits with a secure exchange, end-to-end encrypted.',
     'usecase1_title' => 'Passwords and credentials',
     'usecase1_desc' => 'A new team member needs access. Instead of an email anyone can read, send a link that self-destructs after reading.',
     'usecase1_example' => 'CMS access, shared accounts, Wi-Fi credentials for a contractor.',
@@ -266,7 +282,7 @@ return [
     'legal_data_not_stored' => 'Data NOT stored:',
     'legal_data_not_item_plaintext' => 'Plaintext content of secrets',
     'legal_data_not_item_key' => 'Encryption keys (transmitted only via the private part of the link)',
-    'legal_data_not_item_file_meta' => 'File name, type and size (encrypted with content)',
+    'legal_data_not_item_file_meta' => 'File name and type (encrypted with content)',
     'legal_cookies_title' => 'Cookies',
     'legal_cookies_text' => 'This website only uses essential technical cookies (session, theme preference). No tracking or advertising cookies are used.',
     'legal_cookies_cnil' => 'In accordance with CNIL (French data protection authority) recommendations, these strictly necessary cookies are exempt from consent requirements.',
@@ -305,11 +321,19 @@ return [
     'admin_mode' => 'Mode',
     'admin_limited_views' => '{1} :count view max|[2,*] :count views max',
     'admin_unlimited' => 'Unlimited',
+    'admin_hour' => 'hour',
     'admin_day' => 'day',
     'admin_days' => 'days',
     'admin_extend' => 'Extend',
     'admin_revoke' => 'Revoke',
     'admin_revoke_confirm' => 'Are you sure you want to revoke this secret? This action is irreversible.',
+    'admin_error_connection' => 'Connection error. Please try again.',
+    'admin_error_not_found' => 'Secret not found.',
+    'admin_error_already_revoked' => 'This secret has already been revoked.',
+    'admin_error_already_consumed' => 'This secret has already been consumed.',
+    'admin_error_revoked' => 'This secret has been revoked.',
+    'admin_error_revoke' => 'Error revoking secret.',
+    'admin_error_extend' => 'Error extending secret.',
 
     // Magic link email
     'email_magic_link_subject' => 'Your access link to Secret Drop',
@@ -328,6 +352,7 @@ return [
     'superadmin_dashboard_subtitle' => 'Anonymous usage data for your Secret Drop instance.',
 
     // Periods
+    'period_today' => 'Today',
     'period_7d' => 'Last 7 days',
     'period_30d' => 'Last 30 days',
     'period_90d' => 'Last 90 days',
@@ -499,4 +524,26 @@ return [
     'val_days_integer' => 'The number of days must be an integer.',
     'val_days_min' => 'The number of days must be at least 1.',
     'val_days_max' => 'The number of days cannot exceed 30.',
+
+    // Monitoring
+    'monitoring_title' => 'Monitoring',
+    'stat_errors_4xx' => 'Client errors (4xx)',
+    'stat_errors_5xx' => 'Server errors (5xx)',
+    'stat_errors_422' => 'Validation (422)',
+    'stat_errors_429' => 'Rate limited (429)',
+    'chart_error_trends' => 'Error trends',
+    'chart_error_breakdown' => 'Error breakdown',
+    'stat_total_errors' => 'total',
+    'no_errors' => 'No errors in this period',
+    'hint_errors_4xx' => 'Total client errors (400-499). Includes not found, validation failures, and rate limiting. A high number may indicate scanning or misconfigured links.',
+    'hint_errors_5xx' => 'Total server errors (500-599). Any value above 0 means a bug or infrastructure issue — check the logs immediately.',
+    'hint_errors_422' => 'Requests rejected by validation (invalid payload format, wrong crypto field sizes). A spike may indicate API misuse or attacks with malformed data.',
+    'hint_errors_429' => 'Requests blocked by rate limiting. A spike indicates abuse or automated attacks against the service.',
+
+    // Structural cipher validation
+    'val_invalid_base64url' => 'The value must be a valid Base64URL-encoded string.',
+    'val_invalid_byte_length' => 'Invalid byte length: expected :expected bytes, got :actual.',
+    'val_min_byte_length' => 'Minimum byte length is :min, got :actual.',
+    'val_salt_iv2_consistency' => 'Salt and IV2 must both be present or both absent.',
+    'val_passphrase_requires_salt' => 'Passphrase flag requires salt and IV2 to be present.',
 ];

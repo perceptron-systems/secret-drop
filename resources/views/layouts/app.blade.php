@@ -66,11 +66,10 @@
         "description": "{{ __('messages.app_description') }}",
         "url": "{{ url('/') }}",
         "applicationCategory": "SecurityApplication",
-        "applicationSubCategory": "File Sharing, Encryption",
         "operatingSystem": "Any",
         "browserRequirements": "Requires JavaScript, Web Crypto API",
         "inLanguage": {!! json_encode(\App\Support\LocaleConfig::SUPPORTED_LOCALES) !!},
-        "logo": "{{ asset('icon-512.png') }}",
+        "image": "{{ asset('icon-512.png') }}",
         "isAccessibleForFree": true,
         "offers": {
             "@@type": "Offer",
@@ -84,10 +83,8 @@
             "{{ __('messages.feature_expiration') }}"
         ],
         "author": {
-            "@@type": "Organization",
-            "name": "{{ config('legal.editor_name') }}",
-            "url": "{{ url('/') }}"@if(config('legal.contact_email')),
-            "email": "{{ config('legal.contact_email') }}"@endif
+            "@@type": "Person",
+            "name": "{{ config('legal.editor_name') }}"
         }
     }
     </script>
@@ -95,19 +92,46 @@
     {
         "@@context": "https://schema.org",
         "@@type": "Organization",
-        "name": "{{ config('legal.editor_name') }}",
+        "name": "{{ config('legal.organization_name', config('app.name')) }}",
         "url": "{{ url('/') }}",
-        "logo": "{{ asset('icon-512.png') }}",
+        "logo": {
+            "@@type": "ImageObject",
+            "url": "{{ asset('icon-512.png') }}",
+            "width": 512,
+            "height": 512
+        },
         "description": "{{ __('messages.legal_about_text') }}"@if(config('legal.contact_email')),
         "email": "{{ config('legal.contact_email') }}"@endif,
         "knowsAbout": ["zero-knowledge encryption", "end-to-end encryption", "secure file sharing", "password sharing"],
-        "makesOffer": {
-            "@@type": "Offer",
-            "itemOffered": {
-                "@@type": "WebApplication",
-                "name": "{{ config('app.name') }}",
-                "url": "{{ url('/') }}"
-            }
+        "founder": {
+            "@@type": "Person",
+            "name": "{{ config('legal.editor_name') }}"
+        },
+        @if(collect(config('legal.social'))->filter()->isNotEmpty())
+        "sameAs": {!! json_encode(collect(config('legal.social'))->filter()->values()) !!},
+        @endif
+        "owns": {
+            "@@type": "WebApplication",
+            "name": "{{ config('app.name') }}",
+            "url": "{{ url('/') }}"
+        }
+    }
+    </script>
+    <script type="application/ld+json" nonce="@nonce">
+    {
+        "@@context": "https://schema.org",
+        "@@type": "Person",
+        "name": "{{ config('legal.editor_name') }}",
+        "url": "https://www.orsal.fr",
+        "jobTitle": "Software Engineer",
+        "knowsAbout": ["web application security", "zero-knowledge encryption", "Laravel development", "end-to-end encryption"],
+        @if(collect(config('legal.social'))->filter()->isNotEmpty())
+        "sameAs": {!! json_encode(collect(config('legal.social'))->filter()->values()) !!},
+        @endif
+        "owns": {
+            "@@type": "WebApplication",
+            "name": "{{ config('app.name') }}",
+            "url": "{{ url('/') }}"
         }
     }
     </script>
@@ -151,6 +175,13 @@
             'unit_megabytes',
             'a11y_show_passphrase',
             'a11y_hide_passphrase',
+            'admin_error_connection',
+            'admin_error_not_found',
+            'admin_error_already_revoked',
+            'admin_error_already_consumed',
+            'admin_error_revoked',
+            'admin_error_revoke',
+            'admin_error_extend',
         ]));
     @endphp
     <style nonce="@nonce">[x-cloak]{display:none!important}html{background:#e5e7eb}html.dark{background:#0f172a}</style>
@@ -173,7 +204,7 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="antialiased min-h-dvh flex flex-col bg-linear-to-br from-gray-50 via-gray-200 to-gray-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
-    <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:start-2 focus:z-[200] focus:px-4 focus:py-2 focus:bg-violet-600 focus:text-white focus:rounded-lg focus:text-sm focus:font-medium">
+    <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:start-2 focus:z-[200] focus:px-4 focus:py-2 focus:bg-violet-600 focus:text-white focus:rounded-xl focus:text-sm focus:font-medium">
         {{ __('messages.a11y_skip_to_content') }}
     </a>
 
@@ -182,14 +213,9 @@
     </main>
 
     <footer class="relative z-10 py-4 sm:py-6 text-sm text-gray-500 dark:text-slate-400 transition-colors border-t border-transparent" style="border-image: linear-gradient(90deg, transparent, rgba(139,92,246,0.2), transparent) 1;">
-        {{-- Desktop: links + switchers --}}
-        <div class="hidden sm:flex items-center justify-center gap-x-2 gap-y-1 px-4">
+        {{-- Desktop: links top, copyright + github + switchers bottom --}}
+        <div class="hidden sm:flex flex-col items-center gap-2 px-4">
             <nav aria-label="{{ __('messages.a11y_footer_nav') }}" class="flex flex-wrap items-center justify-center gap-x-2 gap-y-1">
-                <span>&copy; {{ date('Y') }} <a href="https://github.com/perceptron-systems" target="_blank" rel="noopener" class="hover:text-gray-700 dark:hover:text-slate-200 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:rounded transition-colors">Perceptron Systems</a></span>
-                <a href="https://github.com/perceptron-systems/secret-drop" target="_blank" rel="noopener" aria-label="GitHub" class="hover:text-gray-700 dark:hover:text-slate-200 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:rounded transition-colors">
-                    <x-icon.github class="w-4 h-4" />
-                </a>
-                <span aria-hidden="true">·</span>
                 <a href="{{ route('home') }}" class="hover:text-gray-700 dark:hover:text-slate-200 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:rounded transition-colors">
                     {{ config('app.name') }}
                 </a>
@@ -214,25 +240,29 @@
                     {{ __('messages.footer_legal') }}
                 </a>
             </nav>
-            <span aria-hidden="true">·</span>
             <div class="flex items-center gap-2">
+                <span>&copy; 2026 <a href="https://www.orsal.fr" target="_blank" rel="noopener" class="hover:text-gray-700 dark:hover:text-slate-200 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:rounded transition-colors">Guillaume Orsal</a></span>
+                <a href="https://github.com/perceptron-systems/secret-drop" target="_blank" rel="noopener" aria-label="GitHub" class="hover:text-gray-700 dark:hover:text-slate-200 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:rounded transition-colors">
+                    <x-icon.github class="w-4 h-4" />
+                </a>
+                <span aria-hidden="true">·</span>
                 <x-language-switcher />
                 <x-theme-toggle />
             </div>
         </div>
 
-        {{-- Mobile: copyright + icon buttons --}}
-        <div class="sm:hidden flex flex-col items-center gap-2">
-            <div class="flex items-center gap-1.5">
-                <span>&copy; {{ date('Y') }} <a href="https://github.com/perceptron-systems" target="_blank" rel="noopener" class="hover:text-gray-700 dark:hover:text-slate-200 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:rounded transition-colors">Perceptron Systems</a></span>
-                <a href="https://github.com/perceptron-systems/secret-drop" target="_blank" rel="noopener" aria-label="GitHub" class="hover:text-gray-700 dark:hover:text-slate-200 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:rounded transition-colors">
-                    <x-icon.github class="w-4 h-4" />
-                </a>
-            </div>
+        {{-- Mobile: icons top, copyright bottom --}}
+        <div class="sm:hidden flex flex-col items-center gap-3">
             <div class="flex items-center gap-3">
                 <x-footer-menu />
                 <x-language-switcher />
                 <x-theme-toggle />
+            </div>
+            <div class="flex items-center gap-1.5">
+                <span>&copy; 2026 <a href="https://www.orsal.fr" target="_blank" rel="noopener" class="hover:text-gray-700 dark:hover:text-slate-200 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:rounded transition-colors">Guillaume Orsal</a></span>
+                <a href="https://github.com/perceptron-systems/secret-drop" target="_blank" rel="noopener" aria-label="GitHub" class="hover:text-gray-700 dark:hover:text-slate-200 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:rounded transition-colors">
+                    <x-icon.github class="w-4 h-4" />
+                </a>
             </div>
         </div>
     </footer>

@@ -29,7 +29,7 @@ Secret Drop allows users to securely share secrets (text or files) with end-to-e
 ## Privacy
 
 - Encryption keys never touch the server
-- No tracking, no analytics
+- No third-party tracking, no cookies
 - Minimal data retention
 - GDPR compliant
 

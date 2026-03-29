@@ -141,6 +141,12 @@ body::after {
     position: relative;
     overflow: hidden;
 }
+.card-accent.overflow-visible {
+    overflow: visible;
+}
+.card-accent.overflow-visible:has([x-show]:not([style*="display: none"])) {
+    z-index: 20;
+}
 .card-accent::before {
     content: "";
     position: absolute;

@@ -3,8 +3,9 @@
 return [
     // App
     'app_description' => 'Udostępniaj hasła i poufne pliki bez ich ujawniania. Szyfrowanie end-to-end. Samozniszczalne. Serwer nie widzi niczego.',
+    'home_title' => 'Bezpieczne udostępnianie sekretów z szyfrowaniem zero-knowledge',
     'home_hook' => 'Przestań wysyłać hasła otwartym tekstem.',
-    'home_meta_description' => 'Udostępnij hasło, klucz API lub poufny plik za pomocą bezpiecznego, samozniszczalnego linku. Szyfrowanie end-to-end — serwer nigdy nie widzi Twoich danych.',
+    'home_meta_description' => 'Bezpieczna wymiana poufnych danych przez samozniszczalny link. Hasła, klucze API, pliki — szyfrowanie end-to-end, serwer nie widzi niczego.',
     'home_view_source' => 'Zobacz kod źródłowy',
 
     // Features
@@ -12,6 +13,9 @@ return [
     'feature_zero_knowledge' => 'Bezpieczne z założenia: nieczytelne, nawet dla nas',
     'feature_auto_destroy' => 'Ty decydujesz, kiedy ulega samozniszczeniu',
     'feature_expiration' => 'Bez konta, bez hasła: nie ma czego hakować',
+    'feature_hosted_eu' => 'Hostowane we Francji, jurysdykcja UE',
+    'feature_no_tracking' => 'Bez ciasteczek stron trzecich, bez zewnętrznych trackerów',
+    'feature_hosted_no_tracking' => 'Hostowane we Francji, bez zewnętrznych trackerów',
 
     // Form labels
     'your_secret' => 'Twój sekret',
@@ -101,7 +105,7 @@ return [
     'error_not_found' => 'Nie znaleziono sekretu',
     'error_unavailable' => 'Sekret jest niedostępny',
     'error_generic' => 'Błąd',
-    'secret_not_exist' => 'Ten sekret nie istnieje lub został usunięty.',
+    'secret_not_exist' => 'Ten sekret nie został znaleziony lub nie jest już dostępny.',
     'secret_expired' => 'Ten sekret wygasł i nie jest już dostępny.',
     'secret_revoked' => 'Ten sekret został unieważniony przez twórcę.',
     'secret_max_views' => 'Ten sekret osiągnął maksymalną liczbę wyświetleń i nie jest już dostępny.',
@@ -147,8 +151,9 @@ return [
 
     // How it works page
     'how_it_works_title' => 'Jak to działa',
-    'how_it_works_meta_description' => 'Dowiedz się, jak Secret Drop chroni Twoje dane dzięki szyfrowaniu end-to-end. Serwer nigdy nie widzi Twoich sekretów w postaci jawnej.',
-    'how_it_works_intro' => 'Gdy udostępniasz hasło przez e-mail lub Slack, pozostaje ono czytelne dla każdego pośrednika. Secret Drop działa odwrotnie: Twój sekret jest szyfrowany w przeglądarce, zanim opuści ekran. Serwer otrzymuje tylko szum.',
+    'how_it_works_meta_title' => 'Jak szyfrowanie zero-knowledge chroni Twoje dane',
+    'how_it_works_meta_description' => 'Dowiedz się, jak Secret Drop zapewnia bezpieczną wymianę poufnych danych dzięki szyfrowaniu end-to-end. Serwer nigdy nie widzi Twoich sekretów w postaci jawnej.',
+    'how_it_works_intro' => 'Gdy udostępniasz hasło przez e-mail lub Slack, pozostaje ono czytelne dla każdego pośrednika. Secret Drop zapewnia bezpieczną wymianę Twoich poufnych danych: wszystko jest szyfrowane w przeglądarce, zanim opuści ekran. Serwer otrzymuje tylko szum.',
     'how_it_works_diagram_title' => 'Jak Twój sekret jest chroniony',
     'how_step1_title' => 'Piszesz swój sekret',
     'how_step1_desc' => 'Wpisujesz wiadomość lub wybierasz plik w przeglądarce.',
@@ -176,6 +181,7 @@ return [
 
     // FAQ (structured data)
     'faq_title' => 'Często zadawane pytania',
+    'faq_meta_title' => 'FAQ — Szyfrowane udostępnianie sekretów i plików',
     'faq_intro' => 'Wszystko, co musisz wiedzieć, zanim powierzysz nam sekret.',
     'faq_cta' => 'Utwórz sekret',
     'faq_q1' => 'Czy Secret Drop jest darmowy?',
@@ -214,11 +220,21 @@ return [
     'sbd_fragment_desc' => 'Klucz deszyfrujący znajduje się we fragmencie URL (po #). Zgodnie z protokołem HTTP ta część nigdy nie jest wysyłana na serwer — ani w żądaniach, ani w logach, nigdzie.',
     'sbd_destroy_title' => 'Trwałe zniszczenie',
     'sbd_destroy_desc' => 'Odczytany sekret przestaje istnieć. Zaszyfrowana treść jest usuwana z serwera — pozostaje jedynie ślad jego istnienia. Wygaśnięcie i limity odczytów ograniczają okno ekspozycji do absolutnego minimum.',
+    'sbd_hosted_title' => 'Hostowane we Francji',
+    'sbd_hosted_desc' => 'Infrastruktura hostowana we Francji, pod jurysdykcją Unii Europejskiej. Twoje dane są chronione przez RODO i nigdy nie opuszczają UE. Brak transferu do państw trzecich, bez wyjątków.',
+    'sbd_notrack_title' => 'Brak śledzenia',
+    'sbd_notrack_desc' => 'Bez ciasteczek stron trzecich, bez pikseli śledzących, bez zewnętrznych serwisów. Żadne dane nie są udostępniane podmiotom trzecim. Twoja aktywność na tej stronie nie jest profilowana, sprzedawana ani monetyzowana.',
+
+    // Trust badges (footer)
+    'trust_hosted_fr' => 'Hostowane we Francji',
+    'trust_no_tracking' => 'Brak trackerów',
+    'trust_client_encryption' => 'Szyfrowanie po stronie klienta',
 
     // Use cases page
     'use_cases_title' => 'Przypadki użycia',
-    'use_cases_meta_description' => 'Odkryj, jak używać Secret Drop: udostępnianie haseł, poufne dokumenty, klucze API i więcej.',
-    'use_cases_intro' => 'Każdego dnia hasła wędrują otwartym tekstem przez e-mail, Slack lub SMS. Oto jak Secret Drop zastępuje te ryzykowne nawyki.',
+    'use_cases_meta_title' => 'Zastosowania: hasła, pliki, klucze API i więcej',
+    'use_cases_meta_description' => 'Bezpieczna wymiana poufnych danych w każdej sytuacji: hasła, wrażliwe dokumenty, klucze API i więcej.',
+    'use_cases_intro' => 'Każdego dnia poufne dane wędrują otwartym tekstem przez e-mail, Slack lub SMS. Secret Drop zastępuje te ryzykowne nawyki bezpieczną wymianą, szyfrowaną end-to-end.',
     'usecase1_title' => 'Hasła i dane logowania',
     'usecase1_desc' => 'Nowy członek zespołu potrzebuje dostępu. Zamiast e-maila, który każdy może przeczytać, wyślij link, który ulega samozniszczeniu po odczytaniu.',
     'usecase1_example' => 'Dostęp do CMS, współdzielone konta, dane Wi-Fi dla wykonawcy.',
@@ -266,7 +282,7 @@ return [
     'legal_data_not_stored' => 'Dane NIE przechowywane:',
     'legal_data_not_item_plaintext' => 'Jawna treść sekretów',
     'legal_data_not_item_key' => 'Klucze szyfrujące (przesyłane tylko przez prywatną część linku)',
-    'legal_data_not_item_file_meta' => 'Nazwa, typ i rozmiar pliku (zaszyfrowane z zawartością)',
+    'legal_data_not_item_file_meta' => 'Nazwa i typ pliku (zaszyfrowane z zawartością)',
     'legal_cookies_title' => 'Pliki cookie',
     'legal_cookies_text' => 'Ta strona używa tylko niezbędnych technicznych plików cookie (sesja, preferencje motywu). Nie używamy plików cookie śledzących ani reklamowych.',
     'legal_cookies_cnil' => 'Zgodnie z zaleceniami CNIL (francuskiego organu ochrony danych), te ściśle niezbędne pliki cookie są zwolnione z wymogów zgody.',
@@ -305,11 +321,19 @@ return [
     'admin_mode' => 'Tryb',
     'admin_limited_views' => '{1} :count wyświetlenie maks.|[2,*] :count wyświetleń maks.',
     'admin_unlimited' => 'Bez limitu',
+    'admin_hour' => 'godzina',
     'admin_day' => 'dzień',
     'admin_days' => 'dni',
     'admin_extend' => 'Przedłuż',
     'admin_revoke' => 'Unieważnij',
     'admin_revoke_confirm' => 'Czy na pewno chcesz unieważnić ten sekret? Ta akcja jest nieodwracalna.',
+    'admin_error_connection' => 'Błąd połączenia. Spróbuj ponownie.',
+    'admin_error_not_found' => 'Nie znaleziono sekretu.',
+    'admin_error_already_revoked' => 'Ten sekret został już unieważniony.',
+    'admin_error_already_consumed' => 'Ten sekret został już odczytany.',
+    'admin_error_revoked' => 'Ten sekret został unieważniony.',
+    'admin_error_revoke' => 'Błąd podczas unieważniania.',
+    'admin_error_extend' => 'Błąd podczas przedłużania.',
 
     // Magic link email
     'email_magic_link_subject' => 'Twój link dostępu do Secret Drop',
@@ -328,6 +352,7 @@ return [
     'superadmin_dashboard_subtitle' => 'Anonimowe dane użycia Twojej instancji Secret Drop.',
 
     // Periods
+    'period_today' => 'Dzisiaj',
     'period_7d' => 'Ostatnie 7 dni',
     'period_30d' => 'Ostatnie 30 dni',
     'period_90d' => 'Ostatnie 90 dni',
@@ -500,4 +525,26 @@ return [
     'val_days_integer' => 'Liczba dni musi być liczbą całkowitą.',
     'val_days_min' => 'Liczba dni musi wynosić co najmniej 1.',
     'val_days_max' => 'Liczba dni nie może przekraczać 30.',
+
+    // Monitoring
+    'monitoring_title' => 'Monitoring',
+    'stat_errors_4xx' => 'Błędy klienta (4xx)',
+    'stat_errors_5xx' => 'Błędy serwera (5xx)',
+    'stat_errors_422' => 'Walidacja (422)',
+    'stat_errors_429' => 'Limit zapytań (429)',
+    'chart_error_trends' => 'Trendy błędów',
+    'chart_error_breakdown' => 'Podział błędów',
+    'stat_total_errors' => 'łącznie',
+    'no_errors' => 'Brak błędów w tym okresie',
+    'hint_errors_4xx' => 'Łączna liczba błędów klienta (400-499). Obejmuje strony nieznalezione, błędy walidacji i ograniczenia częstotliwości. Wysoka liczba może wskazywać na skanowanie lub błędne linki.',
+    'hint_errors_5xx' => 'Łączna liczba błędów serwera (500-599). Każda wartość powyżej 0 oznacza błąd lub problem z infrastrukturą — sprawdź logi natychmiast.',
+    'hint_errors_422' => 'Żądania odrzucone przez walidację (nieprawidłowy format danych, niepoprawne rozmiary pól kryptograficznych). Nagły wzrost może wskazywać na niewłaściwe użycie API lub ataki z uszkodzonymi danymi.',
+    'hint_errors_429' => 'Żądania zablokowane przez ograniczenie częstotliwości. Nagły wzrost wskazuje na nadużycie lub zautomatyzowane ataki na usługę.',
+
+    // Strukturalna walidacja szyfrowania
+    'val_invalid_base64url' => 'Wartość musi być prawidłowym ciągiem zakodowanym w Base64URL.',
+    'val_invalid_byte_length' => 'Nieprawidłowa długość bajtów: oczekiwano :expected, otrzymano :actual.',
+    'val_min_byte_length' => 'Minimalna długość bajtów to :min, otrzymano :actual.',
+    'val_salt_iv2_consistency' => 'Salt i IV2 muszą być oba obecne lub oba nieobecne.',
+    'val_passphrase_requires_salt' => 'Flaga hasła wymaga obecności salt i IV2.',
 ];

@@ -3,8 +3,9 @@
 return [
     // App
     'app_description' => 'Deel wachtwoorden en vertrouwelijke bestanden zonder ze ooit bloot te stellen. End-to-end versleuteld. Zelfvernietigend. De server ziet niets.',
+    'home_title' => 'Deel geheimen veilig met zero-knowledge-encryptie',
     'home_hook' => 'Stop met wachtwoorden in platte tekst te versturen.',
-    'home_meta_description' => 'Deel een wachtwoord, API-sleutel of vertrouwelijk bestand via een veilige, zelfvernietigende link. End-to-end versleuteld — de server ziet uw gegevens nooit.',
+    'home_meta_description' => 'Veilige uitwisseling van vertrouwelijke gegevens via een zelfvernietigende link. Wachtwoorden, API-sleutels, bestanden — end-to-end versleuteld, de server ziet niets.',
     'home_view_source' => 'Broncode bekijken',
 
     // Features
@@ -12,6 +13,9 @@ return [
     'feature_zero_knowledge' => 'Veilig by design: onleesbaar, zelfs voor ons',
     'feature_auto_destroy' => 'U bepaalt wanneer het zichzelf vernietigt',
     'feature_expiration' => 'Geen account, geen wachtwoord: niets te hacken',
+    'feature_hosted_eu' => 'Gehost in Frankrijk, EU-jurisdictie',
+    'feature_no_tracking' => 'Geen cookies van derden, geen trackingdiensten',
+    'feature_hosted_no_tracking' => 'Gehost in Frankrijk, geen trackingdiensten',
 
     // Form labels
     'your_secret' => 'Uw geheim',
@@ -101,7 +105,7 @@ return [
     'error_not_found' => 'Geheim niet gevonden',
     'error_unavailable' => 'Geheim niet beschikbaar',
     'error_generic' => 'Fout',
-    'secret_not_exist' => 'Dit geheim bestaat niet of is verwijderd.',
+    'secret_not_exist' => 'Dit geheim is niet gevonden of is niet meer beschikbaar.',
     'secret_expired' => 'Dit geheim is verlopen en niet meer toegankelijk.',
     'secret_revoked' => 'Dit geheim is ingetrokken door de maker.',
     'secret_max_views' => 'Dit geheim heeft het maximale aantal weergaven bereikt en is niet meer toegankelijk.',
@@ -147,8 +151,9 @@ return [
 
     // How it works page
     'how_it_works_title' => 'Hoe het werkt',
-    'how_it_works_meta_description' => 'Ontdek hoe Secret Drop uw gegevens beschermt met end-to-end encryptie. De server ziet nooit uw geheimen in platte tekst.',
-    'how_it_works_intro' => 'Wanneer u een wachtwoord deelt via e-mail of Slack, blijft het leesbaar voor elke tussenpersoon. Secret Drop doet het omgekeerde: uw geheim wordt in uw browser versleuteld voordat het uw scherm verlaat. De server ontvangt alleen ruis.',
+    'how_it_works_meta_title' => 'Hoe zero-knowledge-encryptie uw gegevens beschermt',
+    'how_it_works_meta_description' => 'Ontdek hoe Secret Drop een veilige uitwisseling van vertrouwelijke gegevens garandeert dankzij end-to-end encryptie. De server ziet nooit uw geheimen in platte tekst.',
+    'how_it_works_intro' => 'Wanneer u een wachtwoord deelt via e-mail of Slack, blijft het leesbaar voor elke tussenpersoon. Secret Drop garandeert een veilige uitwisseling van uw vertrouwelijke gegevens: alles wordt in uw browser versleuteld voordat het uw scherm verlaat. De server ontvangt alleen ruis.',
     'how_it_works_diagram_title' => 'Hoe uw geheim beschermd wordt',
     'how_step1_title' => 'U schrijft uw geheim',
     'how_step1_desc' => 'U voert uw bericht in of selecteert een bestand in uw browser.',
@@ -176,6 +181,7 @@ return [
 
     // FAQ (structured data)
     'faq_title' => 'Veelgestelde vragen',
+    'faq_meta_title' => 'FAQ — Versleuteld delen van geheimen en bestanden',
     'faq_intro' => 'Alles wat u moet weten voordat u ons een geheim toevertrouwt.',
     'faq_cta' => 'Geheim aanmaken',
     'faq_q1' => 'Is Secret Drop gratis?',
@@ -214,11 +220,21 @@ return [
     'sbd_fragment_desc' => 'De decryptiesleutel leeft in het URL-fragment (na de #). Door het HTTP-protocol wordt dit deel nooit naar de server gestuurd — niet in verzoeken, niet in logs, nergens.',
     'sbd_destroy_title' => 'Definitieve vernietiging',
     'sbd_destroy_desc' => 'Een gelezen geheim bestaat niet meer. De versleutelde inhoud wordt van de server verwijderd — alleen een spoor van het bestaan blijft over. Vervaltijden en leeslimieten beperken het blootstellingsvenster tot het absolute minimum.',
+    'sbd_hosted_title' => 'Gehost in Frankrijk',
+    'sbd_hosted_desc' => 'Infrastructuur gehost in Frankrijk, onder de jurisdictie van de Europese Unie. Uw gegevens vallen onder de AVG en verlaten de EU niet. Geen overdracht naar derde landen, geen uitzondering.',
+    'sbd_notrack_title' => 'Geen tracking',
+    'sbd_notrack_desc' => 'Geen cookies van derden, geen trackingpixels, geen externe diensten. Er worden geen gegevens gedeeld met derden. Uw activiteit op deze site wordt niet geprofileerd, verkocht of gemonetiseerd.',
+
+    // Trust badges (footer)
+    'trust_hosted_fr' => 'Gehost in Frankrijk',
+    'trust_no_tracking' => 'Geen trackers',
+    'trust_client_encryption' => 'Versleuteling aan clientzijde',
 
     // Use cases page
     'use_cases_title' => 'Toepassingen',
-    'use_cases_meta_description' => 'Ontdek hoe u Secret Drop kunt gebruiken: wachtwoorden delen, vertrouwelijke documenten, API-sleutels en meer.',
-    'use_cases_intro' => 'Elke dag reizen wachtwoorden in platte tekst via e-mail, Slack of SMS. Zo vervangt Secret Drop deze riskante gewoonten.',
+    'use_cases_meta_title' => 'Toepassingen: wachtwoorden, bestanden, API-sleutels & meer',
+    'use_cases_meta_description' => 'Veilige uitwisseling van vertrouwelijke gegevens voor elke situatie: wachtwoorden, gevoelige documenten, API-sleutels en meer.',
+    'use_cases_intro' => 'Elke dag reizen vertrouwelijke gegevens in platte tekst via e-mail, Slack of SMS. Secret Drop vervangt deze riskante gewoonten door een veilige uitwisseling, end-to-end versleuteld.',
     'usecase1_title' => 'Wachtwoorden en inloggegevens',
     'usecase1_desc' => 'Een nieuw teamlid heeft toegang nodig. Stuur in plaats van een e-mail die iedereen kan lezen, een link die zichzelf vernietigt na het lezen.',
     'usecase1_example' => 'CMS-toegang, gedeelde accounts, Wi-Fi-gegevens voor een leverancier.',
@@ -237,7 +253,7 @@ return [
     'usecase6_title' => 'Persoonlijke informatie',
     'usecase6_desc' => 'Kaartnummers, pincodes, medische informatie — gegevens die nooit in een chatgeschiedenis mogen blijven.',
     'usecase6_example' => 'Kaartnummer voor een aankoop, noodtoegangscodes.',
-    'use_cases_tips_title' => 'Best practices',
+    'use_cases_tips_title' => 'Beste werkwijzen',
     'use_cases_tip1' => 'Gebruik een korte vervaltijd (1 uur of 1 dag) voor zeer gevoelige informatie.',
     'use_cases_tip2' => 'Stel de leeslimiet in op 1 om te garanderen dat het geheim slechts één keer kan worden gelezen.',
     'use_cases_tip3' => 'Voor maximale beveiliging, gebruik de gesplitste modus en verstuur de sleutel via een ander kanaal.',
@@ -266,7 +282,7 @@ return [
     'legal_data_not_stored' => 'NIET opgeslagen gegevens:',
     'legal_data_not_item_plaintext' => 'Onversleutelde inhoud van geheimen',
     'legal_data_not_item_key' => 'Encryptiesleutels (alleen verzonden via het privédeel van de link)',
-    'legal_data_not_item_file_meta' => 'Bestandsnaam, -type en -grootte (versleuteld met inhoud)',
+    'legal_data_not_item_file_meta' => 'Bestandsnaam en -type (versleuteld met inhoud)',
     'legal_cookies_title' => 'Cookies',
     'legal_cookies_text' => 'Deze website gebruikt alleen essentiële technische cookies (sessie, themavoorkeur). Er worden geen tracking- of advertentiecookies gebruikt.',
     'legal_cookies_cnil' => 'In overeenstemming met de CNIL-aanbevelingen (Franse gegevensbeschermingsautoriteit) zijn deze strikt noodzakelijke cookies vrijgesteld van toestemmingsvereisten.',
@@ -305,11 +321,19 @@ return [
     'admin_mode' => 'Modus',
     'admin_limited_views' => '{1} :count weergave max|[2,*] :count weergaven max',
     'admin_unlimited' => 'Onbeperkt',
+    'admin_hour' => 'uur',
     'admin_day' => 'dag',
     'admin_days' => 'dagen',
     'admin_extend' => 'Verlengen',
     'admin_revoke' => 'Intrekken',
     'admin_revoke_confirm' => 'Weet u zeker dat u dit geheim wilt intrekken? Deze actie is onomkeerbaar.',
+    'admin_error_connection' => 'Verbindingsfout. Probeer het opnieuw.',
+    'admin_error_not_found' => 'Geheim niet gevonden.',
+    'admin_error_already_revoked' => 'Dit geheim is al ingetrokken.',
+    'admin_error_already_consumed' => 'Dit geheim is al geraadpleegd.',
+    'admin_error_revoked' => 'Dit geheim is ingetrokken.',
+    'admin_error_revoke' => 'Fout bij het intrekken.',
+    'admin_error_extend' => 'Fout bij het verlengen.',
 
     // Magic link email
     'email_magic_link_subject' => 'Uw toegangslink voor Secret Drop',
@@ -328,6 +352,7 @@ return [
     'superadmin_dashboard_subtitle' => 'Anonieme gebruiksgegevens voor uw Secret Drop-instantie.',
 
     // Periods
+    'period_today' => 'Vandaag',
     'period_7d' => 'Laatste 7 dagen',
     'period_30d' => 'Laatste 30 dagen',
     'period_90d' => 'Laatste 90 dagen',
@@ -500,4 +525,26 @@ return [
     'val_days_integer' => 'Het aantal dagen moet een geheel getal zijn.',
     'val_days_min' => 'Het aantal dagen moet minstens 1 zijn.',
     'val_days_max' => 'Het aantal dagen mag niet meer dan 30 zijn.',
+
+    // Monitoring
+    'monitoring_title' => 'Monitoring',
+    'stat_errors_4xx' => 'Clientfouten (4xx)',
+    'stat_errors_5xx' => 'Serverfouten (5xx)',
+    'stat_errors_422' => 'Validatie (422)',
+    'stat_errors_429' => 'Snelheidslimiet (429)',
+    'chart_error_trends' => 'Foutentrends',
+    'chart_error_breakdown' => 'Foutenanalyse',
+    'stat_total_errors' => 'totaal',
+    'no_errors' => 'Geen fouten in deze periode',
+    'hint_errors_4xx' => 'Totaal clientfouten (400-499). Omvat niet-gevonden pagina\'s, validatiefouten en snelheidslimitering. Een hoog aantal kan duiden op scanning of foutieve links.',
+    'hint_errors_5xx' => 'Totaal serverfouten (500-599). Elke waarde boven 0 betekent een bug of infrastructuurprobleem — controleer de logs onmiddellijk.',
+    'hint_errors_422' => 'Verzoeken afgewezen door validatie (ongeldig payloadformaat, verkeerde cryptografische veldgroottes). Een piek kan duiden op API-misbruik of aanvallen met onjuiste gegevens.',
+    'hint_errors_429' => 'Verzoeken geblokkeerd door snelheidslimitering. Een piek duidt op misbruik of geautomatiseerde aanvallen tegen de dienst.',
+
+    // Structurele versleutelingsvalidatie
+    'val_invalid_base64url' => 'De waarde moet een geldige Base64URL-gecodeerde tekenreeks zijn.',
+    'val_invalid_byte_length' => 'Ongeldige bytelengte: :expected verwacht, :actual ontvangen.',
+    'val_min_byte_length' => 'Minimale bytelengte is :min, :actual ontvangen.',
+    'val_salt_iv2_consistency' => 'Salt en IV2 moeten beide aanwezig of beide afwezig zijn.',
+    'val_passphrase_requires_salt' => 'De passphrase-vlag vereist de aanwezigheid van salt en IV2.',
 ];

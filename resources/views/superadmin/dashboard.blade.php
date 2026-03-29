@@ -9,30 +9,26 @@
         <div class="sticky top-0 z-40 -mx-4 md:-mx-8 px-4 md:px-8 py-3 sm:py-4 mb-4 bg-gray-50/95 dark:bg-slate-900/95 backdrop-blur-sm">
             <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 sm:gap-4">
                 <div class="flex items-center gap-4">
-                    <div class="logo-icon flex items-center justify-center w-12 h-12 rounded-xl bg-linear-to-br from-amber-500/0 to-orange-600 shrink-0" style="--accent-rgb: 217, 119, 6">
-                        <x-icon.chart-bar class="w-6 h-6 text-white" />
+                    <div class="logo-icon flex items-center justify-center w-14 h-14 rounded-2xl bg-linear-to-br from-amber-500/0 to-orange-600 shrink-0" style="--accent-rgb: 217, 119, 6">
+                        <x-icon.chart-bar class="w-7 h-7 text-white" />
                     </div>
                     <div>
                     <h1 class="text-xl sm:text-3xl font-bold text-gray-900 dark:text-white inline-flex items-center gap-2">
                         {{ __('messages.superadmin_dashboard_title') }}
-                        <svg id="pollRing" class="shrink-0 -rotate-90" width="24" height="24" viewBox="0 0 28 28">
-                            <circle cx="14" cy="14" r="12" fill="none" stroke="currentColor" class="text-gray-200 dark:text-slate-700" stroke-width="2.5" />
-                            <circle id="pollRingProgress" cx="14" cy="14" r="12" fill="none" stroke="currentColor" class="text-amber-500" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="75.4" stroke-dashoffset="75.4" />
-                        </svg>
+                        <x-poll-ring color="text-amber-500" />
                     </h1>
                     <p class="mt-0.5 sm:mt-1 text-sm sm:text-base text-gray-600 dark:text-slate-400">{{ __('messages.superadmin_dashboard_subtitle') }}</p>
                     </div>
                 </div>
                 <div class="flex items-center gap-4">
-                    <form method="GET" class="flex items-center gap-2" x-data>
-                        <select name="period" x-on:change="$el.form.submit()" aria-label="{{ __('messages.a11y_period_selector') }}" class="px-4 py-2 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-600 rounded-xl text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500/50">
-                            <option value="7d" {{ $period === '7d' ? 'selected' : '' }}>{{ __('messages.period_7d') }}</option>
-                            <option value="30d" {{ $period === '30d' ? 'selected' : '' }}>{{ __('messages.period_30d') }}</option>
-                            <option value="90d" {{ $period === '90d' ? 'selected' : '' }}>{{ __('messages.period_90d') }}</option>
-                            <option value="1y" {{ $period === '1y' ? 'selected' : '' }}>{{ __('messages.period_1y') }}</option>
-                            <option value="all" {{ $period === 'all' ? 'selected' : '' }}>{{ __('messages.period_all') }}</option>
-                        </select>
-                    </form>
+                    <select id="periodSelector" aria-label="{{ __('messages.a11y_period_selector') }}" style="--accent-rgb: 217, 119, 6" class="px-4 py-2 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-600 rounded-xl text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500/50">
+                        <option value="today" {{ $period === 'today' ? 'selected' : '' }}>{{ __('messages.period_today') }}</option>
+                        <option value="7d" {{ $period === '7d' ? 'selected' : '' }}>{{ __('messages.period_7d') }}</option>
+                        <option value="30d" {{ $period === '30d' ? 'selected' : '' }}>{{ __('messages.period_30d') }}</option>
+                        <option value="90d" {{ $period === '90d' ? 'selected' : '' }}>{{ __('messages.period_90d') }}</option>
+                        <option value="1y" {{ $period === '1y' ? 'selected' : '' }}>{{ __('messages.period_1y') }}</option>
+                        <option value="all" {{ $period === 'all' ? 'selected' : '' }}>{{ __('messages.period_all') }}</option>
+                    </select>
                     <form action="{{ route('superadmin.logout') }}" method="POST">
                         @csrf
                         <button type="submit" class="px-4 py-2 text-gray-600 dark:text-slate-400 hover:text-red-600 dark:hover:text-red-400 transition">
@@ -75,7 +71,7 @@
         <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
             <x-stat-card kpi="secrets_created" :value="number_format(($totals['secrets_created_text'] ?? 0) + ($totals['secrets_created_file'] ?? 0))" :label="__('messages.stat_secrets_created')" />
             <x-stat-card kpi="secrets_read" :value="number_format($totals['secrets_read'] ?? 0)" :label="__('messages.stat_secrets_read')" />
-            <x-stat-card kpi="active_secrets" :value="number_format($activeSecrets)" :label="__('messages.stat_active_secrets')" />
+            <x-stat-card kpi="active_secrets" :value="number_format($systemHealth['active_secrets'])" :label="__('messages.stat_active_secrets')" />
             <x-stat-card kpi="read_rate" :value="$readRate !== null ? number_format($readRate, 1) . '%' : '-'" :label="__('messages.stat_read_rate')" />
             <x-stat-card kpi="avg_first_read" :value="$formattedDelay" :label="__('messages.stat_avg_first_read')" />
             <x-stat-card kpi="files_shared" :value="number_format($totals['secrets_created_file'] ?? 0)" :label="__('messages.stat_files_shared')" />
@@ -130,6 +126,75 @@
                 <canvas id="adminActivityChart" role="img" aria-label="{{ __('messages.chart_admin_activity') }}"></canvas>
             </div>
         </x-card>
+
+        {{-- Monitoring section --}}
+        <h2 class="text-xl font-bold text-gray-900 dark:text-white mt-10 mb-6">{{ __('messages.monitoring_title') }}</h2>
+
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
+            <x-card class="p-6 overflow-visible relative z-10">
+                <div class="text-3xl font-bold text-gray-900 dark:text-white" data-kpi="errors_4xx">{{ number_format($errorStats['total_4xx']) }}</div>
+                <div class="flex items-center gap-1 mt-1">
+                    <span class="text-sm text-gray-600 dark:text-slate-400">{{ __('messages.stat_errors_4xx') }}</span>
+                    <x-hint-tooltip id="hint4xx" :text="__('messages.hint_errors_4xx')" direction="below" />
+                </div>
+            </x-card>
+            <x-card class="p-6 overflow-visible relative z-10">
+                <div class="text-3xl font-bold text-gray-900 dark:text-white" data-kpi="errors_5xx">{{ number_format($errorStats['total_5xx']) }}</div>
+                <div class="flex items-center gap-1 mt-1">
+                    <span class="text-sm text-gray-600 dark:text-slate-400">{{ __('messages.stat_errors_5xx') }}</span>
+                    <x-hint-tooltip id="hint5xx" :text="__('messages.hint_errors_5xx')" direction="below" />
+                </div>
+            </x-card>
+            <x-card class="p-6 overflow-visible relative z-10">
+                <div class="text-3xl font-bold text-gray-900 dark:text-white" data-kpi="errors_422">{{ number_format($errorStats['by_code'][422] ?? 0) }}</div>
+                <div class="flex items-center gap-1 mt-1">
+                    <span class="text-sm text-gray-600 dark:text-slate-400">{{ __('messages.stat_errors_422') }}</span>
+                    <x-hint-tooltip id="hint422" :text="__('messages.hint_errors_422')" direction="below" />
+                </div>
+            </x-card>
+            <x-card class="p-6 overflow-visible relative z-10">
+                <div class="text-3xl font-bold text-gray-900 dark:text-white" data-kpi="errors_429">{{ number_format($errorStats['by_code'][429] ?? 0) }}</div>
+                <div class="flex items-center gap-1 mt-1">
+                    <span class="text-sm text-gray-600 dark:text-slate-400">{{ __('messages.stat_errors_429') }}</span>
+                    <x-hint-tooltip id="hint429" :text="__('messages.hint_errors_429')" direction="below" />
+                </div>
+            </x-card>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            <x-card class="p-6">
+                <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">{{ __('messages.chart_error_trends') }}</h2>
+                <div class="h-56">
+                    <canvas id="errorTrendsChart" role="img" aria-label="{{ __('messages.chart_error_trends') }}"></canvas>
+                </div>
+            </x-card>
+            <x-card class="p-6">
+                <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">{{ __('messages.chart_error_breakdown') }}</h2>
+                <div id="pollErrorCodes" class="space-y-2">
+                    @php
+                        $byCode = $errorStats['by_code'] ?? [];
+                        $maxError = max(1, count($byCode) > 0 ? max($byCode) : 1);
+                    @endphp
+                    @forelse($byCode as $code => $count)
+                        @php
+                            $pct = ($count / $maxError) * 100;
+                            $color = $code >= 500 ? 'bg-red-500' : ($code >= 429 ? 'bg-orange-500' : ($code >= 422 ? 'bg-amber-500' : 'bg-gray-500'));
+                        @endphp
+                        <div class="flex items-center justify-between text-sm">
+                            <span class="text-gray-700 dark:text-slate-300 font-mono font-medium w-10">{{ $code }}</span>
+                            <div class="flex items-center gap-2 flex-1 ml-3">
+                                <div class="flex-1 h-1.5 bg-gray-200 dark:bg-slate-700 rounded-full overflow-hidden">
+                                    <div class="h-full {{ $color }} rounded-full" style="width: {{ min($pct, 100) }}%"></div>
+                                </div>
+                                <span class="text-gray-900 dark:text-white font-medium w-12 text-right">{{ number_format($count) }}</span>
+                            </div>
+                        </div>
+                    @empty
+                        <p class="text-sm text-gray-400 dark:text-slate-500">{{ __('messages.no_errors') }}</p>
+                    @endforelse
+                </div>
+            </x-card>
+        </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <x-card class="p-6">
@@ -351,7 +416,7 @@
                 @if(count($deviceStats) > 0)
                     @php
                         $totalDevices = max(1, array_sum($deviceStats));
-                        $deviceIcons = ['desktop' => '🖥️', 'mobile' => '📱', 'tablet' => '📟'];
+                        $deviceIconComponents = ['desktop' => 'icon.desktop', 'mobile' => 'icon.mobile', 'tablet' => 'icon.tablet'];
                         $deviceLabels = ['desktop' => __('messages.stat_device_desktop'), 'mobile' => __('messages.stat_device_mobile'), 'tablet' => __('messages.stat_device_tablet')];
                     @endphp
                     <div class="space-y-3">
@@ -359,7 +424,12 @@
                             @php $pct = ($count / $totalDevices) * 100; @endphp
                             <div>
                                 <div class="flex items-center justify-between text-sm mb-1">
-                                    <span class="text-gray-700 dark:text-slate-300 font-medium">{{ $deviceIcons[$device] ?? '❓' }} {{ $deviceLabels[$device] ?? $device }}</span>
+                                    <span class="text-gray-700 dark:text-slate-300 font-medium flex items-center gap-1.5">
+                                        @if(isset($deviceIconComponents[$device]))
+                                            <x-dynamic-component :component="$deviceIconComponents[$device]" class="w-4 h-4" />
+                                        @endif
+                                        {{ $deviceLabels[$device] ?? $device }}
+                                    </span>
                                     <span class="text-gray-900 dark:text-white font-medium">{{ number_format($count) }} <span class="text-gray-400 dark:text-slate-500 text-xs">({{ number_format($pct, 1) }}%)</span></span>
                                 </div>
                                 <div class="w-full h-2 bg-gray-200 dark:bg-slate-700 rounded-full overflow-hidden">
@@ -449,7 +519,7 @@
         pageviewsDaily: @json($pageviews['daily']),
         avgFirstReadDelay: @json($avgFirstReadDelay),
         currentDiskUsage: @json($currentDiskUsage),
-        activeSecrets: @json($activeSecrets),
+        activeSecrets: @json($systemHealth['active_secrets']),
         readRate: @json($readRate),
         creatorConcentration: @json($creatorConcentration),
         systemHealth: @json($systemHealth),
@@ -486,6 +556,17 @@
             ],
             stat_visitors: '{{ __('messages.stat_visitors') }}',
             stat_bots: '{{ __('messages.stat_bots') }}'
+        },
+        deviceLabels: {
+            desktop: '{{ __('messages.stat_device_desktop') }}',
+            mobile: '{{ __('messages.stat_device_mobile') }}',
+            tablet: '{{ __('messages.stat_device_tablet') }}'
+        },
+        errorStats: @json($errorStats),
+        errorTranslations: {
+            errors_4xx: '{{ __('messages.stat_errors_4xx') }}',
+            errors_5xx: '{{ __('messages.stat_errors_5xx') }}',
+            no_errors: '{{ __('messages.no_errors') }}'
         }
     };
 </script>

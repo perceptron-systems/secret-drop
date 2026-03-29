@@ -45,10 +45,10 @@ class StatsTrackingTest extends TestCase
 
         $this->postJson('/api/secrets', [
             'type' => 'text',
-            'ciphertext' => 'test_content',
+            'ciphertext' => 'ZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGQ',
             'cipher_meta' => [
                 'alg' => 'AES-256-GCM',
-                'iv' => 'testiv',
+                'iv' => 'YWFhYWFhYWFhYWFh',
                 'version' => 1,
             ],
             'expiration' => '7d',
@@ -75,7 +75,7 @@ class StatsTrackingTest extends TestCase
             'encrypted_file' => $file,
             'cipher_meta' => json_encode([
                 'alg' => 'AES-256-GCM',
-                'iv' => 'testiv',
+                'iv' => 'YWFhYWFhYWFhYWFh',
                 'version' => 1,
             ]),
             'expiration' => '7d',
@@ -103,10 +103,10 @@ class StatsTrackingTest extends TestCase
 
         $this->postJson('/api/secrets', [
             'type' => 'text',
-            'ciphertext' => 'max_views_content',
+            'ciphertext' => 'ZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGQ',
             'cipher_meta' => [
                 'alg' => 'AES-256-GCM',
-                'iv' => 'testiv',
+                'iv' => 'YWFhYWFhYWFhYWFh',
                 'version' => 1,
             ],
             'expiration' => '7d',
@@ -143,10 +143,10 @@ class StatsTrackingTest extends TestCase
         // Create secret with max_views = 1
         $response = $this->postJson('/api/secrets', [
             'type' => 'text',
-            'ciphertext' => 'max_views_1',
+            'ciphertext' => 'ZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGQ',
             'cipher_meta' => [
                 'alg' => 'AES-256-GCM',
-                'iv' => 'testiv',
+                'iv' => 'YWFhYWFhYWFhYWFh',
                 'version' => 1,
             ],
             'expiration' => '7d',
@@ -176,10 +176,10 @@ class StatsTrackingTest extends TestCase
 
         $this->postJson('/api/secrets', [
             'type' => 'text',
-            'ciphertext' => 'heatmap_test',
+            'ciphertext' => 'ZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGQ',
             'cipher_meta' => [
                 'alg' => 'AES-256-GCM',
-                'iv' => 'testiv',
+                'iv' => 'YWFhYWFhYWFhYWFh',
                 'version' => 1,
             ],
             'expiration' => '7d',
@@ -224,10 +224,10 @@ class StatsTrackingTest extends TestCase
         // Create and immediately read a secret
         $response = $this->postJson('/api/secrets', [
             'type' => 'text',
-            'ciphertext' => 'delay_test',
+            'ciphertext' => 'ZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGQ',
             'cipher_meta' => [
                 'alg' => 'AES-256-GCM',
-                'iv' => 'testiv',
+                'iv' => 'YWFhYWFhYWFhYWFh',
                 'version' => 1,
             ],
             'expiration' => '7d',
@@ -277,8 +277,8 @@ class StatsTrackingTest extends TestCase
             'token' => $this->tokenService->generatePublicToken(),
             'admin_token_hash' => $this->tokenService->generateAdminToken()['hash'],
             'type' => 'text',
-            'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'testiv', 'version' => 1],
-            'ciphertext' => 'test_content',
+            'cipher_meta' => ['alg' => 'AES-256-GCM', 'iv' => 'YWFhYWFhYWFhYWFh', 'version' => 1],
+            'ciphertext' => 'ZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGQ',
             'expire_at' => now()->addDay(),
         ], $attributes));
     }

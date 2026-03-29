@@ -43,6 +43,18 @@ class StatsService
 
     public const HEATMAP_SECRETS_READ = 'secrets_read';
 
+    public const HTTP_ERRORS_4XX = 'http_errors_4xx';
+
+    public const HTTP_ERRORS_5XX = 'http_errors_5xx';
+
+    public const HTTP_ERRORS_404 = 'http_errors_404';
+
+    public const HTTP_ERRORS_422 = 'http_errors_422';
+
+    public const HTTP_ERRORS_429 = 'http_errors_429';
+
+    public const HTTP_ERRORS_500 = 'http_errors_500';
+
     public function increment(string $metric, int $amount = 1): void
     {
         $date = now()->toDateString();
@@ -66,6 +78,7 @@ class StatsService
     public function getStats(string $period = '30d'): array
     {
         $days = match ($period) {
+            'today' => 0,
             '7d' => 7,
             '30d' => 30,
             '90d' => 90,
@@ -74,7 +87,7 @@ class StatsService
             default => 30,
         };
 
-        $startDate = $days ? now()->subDays($days)->toDateString() : null;
+        $startDate = $days !== null ? now()->subDays($days)->toDateString() : null;
 
         $query = DB::table('stats_daily')
             ->select('metric', 'date', 'count')
@@ -176,6 +189,32 @@ class StatsService
         return $heatmap;
     }
 
+    /**
+     * @return array<int, int>
+     */
+    public function getErrorCodeBreakdown(?string $startDate = null): array
+    {
+        $query = DB::table('stats_daily')
+            ->select('metric', DB::raw('SUM(count) as total'))
+            ->where('metric', 'like', 'http_errors_%')
+            ->whereNotIn('metric', [self::HTTP_ERRORS_4XX, self::HTTP_ERRORS_5XX])
+            ->groupBy('metric')
+            ->orderByDesc('total');
+
+        if ($startDate) {
+            $query->where('date', '>=', $startDate);
+        }
+
+        $result = [];
+
+        foreach ($query->get() as $row) {
+            $code = (int) str_replace('http_errors_', '', $row->metric);
+            $result[$code] = (int) $row->total;
+        }
+
+        return $result;
+    }
+
     public function trackFirstReadDelay(int $delaySeconds): void
     {
         $this->increment(self::FIRST_READ_DELAY_TOTAL, $delaySeconds);
@@ -212,21 +251,21 @@ class StatsService
 
     public function getReadRate(?string $startDate = null): ?float
     {
-        $query = Secret::query();
+        $query = DB::table('secrets')
+            ->selectRaw('COUNT(*) as total, COUNT(first_read_at) as read_count');
 
         if ($startDate) {
             $query->where('created_at', '>=', $startDate);
         }
 
-        $total = $query->count();
+        $result = $query->first();
+        $total = $result ? (int) $result->total : 0;
 
         if ($total === 0) {
             return null;
         }
 
-        $read = (clone $query)->whereNotNull('first_read_at')->count();
-
-        return ($read / $total) * 100;
+        return ((int) $result->read_count / $total) * 100;
     }
 
     /**
@@ -266,34 +305,31 @@ class StatsService
      */
     public function getSystemHealth(): array
     {
-        $activeSecrets = $this->getActiveSecretsCount();
+        $now = now();
 
-        $totalFiles = count(Storage::disk('secrets')->allFiles());
+        $result = DB::table('secrets')
+            ->selectRaw('
+                SUM(CASE WHEN revoked_at IS NULL
+                    AND (expire_at IS NULL OR expire_at > ?)
+                    AND (max_views IS NULL OR read_count < max_views)
+                    THEN 1 ELSE 0 END) as active_secrets,
+                SUM(CASE WHEN (revoked_at IS NOT NULL
+                    OR (expire_at IS NOT NULL AND expire_at <= ?)
+                    OR (max_views IS NOT NULL AND read_count >= max_views))
+                    AND (ciphertext IS NOT NULL OR file_path IS NOT NULL)
+                    THEN 1 ELSE 0 END) as pending_cleanup
+            ', [$now, $now])
+            ->first();
 
-        $pendingCleanup = Secret::query()
-            ->where(function ($q) {
-                $q->where(function ($q2) {
-                    $q2->whereNotNull('revoked_at');
-                })
-                ->orWhere(function ($q2) {
-                    $q2->whereNotNull('expire_at')
-                        ->where('expire_at', '<=', now());
-                })
-                ->orWhere(function ($q2) {
-                    $q2->whereNotNull('max_views')
-                        ->whereColumn('read_count', '>=', 'max_views');
-                });
-            })
-            ->where(function ($q) {
-                $q->whereNotNull('ciphertext')
-                    ->orWhereNotNull('file_path');
-            })
-            ->count();
+        $path = Storage::disk('secrets')->path('');
+        $totalFiles = is_dir($path)
+            ? count(Storage::disk('secrets')->allFiles())
+            : 0;
 
         return [
-            'active_secrets' => $activeSecrets,
+            'active_secrets' => (int) ($result->active_secrets ?? 0),
             'total_files' => $totalFiles,
-            'pending_cleanup' => $pendingCleanup,
+            'pending_cleanup' => (int) ($result->pending_cleanup ?? 0),
         ];
     }
 
@@ -303,15 +339,19 @@ class StatsService
     public function getCurrentDiskUsage(): int
     {
         return Cache::remember('disk_usage_secrets', 3600, function () {
-            $disk = Storage::disk('secrets');
-            $files = $disk->allFiles();
-            $totalSize = 0;
+            $path = Storage::disk('secrets')->path('');
 
-            foreach ($files as $file) {
-                $totalSize += $disk->size($file);
+            if (! is_dir($path)) {
+                return 0;
             }
 
-            return $totalSize;
+            $output = @exec('du -sb '.escapeshellarg(rtrim($path, '/')).' 2>/dev/null');
+
+            if ($output && preg_match('/^(\d+)/', $output, $matches)) {
+                return (int) $matches[1];
+            }
+
+            return 0;
         });
     }
 

@@ -3,8 +3,9 @@
 return [
     // App
     'app_description' => 'Comparta contraseñas y archivos confidenciales sin exponerlos jamás. Cifrado de extremo a extremo. Autodestructivo. El servidor no ve nada.',
+    'home_title' => 'Comparta secretos de forma segura con cifrado zero-knowledge',
     'home_hook' => 'Deje de enviar contraseñas en texto plano.',
-    'home_meta_description' => 'Comparta una contraseña, clave API o archivo confidencial mediante un enlace seguro y autodestructivo. Cifrado de extremo a extremo — el servidor nunca ve sus datos.',
+    'home_meta_description' => 'Intercambio seguro de datos confidenciales a través de un enlace autodestructivo. Contraseñas, claves API, archivos — cifrado de extremo a extremo, el servidor no ve nada.',
     'home_view_source' => 'Ver código fuente',
 
     // Features
@@ -12,6 +13,9 @@ return [
     'feature_zero_knowledge' => 'Seguro por diseño: ilegible, incluso para nosotros',
     'feature_auto_destroy' => 'Usted decide cuándo se autodestruye',
     'feature_expiration' => 'Sin cuenta, sin contraseña: nada que hackear',
+    'feature_hosted_eu' => 'Alojado en Francia, jurisdicción de la UE',
+    'feature_no_tracking' => 'Sin cookies de terceros, sin servicios de rastreo',
+    'feature_hosted_no_tracking' => 'Alojado en Francia, sin servicios de rastreo',
 
     // Form labels
     'your_secret' => 'Tu secreto',
@@ -101,7 +105,7 @@ return [
     'error_not_found' => 'Secreto no encontrado',
     'error_unavailable' => 'Secreto no disponible',
     'error_generic' => 'Error',
-    'secret_not_exist' => 'Este secreto no existe o puede haber sido eliminado.',
+    'secret_not_exist' => 'Este secreto no se encontró o ya no está disponible.',
     'secret_expired' => 'Este secreto ha expirado y ya no es accesible.',
     'secret_revoked' => 'Este secreto fue revocado por su creador.',
     'secret_max_views' => 'Este secreto ha alcanzado su número máximo de visualizaciones y ya no es accesible.',
@@ -147,8 +151,9 @@ return [
 
     // How it works page
     'how_it_works_title' => 'Cómo funciona',
-    'how_it_works_meta_description' => 'Descubre cómo Secret Drop protege tus datos con cifrado de extremo a extremo. El servidor nunca ve tus secretos en texto plano.',
-    'how_it_works_intro' => 'Cuando comparte una contraseña por email o Slack, permanece legible para todos los intermediarios. Secret Drop hace lo contrario: su secreto se cifra en su navegador antes de salir de su pantalla. El servidor solo recibe ruido.',
+    'how_it_works_meta_title' => 'Cómo el cifrado zero-knowledge protege sus datos',
+    'how_it_works_meta_description' => 'Descubre cómo Secret Drop garantiza un intercambio seguro de datos confidenciales mediante cifrado de extremo a extremo. El servidor nunca ve tus secretos en texto plano.',
+    'how_it_works_intro' => 'Cuando comparte una contraseña por email o Slack, permanece legible para todos los intermediarios. Secret Drop garantiza un intercambio seguro de sus datos confidenciales: todo se cifra en su navegador antes de salir de su pantalla. El servidor solo recibe ruido.',
     'how_it_works_diagram_title' => 'Cómo se protege su secreto',
     'how_step1_title' => 'Escribes tu secreto',
     'how_step1_desc' => 'Introduces tu mensaje o seleccionas un archivo en tu navegador.',
@@ -176,6 +181,7 @@ return [
 
     // FAQ (structured data)
     'faq_title' => 'Preguntas frecuentes',
+    'faq_meta_title' => 'FAQ — Intercambio cifrado de secretos y archivos',
     'faq_intro' => 'Todo lo que necesita saber antes de confiarnos un secreto.',
     'faq_cta' => 'Crear un secreto',
     'faq_q1' => '¿Es Secret Drop gratuito?',
@@ -214,11 +220,21 @@ return [
     'sbd_fragment_desc' => 'La clave de descifrado vive en el fragmento de la URL (después del #). Por diseño del protocolo HTTP, esta parte nunca se envía al servidor — ni en solicitudes, ni en logs, en ningún lugar.',
     'sbd_destroy_title' => 'Destrucción definitiva',
     'sbd_destroy_desc' => 'Un secreto leído deja de existir. El contenido cifrado se elimina del servidor — solo queda un rastro de su existencia. La expiración y los límites de lectura reducen la ventana de exposición al mínimo estricto.',
+    'sbd_hosted_title' => 'Alojado en Francia',
+    'sbd_hosted_desc' => 'Infraestructura alojada en Francia, bajo jurisdicción de la Unión Europea. Sus datos están protegidos por el RGPD y nunca salen de la UE. Sin transferencia a terceros países, sin excepción.',
+    'sbd_notrack_title' => 'Sin rastreo',
+    'sbd_notrack_desc' => 'Sin cookies de terceros, sin píxeles de seguimiento, sin servicios externos. Ningún dato se comparte con terceros. Su actividad en este sitio no es perfilada, vendida ni monetizada.',
+
+    // Trust badges (footer)
+    'trust_hosted_fr' => 'Alojado en Francia',
+    'trust_no_tracking' => 'Sin rastreadores',
+    'trust_client_encryption' => 'Cifrado del lado del cliente',
 
     // Use cases page
     'use_cases_title' => 'Casos de uso',
-    'use_cases_meta_description' => 'Descubre cómo usar Secret Drop: compartir contraseñas, documentos confidenciales, claves API y más.',
-    'use_cases_intro' => 'Cada día, contraseñas viajan en texto plano por email, Slack o SMS. Así es como Secret Drop reemplaza estos hábitos arriesgados.',
+    'use_cases_meta_title' => 'Casos de uso: contraseñas, archivos, claves API y más',
+    'use_cases_meta_description' => 'Intercambio seguro de datos confidenciales para cada situación: contraseñas, documentos sensibles, claves API y más.',
+    'use_cases_intro' => 'Cada día, datos confidenciales viajan en texto plano por email, Slack o SMS. Secret Drop los reemplaza por un intercambio seguro, cifrado de extremo a extremo.',
     'usecase1_title' => 'Contraseñas y credenciales',
     'usecase1_desc' => 'Un nuevo miembro del equipo necesita acceso. En lugar de un email que cualquiera puede leer, envíe un enlace que se autodestruye después de la lectura.',
     'usecase1_example' => 'Acceso al CMS, cuentas compartidas, credenciales Wi-Fi para un proveedor.',
@@ -266,7 +282,7 @@ return [
     'legal_data_not_stored' => 'Datos NO almacenados:',
     'legal_data_not_item_plaintext' => 'Contenido en texto plano de los secretos',
     'legal_data_not_item_key' => 'Claves de cifrado (transmitidas solo a través de la parte privada del enlace)',
-    'legal_data_not_item_file_meta' => 'Nombre, tipo y tamaño del archivo (cifrados con el contenido)',
+    'legal_data_not_item_file_meta' => 'Nombre y tipo del archivo (cifrados con el contenido)',
     'legal_cookies_title' => 'Cookies',
     'legal_cookies_text' => 'Este sitio web solo utiliza cookies técnicas esenciales (sesión, preferencia de tema). No se utilizan cookies de seguimiento ni publicidad.',
     'legal_cookies_cnil' => 'De acuerdo con las recomendaciones de la CNIL (autoridad francesa de protección de datos), estas cookies estrictamente necesarias están exentas de requisitos de consentimiento.',
@@ -305,11 +321,19 @@ return [
     'admin_mode' => 'Modo',
     'admin_limited_views' => '{1} :count lectura máx|[2,*] :count lecturas máx',
     'admin_unlimited' => 'Ilimitado',
+    'admin_hour' => 'hora',
     'admin_day' => 'día',
     'admin_days' => 'días',
     'admin_extend' => 'Extender',
     'admin_revoke' => 'Revocar',
     'admin_revoke_confirm' => '¿Estás seguro de que quieres revocar este secreto? Esta acción es irreversible.',
+    'admin_error_connection' => 'Error de conexión. Inténtalo de nuevo.',
+    'admin_error_not_found' => 'Secreto no encontrado.',
+    'admin_error_already_revoked' => 'Este secreto ya ha sido revocado.',
+    'admin_error_already_consumed' => 'Este secreto ya ha sido consumido.',
+    'admin_error_revoked' => 'Este secreto ha sido revocado.',
+    'admin_error_revoke' => 'Error al revocar el secreto.',
+    'admin_error_extend' => 'Error al extender el secreto.',
 
     // Magic link email
     'email_magic_link_subject' => 'Tu enlace de acceso a Secret Drop',
@@ -328,6 +352,7 @@ return [
     'superadmin_dashboard_subtitle' => 'Datos de uso anónimos para tu instancia de Secret Drop.',
 
     // Periods
+    'period_today' => 'Hoy',
     'period_7d' => 'Últimos 7 días',
     'period_30d' => 'Últimos 30 días',
     'period_90d' => 'Últimos 90 días',
@@ -500,4 +525,26 @@ return [
     'val_days_integer' => 'El número de días debe ser un número entero.',
     'val_days_min' => 'El número de días debe ser al menos 1.',
     'val_days_max' => 'El número de días no puede superar 30.',
+
+    // Monitoring
+    'monitoring_title' => 'Monitoring',
+    'stat_errors_4xx' => 'Errores de cliente (4xx)',
+    'stat_errors_5xx' => 'Errores de servidor (5xx)',
+    'stat_errors_422' => 'Validación (422)',
+    'stat_errors_429' => 'Límite de peticiones (429)',
+    'chart_error_trends' => 'Tendencia de errores',
+    'chart_error_breakdown' => 'Desglose de errores',
+    'stat_total_errors' => 'total',
+    'no_errors' => 'Sin errores en este período',
+    'hint_errors_4xx' => 'Total de errores de cliente (400-499). Incluye páginas no encontradas, fallos de validación y limitación de peticiones. Un número alto puede indicar escaneo o enlaces mal configurados.',
+    'hint_errors_5xx' => 'Total de errores de servidor (500-599). Cualquier valor superior a 0 indica un bug o problema de infraestructura — revise los logs inmediatamente.',
+    'hint_errors_422' => 'Solicitudes rechazadas por validación (formato de payload inválido, tamaños de campos criptográficos incorrectos). Un pico puede indicar uso indebido de la API o ataques con datos malformados.',
+    'hint_errors_429' => 'Solicitudes bloqueadas por limitación de peticiones. Un pico indica abuso o ataques automatizados contra el servicio.',
+
+    // Validación estructural del cifrado
+    'val_invalid_base64url' => 'El valor debe ser una cadena codificada en Base64URL válida.',
+    'val_invalid_byte_length' => 'Longitud de bytes inválida: se esperaban :expected bytes, se recibieron :actual.',
+    'val_min_byte_length' => 'La longitud mínima de bytes es :min, se recibieron :actual.',
+    'val_salt_iv2_consistency' => 'Salt e IV2 deben estar presentes o ausentes simultáneamente.',
+    'val_passphrase_requires_salt' => 'El indicador de frase de contraseña requiere la presencia de salt e IV2.',
 ];

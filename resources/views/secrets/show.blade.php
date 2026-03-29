@@ -151,6 +151,7 @@
                                     required
                                     aria-required="true"
                                     autofocus
+                                    autocomplete="one-time-code"
                                     placeholder="{{ __('messages.passphrase_input_placeholder') }}"
                                     class="w-full px-4 py-3 bg-gray-50 dark:bg-slate-900/50 border border-gray-300 dark:border-slate-600/50 rounded-xl text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 transition"
                                 >
@@ -180,13 +181,13 @@
                                 x-text="plaintext"
                                 role="region"
                                 aria-label="{{ __('messages.a11y_decrypted_content') }}"
-                                class="w-full p-4 bg-gray-50 dark:bg-slate-900/50 border border-gray-300 dark:border-slate-600/50 rounded-xl text-gray-900 dark:text-white text-sm font-mono whitespace-pre-wrap break-words max-h-96 overflow-auto transition-colors"
+                                class="w-full p-4 pr-20 bg-gray-50 dark:bg-slate-900/50 border border-gray-300 dark:border-slate-600/50 rounded-xl text-gray-900 dark:text-white text-sm font-mono whitespace-pre-wrap break-words max-h-96 overflow-auto transition-colors"
                             ></pre>
                             <button
                                 type="button"
                                 @click="copyToClipboard()"
                                 :aria-label="copied ? '{{ __('messages.btn_copied') }}' : '{{ __('messages.btn_copy') }}'"
-                                class="absolute top-3 end-3 px-3 py-1.5 bg-gray-200 dark:bg-slate-700/50 hover:bg-gray-300 dark:hover:bg-slate-600/50 text-gray-700 dark:text-slate-300 hover:text-gray-900 dark:hover:text-white text-sm font-medium rounded-lg transition cursor-pointer"
+                                class="absolute top-3 end-3 px-3 py-1.5 bg-gray-200 dark:bg-slate-700/50 hover:bg-gray-300 dark:hover:bg-slate-600/50 text-gray-700 dark:text-slate-300 hover:text-gray-900 dark:hover:text-white text-sm font-medium rounded-xl transition cursor-pointer"
                             >
                                 <span x-show="!copied">{{ __('messages.btn_copy') }}</span>
                                 <span x-show="copied">{{ __('messages.btn_copied') }}</span>

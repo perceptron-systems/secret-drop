@@ -61,7 +61,7 @@
                             {{ __('messages.captcha_label') }}
                         </label>
                         <div class="flex items-center gap-3">
-                            <div class="px-4 py-2 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-600 rounded-lg font-mono text-lg text-gray-900 dark:text-white">
+                            <div class="px-4 py-2 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-600 rounded-xl font-mono text-lg text-gray-900 dark:text-white">
                                 {{ session('captcha_challenge') }} = ?
                             </div>
                             <input
@@ -73,7 +73,7 @@
                                 autofocus
                                 placeholder="{{ __('messages.captcha_placeholder') }}"
                                 @error('captcha') aria-describedby="captcha-error" aria-invalid="true" @enderror
-                                class="flex-1 px-4 py-2 bg-gray-50 dark:bg-slate-900/50 border border-gray-300 dark:border-slate-600/50 rounded-lg text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-slate-400 focus:outline-none focus:ring-2 {{ $ringColor }} transition"
+                                class="flex-1 px-4 py-2 bg-gray-50 dark:bg-slate-900/50 border border-gray-300 dark:border-slate-600/50 rounded-xl text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-slate-400 focus:outline-none focus:ring-2 {{ $ringColor }} transition"
                             >
                         </div>
                         <input type="hidden" name="captcha_token" value="{{ session('captcha_token') }}">

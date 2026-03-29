@@ -45,6 +45,7 @@ Route::prefix('{locale}')
             ->middleware('throttle:5,1')
             ->name('admin.verify');
         Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
+        Route::get('/admin/dashboard/poll', [AdminController::class, 'poll'])->name('admin.poll');
         Route::post('/admin/logout', [AdminController::class, 'logout'])->name('admin.logout');
         Route::post('/admin/secrets/{id}/revoke', [AdminController::class, 'revoke'])->name('admin.revoke');
         Route::post('/admin/secrets/{id}/extend', [AdminController::class, 'extend'])->name('admin.extend');

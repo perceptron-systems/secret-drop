@@ -19,7 +19,7 @@ class SuperAdminController extends Controller
 
     protected const SESSION_KEY = 'super_admin_verified';
     protected const SESSION_EXPIRES_KEY = 'super_admin_expires_at';
-    private const VALID_PERIODS = ['7d', '30d', '90d', '1y', 'all'];
+    private const VALID_PERIODS = ['today', '7d', '30d', '90d', '1y', 'all'];
 
     public function __construct(
         private TokenService $tokenService,
@@ -47,7 +47,7 @@ class SuperAdminController extends Controller
             MagicLink::create([
                 'email_hash' => 'superadmin',
                 'token_hash' => $tokenData['hash'],
-                'expire_at' => now()->addMinutes(10),
+                'expire_at' => now()->addMinutes(config('secrets.magic_link_ttl')),
             ]);
 
             $url = route('superadmin.verify', ['token' => $tokenData['token']]);
@@ -84,7 +84,7 @@ class SuperAdminController extends Controller
 
         $request->session()->regenerate();
         $request->session()->put(self::SESSION_KEY, true);
-        $request->session()->put(self::SESSION_EXPIRES_KEY, now()->addHour()->timestamp);
+        $request->session()->put(self::SESSION_EXPIRES_KEY, now()->addMinutes(config('secrets.session_ttl'))->timestamp);
 
         return redirect()->route('superadmin.dashboard');
     }
@@ -95,7 +95,7 @@ class SuperAdminController extends Controller
             return redirect()->route('superadmin.index');
         }
 
-        $this->renewSessionAuth($request);
+        $this->renewSessionExpiry($request);
 
         $data = $this->collectStats($request);
 
@@ -141,13 +141,17 @@ class SuperAdminController extends Controller
             'avgFirstReadDelay' => $this->stats->getAverageFirstReadDelay($startDate),
             'currentDiskUsage' => $this->stats->getCurrentDiskUsage(),
             'pageviews' => $this->stats->getPageviews($startDate),
-            'activeSecrets' => $this->stats->getActiveSecretsCount(),
             'readRate' => $this->stats->getReadRate($startDate),
             'creatorConcentration' => $this->stats->getCreatorConcentration(),
             'systemHealth' => $this->stats->getSystemHealth(),
             'referrers' => $this->stats->getReferrers($startDate),
             'botStats' => $this->stats->getBotStats($startDate),
             'deviceStats' => $this->stats->getDeviceStats($startDate),
+            'errorStats' => [
+                'total_4xx' => $stats['totals'][StatsService::HTTP_ERRORS_4XX] ?? 0,
+                'total_5xx' => $stats['totals'][StatsService::HTTP_ERRORS_5XX] ?? 0,
+                'by_code' => $this->stats->getErrorCodeBreakdown($startDate),
+            ],
         ];
     }
 }

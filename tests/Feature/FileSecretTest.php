@@ -10,6 +10,8 @@ use Tests\TestCase;
 
 class FileSecretTest extends TestCase
 {
+    private const VALID_IV = 'YWFhYWFhYWFhYWFh'; // 12 bytes
+
     private TokenService $tokenService;
 
     private SecretStorageService $storage;
@@ -31,7 +33,7 @@ class FileSecretTest extends TestCase
             'encrypted_file' => $file,
             'cipher_meta' => json_encode([
                 'alg' => 'AES-256-GCM',
-                'iv' => 'testiv123456',
+                'iv' => self::VALID_IV,
                 'version' => 1,
             ]),
             'expiration' => '7d',
@@ -61,7 +63,7 @@ class FileSecretTest extends TestCase
             'type' => 'file',
             'cipher_meta' => json_encode([
                 'alg' => 'AES-256-GCM',
-                'iv' => 'testiv123456',
+                'iv' => self::VALID_IV,
                 'version' => 1,
             ]),
             'expiration' => '7d',
@@ -82,7 +84,7 @@ class FileSecretTest extends TestCase
             'encrypted_file' => $file,
             'cipher_meta' => json_encode([
                 'alg' => 'AES-256-GCM',
-                'iv' => 'testiv123456',
+                'iv' => self::VALID_IV,
                 'version' => 1,
             ]),
             'expiration' => '7d',
@@ -103,7 +105,7 @@ class FileSecretTest extends TestCase
             'encrypted_file' => $file,
             'cipher_meta' => json_encode([
                 'alg' => 'AES-256-GCM',
-                'iv' => 'testiv123456',
+                'iv' => self::VALID_IV,
                 'version' => 1,
             ]),
             'expiration' => '7d',
@@ -133,7 +135,7 @@ class FileSecretTest extends TestCase
             'encrypted_file' => $file,
             'cipher_meta' => json_encode([
                 'alg' => 'AES-256-GCM',
-                'iv' => 'testiv123456',
+                'iv' => self::VALID_IV,
                 'version' => 1,
             ]),
             'expiration' => '7d',

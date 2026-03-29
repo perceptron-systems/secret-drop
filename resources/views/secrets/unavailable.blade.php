@@ -10,7 +10,7 @@
                 <x-icon.clock class="w-7 h-7 text-amber-500 dark:text-amber-300" />
             </div>
 
-            <h1 class="text-xl font-bold text-gray-900 dark:text-white mb-2 transition-colors">
+            <h1 class="text-2xl font-bold text-gray-900 dark:text-white mb-2 transition-colors">
                 {{ __('messages.error_unavailable') }}
             </h1>
 

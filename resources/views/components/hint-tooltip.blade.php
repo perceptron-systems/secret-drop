@@ -24,7 +24,7 @@
         x-transition:leave-end="opacity-0 {{ $direction === 'below' ? '-translate-y-1' : 'translate-y-1' }}"
         id="{{ $id }}"
         role="tooltip"
-        class="absolute z-50 {{ $direction === 'below' ? 'top-full mt-2' : 'bottom-full mb-2' }} {{ $position === 'start' ? 'start-0' : 'end-0' }} w-72 px-3 py-2 text-xs text-white bg-gray-900 dark:bg-slate-700 rounded-lg shadow-lg"
+        class="absolute z-50 {{ $direction === 'below' ? 'top-full mt-2' : 'bottom-full mb-2' }} {{ $position === 'start' ? 'start-0' : 'end-0' }} w-72 px-3 py-2 text-xs text-white bg-gray-900 dark:bg-slate-700 rounded-xl shadow-lg"
     >
         {{ $text }}
         @if($direction === 'below')

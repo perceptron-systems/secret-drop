@@ -184,7 +184,7 @@ class SecretsController extends Controller
 
     public function revoke(string $adminToken): JsonResponse
     {
-        $secret = Secret::where('admin_token_hash', $this->tokenService->hashToken($adminToken))->first();
+        $secret = Secret::findByAdminToken($adminToken);
 
         if (! $secret) {
             return response()->json(['error' => 'not_found'], 404);
@@ -192,6 +192,10 @@ class SecretsController extends Controller
 
         if ($secret->isRevoked()) {
             return response()->json(['error' => 'already_revoked'], 409);
+        }
+
+        if ($secret->hasReachedMaxViews()) {
+            return response()->json(['error' => 'already_consumed'], 409);
         }
 
         if ($secret->type === 'file' && $secret->file_path) {

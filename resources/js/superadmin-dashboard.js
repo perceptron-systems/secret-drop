@@ -1,8 +1,8 @@
 import Chart from 'chart.js/auto';
+import { startRing, resetRing } from './utils/poll-ring.js';
 
 const charts = {};
 let pollTimer = null;
-let ringTimer = null;
 
 // ── Helpers ──────────────────────────────────────────────────────────────
 
@@ -77,7 +77,7 @@ function updateKpis(data) {
 
     kpi('secrets_created', fmt(created));
     kpi('secrets_read', fmt(t.secrets_read || 0));
-    kpi('active_secrets', fmt(data.activeSecrets));
+    kpi('active_secrets', fmt(data.systemHealth?.active_secrets ?? 0));
     kpi('read_rate', data.readRate !== null ? data.readRate.toFixed(1) + '%' : '-');
     kpi('avg_first_read', fmtDelay(data.avgFirstReadDelay));
     kpi('files_shared', fmt(t.secrets_created_file || 0));
@@ -91,6 +91,14 @@ function updateKpis(data) {
 
     const h = data.systemHealth;
     kpi('health', `${h.active_secrets} / ${h.pending_cleanup}`);
+
+    const err = data.errorStats || {};
+    const byCode = err.by_code || {};
+    kpi('errors_4xx', fmt(err.total_4xx || 0));
+    kpi('errors_5xx', fmt(err.total_5xx || 0));
+    kpi('errors_422', fmt(byCode[422] || 0));
+    kpi('errors_429', fmt(byCode[429] || 0));
+    kpi('errors_total', fmt((err.total_4xx || 0) + (err.total_5xx || 0)));
 
     const pv = data.pageviews;
     kpi('pv_visitors', fmt(pv.total_human));
@@ -178,6 +186,12 @@ function updateCharts(data) {
         metricData(m, 'magic_links_requested', labels),
         metricData(m, 'magic_links_used', labels),
         metricData(m, 'secrets_extended', labels),
+    ]);
+
+    // Error trends
+    updateLineChart('errors', labels, [
+        metricData(m, 'http_errors_4xx', labels),
+        metricData(m, 'http_errors_5xx', labels),
     ]);
 
     // Pageviews daily
@@ -284,6 +298,62 @@ function updateLists(data) {
     renderBarList('pollByHour', pv.by_hour, 'bg-violet-500/80 dark:bg-violet-400/80');
     renderBarList('pollByLocalHour', pv.by_local_hour, 'bg-amber-500/80 dark:bg-amber-400/80');
 
+    // By device
+    const elD = document.getElementById('pollByDevice');
+    if (elD) {
+        const devices = data.deviceStats;
+        const entries = Object.entries(devices).sort((a, b) => b[1] - a[1]);
+        if (entries.length === 0) {
+            elD.innerHTML = `<p class="text-sm text-gray-500 dark:text-slate-500">${esc(sd.noDataText || '')}</p>`;
+        } else {
+            const totalDevices = Math.max(1, entries.reduce((s, e) => s + e[1], 0));
+            const labels = sd.deviceLabels || {};
+            const svgIcons = {
+                desktop: '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>',
+                mobile: '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" /></svg>',
+                tablet: '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" /></svg>',
+            };
+            elD.innerHTML = '<div class="space-y-3">' + entries.map(([device, count]) => {
+                const pct = (count / totalDevices) * 100;
+                const icon = svgIcons[device] || '';
+                const label = labels[device] || device;
+                return `<div>
+                    <div class="flex items-center justify-between text-sm mb-1">
+                        <span class="text-gray-700 dark:text-slate-300 font-medium flex items-center gap-1.5">${icon} ${esc(label)}</span>
+                        <span class="text-gray-900 dark:text-white font-medium">${fmt(count)} <span class="text-gray-400 dark:text-slate-500 text-xs">(${pct.toFixed(1)}%)</span></span>
+                    </div>
+                    <div class="w-full h-2 bg-gray-200 dark:bg-slate-700 rounded-full overflow-hidden">
+                        <div class="h-full bg-indigo-500 rounded-full" style="width: ${Math.min(pct, 100)}%"></div>
+                    </div>
+                </div>`;
+            }).join('') + '</div>';
+        }
+    }
+
+    // By bot
+    const elB = document.getElementById('pollByBot');
+    if (elB) {
+        const bots = data.botStats;
+        const entries = Object.entries(bots).sort((a, b) => b[1] - a[1]).slice(0, 20);
+        if (entries.length === 0) {
+            elB.innerHTML = `<p class="text-sm text-gray-500 dark:text-slate-500">${esc(sd.noDataText || '')}</p>`;
+        } else {
+            const maxBot = Math.max(1, Math.max(...entries.map(e => e[1])));
+            elB.innerHTML = '<div class="space-y-2">' + entries.map(([botName, count]) => {
+                const pct = Math.min((count / maxBot) * 100, 100);
+                return `<div class="flex items-center justify-between text-sm">
+                    <span class="text-gray-700 dark:text-slate-300 font-medium">${esc(botName)}</span>
+                    <div class="flex items-center gap-2">
+                        <div class="w-20 h-1.5 bg-gray-200 dark:bg-slate-700 rounded-full overflow-hidden">
+                            <div class="h-full bg-sky-500 rounded-full" style="width: ${pct}%"></div>
+                        </div>
+                        <span class="text-gray-900 dark:text-white font-medium w-10 text-right">${fmt(count)}</span>
+                    </div>
+                </div>`;
+            }).join('') + '</div>';
+        }
+    }
+
     // Referrers
     const elR = document.getElementById('pollByReferrer');
     if (elR) {
@@ -306,6 +376,35 @@ function updateLists(data) {
                     </div>
                 </div>`;
             }).join('') + '</div>';
+        }
+    }
+
+    // Error codes (list only received codes)
+    const elErr = document.getElementById('pollErrorCodes');
+    if (elErr) {
+        const byCode = (data.errorStats || {}).by_code || {};
+        const entries = Object.entries(byCode)
+            .map(([code, count]) => ({ code, count }))
+            .sort((a, b) => b.count - a.count);
+
+        if (entries.length === 0) {
+            const et = window.superAdminData?.errorTranslations || {};
+            elErr.innerHTML = `<p class="text-sm text-gray-400 dark:text-slate-500">${et.no_errors || 'No errors'}</p>`;
+        } else {
+            const maxErr = Math.max(1, ...entries.map(e => e.count));
+            elErr.innerHTML = entries.map(({ code, count }) => {
+                const pct = Math.min((count / maxErr) * 100, 100);
+                const color = code >= 500 ? 'bg-red-500' : (code >= 429 ? 'bg-orange-500' : (code >= 422 ? 'bg-amber-500' : 'bg-gray-500'));
+                return `<div class="flex items-center justify-between text-sm">
+                    <span class="text-gray-700 dark:text-slate-300 font-mono font-medium w-10">${code}</span>
+                    <div class="flex items-center gap-2 flex-1 ml-3">
+                        <div class="flex-1 h-1.5 bg-gray-200 dark:bg-slate-700 rounded-full overflow-hidden">
+                            <div class="h-full ${color} rounded-full" style="width: ${pct}%"></div>
+                        </div>
+                        <span class="text-gray-900 dark:text-white font-medium w-12 text-right">${fmt(count)}</span>
+                    </div>
+                </div>`;
+            }).join('');
         }
     }
 }
@@ -477,6 +576,22 @@ function initDashboard() {
         options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } }, scales }
     });
 
+    // Error trends chart
+    const et = data.errorTranslations || {};
+    if (document.getElementById('errorTrendsChart')) {
+        charts.errors = new Chart(document.getElementById('errorTrendsChart'), {
+            type: 'line',
+            data: {
+                labels,
+                datasets: [
+                    { label: et.errors_4xx || '4xx', data: metricData(m, 'http_errors_4xx', labels), borderColor: '#f59e0b', backgroundColor: 'rgba(245, 158, 11, 0.1)', fill: true, tension: 0.3 },
+                    { label: et.errors_5xx || '5xx', data: metricData(m, 'http_errors_5xx', labels), borderColor: '#ef4444', backgroundColor: 'rgba(239, 68, 68, 0.1)', fill: true, tension: 0.3 }
+                ]
+            },
+            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } }, scales }
+        });
+    }
+
     if (heatmapCreated) {
         renderHeatmap('heatmapCreated', heatmapCreated, 'violet', translations);
     }
@@ -501,42 +616,29 @@ function initDashboard() {
         });
     }
 
+    initPeriodSelector();
     startPolling();
 }
 
-// ── Progress ring ────────────────────────────────────────────────────────
+// ── Period selector (no page reload) ────────────────────────────────────
 
-const CIRCUMFERENCE = 2 * Math.PI * 12; // r=12
-
-function startRing(durationMs) {
-    const ring = document.getElementById('pollRingProgress');
-    if (!ring) {
+function initPeriodSelector() {
+    const select = document.getElementById('periodSelector');
+    if (!select) {
         return;
     }
 
-    if (ringTimer) {
-        clearInterval(ringTimer);
-    }
+    select.addEventListener('change', function () {
+        const data = window.superAdminData;
+        data.period = this.value;
 
-    const start = Date.now();
-    const tick = () => {
-        const elapsed = Date.now() - start;
-        const progress = Math.min(elapsed / durationMs, 1);
-        ring.style.strokeDashoffset = CIRCUMFERENCE * (1 - progress);
-    };
+        const url = new URL(window.location);
+        url.searchParams.set('period', this.value);
+        history.replaceState(null, '', url);
 
-    tick();
-    ringTimer = setInterval(tick, 200);
-}
-
-function resetRing() {
-    const ring = document.getElementById('pollRingProgress');
-    if (ring) {
-        ring.style.strokeDashoffset = CIRCUMFERENCE;
-    }
-    if (ringTimer) {
-        clearInterval(ringTimer);
-    }
+        poll();
+        startPolling();
+    });
 }
 
 // ── Polling ──────────────────────────────────────────────────────────────
@@ -593,12 +695,14 @@ async function poll() {
         data.pageviewsDaily = newData.pageviews.daily;
         data.avgFirstReadDelay = newData.avgFirstReadDelay;
         data.currentDiskUsage = newData.currentDiskUsage;
-        data.activeSecrets = newData.activeSecrets;
+        data.systemHealth = newData.systemHealth;
         data.readRate = newData.readRate;
         data.creatorConcentration = newData.creatorConcentration;
-        data.systemHealth = newData.systemHealth;
         data.referrers = newData.referrers;
         data.pageviews = newData.pageviews;
+        data.botStats = newData.botStats;
+        data.deviceStats = newData.deviceStats;
+        data.errorStats = newData.errorStats;
 
         // In-place updates (no scroll jump)
         updateKpis(newData);

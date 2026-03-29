@@ -121,7 +121,7 @@ Encrypted email (PGP, S/MIME) requires both parties to set up keys beforehand, w
 ## Privacy
 
 - Encryption keys never touch the server
-- No tracking, no analytics
+- No third-party tracking, no cookies
 - No advertising cookies
 - Minimal data retention
 - Automatic deletion of expired secrets

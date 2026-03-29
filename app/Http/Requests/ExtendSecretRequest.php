@@ -17,7 +17,7 @@ class ExtendSecretRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'days' => ['required', 'integer', 'min:1', 'max:30'],
+            'hours' => ['required', 'integer', 'min:1', 'max:720'],
         ];
     }
 
@@ -27,10 +27,10 @@ class ExtendSecretRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'days.required' => __('messages.val_days_required'),
-            'days.integer' => __('messages.val_days_integer'),
-            'days.min' => __('messages.val_days_min'),
-            'days.max' => __('messages.val_days_max'),
+            'hours.required' => __('messages.val_hours_required'),
+            'hours.integer' => __('messages.val_hours_integer'),
+            'hours.min' => __('messages.val_hours_min'),
+            'hours.max' => __('messages.val_hours_max'),
         ];
     }
 }

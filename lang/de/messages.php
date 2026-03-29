@@ -3,8 +3,9 @@
 return [
     // App
     'app_description' => 'Teilen Sie Passwörter und vertrauliche Dateien, ohne sie jemals preiszugeben. Ende-zu-Ende-verschlüsselt. Selbstzerstörend. Der Server sieht nichts.',
+    'home_title' => 'Geheimnisse sicher teilen mit Zero-Knowledge-Verschlüsselung',
     'home_hook' => 'Schluss mit Passwörtern im Klartext.',
-    'home_meta_description' => 'Teilen Sie ein Passwort, einen API-Schlüssel oder eine vertrauliche Datei über einen sicheren, selbstzerstörenden Link. Ende-zu-Ende-verschlüsselt — der Server sieht Ihre Daten nie.',
+    'home_meta_description' => 'Sicherer Austausch vertraulicher Daten über einen selbstzerstörenden Link. Passwörter, API-Schlüssel, Dateien — Ende-zu-Ende-verschlüsselt, der Server sieht nichts.',
     'home_view_source' => 'Quellcode ansehen',
 
     // Features
@@ -12,6 +13,9 @@ return [
     'feature_zero_knowledge' => 'Sicher durch Design: selbst für uns unlesbar',
     'feature_auto_destroy' => 'Sie bestimmen, wann es sich selbst zerstört',
     'feature_expiration' => 'Kein Konto, kein Passwort: nichts zu hacken',
+    'feature_hosted_eu' => 'Gehostet in Frankreich, EU-Gerichtsbarkeit',
+    'feature_no_tracking' => 'Keine Drittanbieter-Cookies, keine Tracking-Dienste',
+    'feature_hosted_no_tracking' => 'Gehostet in Frankreich, keine Tracking-Dienste',
 
     // Form labels
     'your_secret' => 'Ihr Geheimnis',
@@ -101,7 +105,7 @@ return [
     'error_not_found' => 'Geheimnis nicht gefunden',
     'error_unavailable' => 'Geheimnis nicht verfügbar',
     'error_generic' => 'Fehler',
-    'secret_not_exist' => 'Dieses Geheimnis existiert nicht oder wurde möglicherweise gelöscht.',
+    'secret_not_exist' => 'Dieses Geheimnis wurde nicht gefunden oder ist nicht mehr verfügbar.',
     'secret_expired' => 'Dieses Geheimnis ist abgelaufen und nicht mehr zugänglich.',
     'secret_revoked' => 'Dieses Geheimnis wurde von seinem Ersteller widerrufen.',
     'secret_max_views' => 'Dieses Geheimnis hat die maximale Anzahl von Aufrufen erreicht und ist nicht mehr zugänglich.',
@@ -147,8 +151,9 @@ return [
 
     // How it works page
     'how_it_works_title' => 'So funktioniert es',
-    'how_it_works_meta_description' => 'Erfahren Sie, wie Secret Drop Ihre Daten mit Ende-zu-Ende-Verschlüsselung schützt. Der Server sieht niemals Ihre Geheimnisse im Klartext.',
-    'how_it_works_intro' => 'Wenn Sie ein Passwort per E-Mail oder Slack teilen, bleibt es für jeden Vermittler lesbar. Secret Drop macht das Gegenteil: Ihr Geheimnis wird in Ihrem Browser verschlüsselt, bevor es Ihren Bildschirm verlässt. Der Server empfängt nur Rauschen.',
+    'how_it_works_meta_title' => 'So schützt Zero-Knowledge-Verschlüsselung Ihre Daten',
+    'how_it_works_meta_description' => 'Erfahren Sie, wie Secret Drop einen sicheren Austausch vertraulicher Daten durch Ende-zu-Ende-Verschlüsselung gewährleistet. Der Server sieht niemals Ihre Geheimnisse im Klartext.',
+    'how_it_works_intro' => 'Wenn Sie ein Passwort per E-Mail oder Slack teilen, bleibt es für jeden Vermittler lesbar. Secret Drop gewährleistet einen sicheren Austausch Ihrer vertraulichen Daten: Alles wird in Ihrem Browser verschlüsselt, bevor es Ihren Bildschirm verlässt. Der Server empfängt nur Rauschen.',
     'how_it_works_diagram_title' => 'Wie Ihr Geheimnis geschützt wird',
     'how_step1_title' => 'Sie schreiben Ihr Geheimnis',
     'how_step1_desc' => 'Sie geben Ihre Nachricht ein oder wählen eine Datei in Ihrem Browser aus.',
@@ -176,6 +181,7 @@ return [
 
     // FAQ (structured data)
     'faq_title' => 'Häufig gestellte Fragen',
+    'faq_meta_title' => 'FAQ — Verschlüsselter Austausch von Geheimnissen und Dateien',
     'faq_intro' => 'Alles, was Sie wissen müssen, bevor Sie uns ein Geheimnis anvertrauen.',
     'faq_cta' => 'Geheimnis erstellen',
     'faq_q1' => 'Ist Secret Drop kostenlos?',
@@ -214,11 +220,21 @@ return [
     'sbd_fragment_desc' => 'Der Entschlüsselungsschlüssel lebt im URL-Fragment (nach dem #). Durch das HTTP-Protokoll wird dieser Teil nie an den Server gesendet — nicht in Anfragen, nicht in Logs, nirgendwo.',
     'sbd_destroy_title' => 'Endgültige Vernichtung',
     'sbd_destroy_desc' => 'Ein gelesenes Geheimnis existiert nicht mehr. Der verschlüsselte Inhalt wird vom Server gelöscht — nur eine Spur seiner Existenz bleibt. Ablaufzeiten und Leselimits reduzieren das Expositionsfenster auf ein Minimum.',
+    'sbd_hosted_title' => 'Gehostet in Frankreich',
+    'sbd_hosted_desc' => 'Infrastruktur in Frankreich gehostet, unter der Gerichtsbarkeit der Europäischen Union. Ihre Daten unterliegen der DSGVO und verlassen niemals die EU. Kein Transfer in Drittstaaten, keine Ausnahme.',
+    'sbd_notrack_title' => 'Kein Tracking',
+    'sbd_notrack_desc' => 'Keine Drittanbieter-Cookies, keine Tracking-Pixel, keine externen Dienste. Keine Daten werden an Dritte weitergegeben. Ihre Aktivität auf dieser Seite wird weder profiliert, noch verkauft, noch monetarisiert.',
+
+    // Trust badges (footer)
+    'trust_hosted_fr' => 'Gehostet in Frankreich',
+    'trust_no_tracking' => 'Keine Tracker',
+    'trust_client_encryption' => 'Clientseitige Verschlüsselung',
 
     // Use cases page
     'use_cases_title' => 'Anwendungsfälle',
-    'use_cases_meta_description' => 'Entdecken Sie, wie Sie Secret Drop nutzen können: Passwortweitergabe, vertrauliche Dokumente, API-Schlüssel und mehr.',
-    'use_cases_intro' => 'Jeden Tag werden Passwörter im Klartext per E-Mail, Slack oder SMS verschickt. So ersetzt Secret Drop diese riskanten Gewohnheiten.',
+    'use_cases_meta_title' => 'Anwendungsfälle: Passwörter, Dateien, API-Schlüssel & mehr',
+    'use_cases_meta_description' => 'Sicherer Austausch vertraulicher Daten für jede Situation: Passwörter, sensible Dokumente, API-Schlüssel und mehr.',
+    'use_cases_intro' => 'Jeden Tag werden vertrauliche Daten im Klartext per E-Mail, Slack oder SMS verschickt. Secret Drop ersetzt diese riskanten Gewohnheiten durch einen sicheren Austausch, Ende-zu-Ende-verschlüsselt.',
     'usecase1_title' => 'Passwörter und Zugangsdaten',
     'usecase1_desc' => 'Ein neues Teammitglied braucht Zugang. Statt einer E-Mail, die jeder lesen kann, senden Sie einen Link, der sich nach dem Lesen selbst zerstört.',
     'usecase1_example' => 'CMS-Zugang, gemeinsame Konten, WLAN-Zugangsdaten für einen Auftragnehmer.',
@@ -266,7 +282,7 @@ return [
     'legal_data_not_stored' => 'NICHT gespeicherte Daten:',
     'legal_data_not_item_plaintext' => 'Klartext-Inhalt der Geheimnisse',
     'legal_data_not_item_key' => 'Verschlüsselungsschlüssel (nur über den privaten Teil des Links übertragen)',
-    'legal_data_not_item_file_meta' => 'Dateiname, -typ und -größe (mit Inhalt verschlüsselt)',
+    'legal_data_not_item_file_meta' => 'Dateiname und -typ (mit Inhalt verschlüsselt)',
     'legal_cookies_title' => 'Cookies',
     'legal_cookies_text' => 'Diese Website verwendet nur essentielle technische Cookies (Sitzung, Theme-Präferenz). Es werden keine Tracking- oder Werbe-Cookies verwendet.',
     'legal_cookies_cnil' => 'Gemäß den CNIL-Empfehlungen (französische Datenschutzbehörde) sind diese streng notwendigen Cookies von der Einwilligungspflicht ausgenommen.',
@@ -305,11 +321,19 @@ return [
     'admin_mode' => 'Modus',
     'admin_limited_views' => '{1} :count Ansicht max|[2,*] :count Ansichten max',
     'admin_unlimited' => 'Unbegrenzt',
+    'admin_hour' => 'Stunde',
     'admin_day' => 'Tag',
     'admin_days' => 'Tage',
     'admin_extend' => 'Verlängern',
     'admin_revoke' => 'Widerrufen',
     'admin_revoke_confirm' => 'Sind Sie sicher, dass Sie dieses Geheimnis widerrufen möchten? Diese Aktion ist unwiderruflich.',
+    'admin_error_connection' => 'Verbindungsfehler. Bitte versuchen Sie es erneut.',
+    'admin_error_not_found' => 'Geheimnis nicht gefunden.',
+    'admin_error_already_revoked' => 'Dieses Geheimnis wurde bereits widerrufen.',
+    'admin_error_already_consumed' => 'Dieses Geheimnis wurde bereits abgerufen.',
+    'admin_error_revoked' => 'Dieses Geheimnis wurde widerrufen.',
+    'admin_error_revoke' => 'Fehler beim Widerrufen.',
+    'admin_error_extend' => 'Fehler beim Verlängern.',
 
     // Magic link email
     'email_magic_link_subject' => 'Ihr Zugangslink zu Secret Drop',
@@ -328,6 +352,7 @@ return [
     'superadmin_dashboard_subtitle' => 'Anonyme Nutzungsdaten für Ihre Secret Drop-Instanz.',
 
     // Periods
+    'period_today' => 'Heute',
     'period_7d' => 'Letzte 7 Tage',
     'period_30d' => 'Letzte 30 Tage',
     'period_90d' => 'Letzte 90 Tage',
@@ -500,4 +525,26 @@ return [
     'val_days_integer' => 'Die Anzahl der Tage muss eine ganze Zahl sein.',
     'val_days_min' => 'Die Anzahl der Tage muss mindestens 1 betragen.',
     'val_days_max' => 'Die Anzahl der Tage darf 30 nicht überschreiten.',
+
+    // Monitoring
+    'monitoring_title' => 'Monitoring',
+    'stat_errors_4xx' => 'Clientfehler (4xx)',
+    'stat_errors_5xx' => 'Serverfehler (5xx)',
+    'stat_errors_422' => 'Validierung (422)',
+    'stat_errors_429' => 'Ratenlimit (429)',
+    'chart_error_trends' => 'Fehlertrends',
+    'chart_error_breakdown' => 'Fehleraufschlüsselung',
+    'stat_total_errors' => 'Gesamt',
+    'no_errors' => 'Keine Fehler in diesem Zeitraum',
+    'hint_errors_4xx' => 'Gesamtzahl der Clientfehler (400-499). Umfasst nicht gefundene Seiten, Validierungsfehler und Ratenlimitierung. Eine hohe Anzahl kann auf Scanning oder fehlerhafte Links hinweisen.',
+    'hint_errors_5xx' => 'Gesamtzahl der Serverfehler (500-599). Jeder Wert über 0 bedeutet einen Bug oder ein Infrastrukturproblem — prüfen Sie sofort die Logs.',
+    'hint_errors_422' => 'Anfragen, die von der Validierung abgelehnt wurden (ungültiges Payload-Format, falsche Krypto-Feldgrößen). Ein Anstieg kann auf API-Missbrauch oder Angriffe mit fehlerhaften Daten hinweisen.',
+    'hint_errors_429' => 'Anfragen, die durch Ratenlimitierung blockiert wurden. Ein Anstieg deutet auf Missbrauch oder automatisierte Angriffe gegen den Dienst hin.',
+
+    // Strukturelle Verschlüsselungsvalidierung
+    'val_invalid_base64url' => 'Der Wert muss eine gültige Base64URL-kodierte Zeichenkette sein.',
+    'val_invalid_byte_length' => 'Ungültige Bytelänge: :expected erwartet, :actual erhalten.',
+    'val_min_byte_length' => 'Mindestbytelänge ist :min, :actual erhalten.',
+    'val_salt_iv2_consistency' => 'Salt und IV2 müssen beide vorhanden oder beide abwesend sein.',
+    'val_passphrase_requires_salt' => 'Das Passphrase-Flag erfordert das Vorhandensein von Salt und IV2.',
 ];

@@ -54,7 +54,7 @@ class AdminController extends Controller
         MagicLink::create([
             'email_hash' => $emailHash,
             'token_hash' => $tokenData['hash'],
-            'expire_at' => now()->addMinutes(10),
+            'expire_at' => now()->addMinutes(config('secrets.magic_link_ttl')),
         ]);
 
         $verifyUrl = route('admin.verify', ['token' => $tokenData['token']]);
@@ -90,7 +90,7 @@ class AdminController extends Controller
 
         $request->session()->regenerate();
         $request->session()->put(self::SESSION_KEY, $magicLink->email_hash);
-        $request->session()->put(self::SESSION_EXPIRES_KEY, now()->addMinutes(30)->timestamp);
+        $request->session()->put(self::SESSION_EXPIRES_KEY, now()->addMinutes(config('secrets.session_ttl'))->timestamp);
 
         return redirect()->route('admin.dashboard');
     }
@@ -103,13 +103,52 @@ class AdminController extends Controller
             return redirect()->route('admin.index');
         }
 
-        $this->renewSessionAuth($request);
+        $this->renewSessionExpiry($request);
 
         $secrets = Secret::where('creator_email_hash', $emailHash)
             ->orderByDesc('created_at')
             ->paginate(5);
 
         return view('admin.dashboard', ['secrets' => $secrets]);
+    }
+
+    public function poll(Request $request): JsonResponse
+    {
+        $emailHash = $this->getSessionAuth($request);
+
+        if (! $emailHash) {
+            return response()->json(['error' => 'unauthenticated'], 401);
+        }
+
+        $page = (int) $request->input('page', 1);
+        $knownIds = array_filter(explode(',', $request->input('known', '')));
+
+        $secrets = Secret::where('creator_email_hash', $emailHash)
+            ->orderByDesc('created_at')
+            ->paginate(5, ['*'], 'page', $page);
+
+        $newCardsHtml = [];
+        foreach ($secrets as $secret) {
+            if (! empty($knownIds) && ! in_array($secret->id, $knownIds, true)) {
+                $newCardsHtml[$secret->id] = view('admin.secret-card', ['secret' => $secret])->render();
+            }
+        }
+
+        return response()->json([
+            'total' => $secrets->total(),
+            'secrets' => $secrets->map(fn (Secret $secret) => [
+                'id' => $secret->id,
+                'read_count' => $secret->read_count,
+                'max_views' => $secret->max_views,
+                'first_read_at' => $secret->first_read_at?->toIso8601String(),
+                'expire_at' => $secret->expire_at->toIso8601String(),
+                'is_revoked' => $secret->isRevoked(),
+                'is_expired' => $secret->isExpired(),
+                'has_reached_max_views' => $secret->hasReachedMaxViews(),
+                'is_accessible' => $secret->isAccessible(),
+            ]),
+            'new_cards_html' => $newCardsHtml,
+        ]);
     }
 
     public function logout(Request $request): RedirectResponse
@@ -125,7 +164,7 @@ class AdminController extends Controller
         $emailHash = $this->getSessionAuth($request);
 
         if (! $emailHash) {
-            return response()->json(['error' => 'unauthorized'], 403);
+            return response()->json(['error' => 'unauthenticated'], 401);
         }
 
         $secret = Secret::where('id', $id)
@@ -138,6 +177,10 @@ class AdminController extends Controller
 
         if ($secret->isRevoked()) {
             return response()->json(['error' => 'already_revoked'], 409);
+        }
+
+        if ($secret->hasReachedMaxViews()) {
+            return response()->json(['error' => 'already_consumed'], 409);
         }
 
         if ($secret->type === 'file' && $secret->file_path) {
@@ -157,7 +200,7 @@ class AdminController extends Controller
         $emailHash = $this->getSessionAuth($request);
 
         if (! $emailHash) {
-            return response()->json(['error' => 'unauthorized'], 403);
+            return response()->json(['error' => 'unauthenticated'], 401);
         }
 
         $secret = Secret::where('id', $id)
@@ -173,7 +216,7 @@ class AdminController extends Controller
         }
 
         $baseDate = $secret->expire_at->isPast() ? now() : $secret->expire_at;
-        $secret->expire_at = $baseDate->addDays($request->validated('days'));
+        $secret->expire_at = $baseDate->addHours($request->validated('hours'));
         $secret->save();
 
         $this->stats->increment(StatsService::SECRETS_EXTENDED);

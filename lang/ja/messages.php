@@ -3,8 +3,9 @@
 return [
     // App
     'app_description' => 'パスワードや機密ファイルを安全に共有。エンドツーエンド暗号化。自動削除。サーバーは何も見えません。',
+    'home_title' => 'ゼロ知識暗号化で秘密を安全に共有',
     'home_hook' => 'パスワードを平文で送るのはもうやめましょう。',
-    'home_meta_description' => 'パスワード、APIキー、機密ファイルを安全な自動削除リンクで共有。エンドツーエンド暗号化 — サーバーはデータを見ることができません。',
+    'home_meta_description' => '機密データの安全な受け渡し — 自動削除リンクで。パスワード、APIキー、ファイル — エンドツーエンド暗号化、サーバーは何も見えません。',
     'home_view_source' => 'ソースコードを見る',
 
     // Features
@@ -12,6 +13,9 @@ return [
     'feature_zero_knowledge' => '設計レベルで安全：私たちにも読めません',
     'feature_auto_destroy' => '自動削除のタイミングはあなた次第',
     'feature_expiration' => 'アカウント不要、パスワード不要：ハッキング対象なし',
+    'feature_hosted_eu' => 'フランス国内で運用、EU法管轄',
+    'feature_no_tracking' => 'サードパーティCookieなし、トラッキングサービスなし',
+    'feature_hosted_no_tracking' => 'フランス国内で運用、トラッキングサービスなし',
 
     // Form labels
     'your_secret' => 'シークレット',
@@ -101,7 +105,7 @@ return [
     'error_not_found' => 'シークレットが見つかりません',
     'error_unavailable' => 'シークレットは利用できません',
     'error_generic' => 'エラー',
-    'secret_not_exist' => 'このシークレットは存在しないか、削除された可能性があります。',
+    'secret_not_exist' => 'このシークレットは見つからないか、すでに利用できません。',
     'secret_expired' => 'このシークレットは期限切れで、もうアクセスできません。',
     'secret_revoked' => 'このシークレットは作成者によって取り消されました。',
     'secret_max_views' => 'このシークレットは最大閲覧数に達し、もうアクセスできません。',
@@ -147,8 +151,9 @@ return [
 
     // How it works page
     'how_it_works_title' => '仕組み',
-    'how_it_works_meta_description' => 'Secret Dropがエンドツーエンド暗号化でデータを保護する方法をご覧ください。サーバーは秘密を平文で見ることはありません。',
-    'how_it_works_intro' => 'メールやSlackでパスワードを共有すると、すべての中継者が読める状態のままです。Secret Dropは逆のアプローチ：秘密はブラウザで暗号化されてから画面を離れます。サーバーが受け取るのはノイズだけです。',
+    'how_it_works_meta_title' => 'ゼロ知識暗号化がデータを守る仕組み',
+    'how_it_works_meta_description' => 'Secret Dropがエンドツーエンド暗号化で機密データの安全な受け渡しを実現する仕組みをご覧ください。サーバーは秘密を平文で見ることはありません。',
+    'how_it_works_intro' => 'メールやSlackでパスワードを共有すると、すべての中継者が読める状態のままです。Secret Dropは機密データの安全な受け渡しを実現します：すべてがブラウザで暗号化されてから画面を離れます。サーバーが受け取るのはノイズだけです。',
     'how_it_works_diagram_title' => 'あなたの秘密がどう守られるか',
     'how_step1_title' => '秘密を書く',
     'how_step1_desc' => 'ブラウザでメッセージを入力するか、ファイルを選択します。',
@@ -176,6 +181,7 @@ return [
 
     // FAQ (structured data)
     'faq_title' => 'よくある質問',
+    'faq_meta_title' => 'FAQ — 暗号化された秘密・ファイル共有について',
     'faq_intro' => '秘密を預ける前に知っておくべきこと。',
     'faq_cta' => 'シークレットを作成',
     'faq_q1' => 'Secret Dropは無料ですか？',
@@ -214,11 +220,21 @@ return [
     'sbd_fragment_desc' => '復号キーはURLフラグメント（#の後）に存在します。HTTPプロトコルの設計上、この部分はサーバーに送信されません — リクエストにもログにもどこにも。',
     'sbd_destroy_title' => '完全な破棄',
     'sbd_destroy_desc' => '読まれたシークレットはもう存在しません。暗号化されたコンテンツはサーバーから削除され、存在の痕跡だけが残ります。有効期限と閲覧制限により、露出時間を最小限に抑えます。',
+    'sbd_hosted_title' => 'フランス国内で運用',
+    'sbd_hosted_desc' => 'インフラはフランス国内に設置され、欧州連合の法律が適用されます。データはGDPRにより保護され、EU域外に出ることはありません。第三国への移転は一切行いません。',
+    'sbd_notrack_title' => 'トラッキングなし',
+    'sbd_notrack_desc' => 'サードパーティCookie、トラッキングピクセル、外部サービスは一切使用していません。データが第三者に共有されることはありません。このサイトでの行動がプロファイリング、販売、収益化されることはありません。',
+
+    // Trust badges (footer)
+    'trust_hosted_fr' => 'フランス国内で運用',
+    'trust_no_tracking' => 'トラッカーなし',
+    'trust_client_encryption' => 'クライアント側で暗号化',
 
     // Use cases page
     'use_cases_title' => '使用例',
-    'use_cases_meta_description' => 'Secret Dropの使い方：パスワード共有、機密文書、APIキーなど。',
-    'use_cases_intro' => '毎日、パスワードがメール、Slack、SMSで平文のまま送信されています。Secret Dropがこれらの危険な習慣をどう置き換えるか紹介します。',
+    'use_cases_meta_title' => '活用例：パスワード、ファイル、APIキーほか',
+    'use_cases_meta_description' => 'あらゆる場面で機密データを安全に受け渡し：パスワード、機密文書、APIキーなど。',
+    'use_cases_intro' => '毎日、機密データがメール、Slack、SMSで平文のまま送信されています。Secret Dropはこれを安全な受け渡しに変えます — エンドツーエンド暗号化で。',
     'usecase1_title' => 'パスワードと認証情報',
     'usecase1_desc' => '新しいチームメンバーにアクセスが必要。誰でも読めるメールの代わりに、閲覧後に自動消滅するリンクを送信。',
     'usecase1_example' => 'CMSアクセス、共有アカウント、請負業者向けWi-Fi認証情報。',
@@ -266,7 +282,7 @@ return [
     'legal_data_not_stored' => '保存されないデータ：',
     'legal_data_not_item_plaintext' => 'シークレットの平文',
     'legal_data_not_item_key' => '暗号化キー（リンクのプライベート部分でのみ送信）',
-    'legal_data_not_item_file_meta' => 'ファイル名、タイプ、サイズ（コンテンツと共に暗号化）',
+    'legal_data_not_item_file_meta' => 'ファイル名とタイプ（コンテンツと共に暗号化）',
     'legal_cookies_title' => 'Cookie',
     'legal_cookies_text' => 'このサイトは必須の技術的Cookieのみを使用しています（セッション、テーマ設定）。トラッキングや広告Cookieは使用していません。',
     'legal_cookies_cnil' => 'CNIL（フランスのデータ保護機関）勧告に従い、これらの厳密に必要なCookieは同意要件から免除されています。',
@@ -305,11 +321,19 @@ return [
     'admin_mode' => 'モード',
     'admin_limited_views' => '最大:count回閲覧',
     'admin_unlimited' => '無制限',
+    'admin_hour' => '時間',
     'admin_day' => '日',
     'admin_days' => '日',
     'admin_extend' => '延長',
     'admin_revoke' => '取り消し',
     'admin_revoke_confirm' => 'このシークレットを取り消しますか？この操作は元に戻せません。',
+    'admin_error_connection' => '接続エラーが発生しました。もう一度お試しください。',
+    'admin_error_not_found' => 'シークレットが見つかりません。',
+    'admin_error_already_revoked' => 'このシークレットはすでに取り消されています。',
+    'admin_error_already_consumed' => 'このシークレットはすでに閲覧済みです。',
+    'admin_error_revoked' => 'このシークレットは取り消されました。',
+    'admin_error_revoke' => '取り消し中にエラーが発生しました。',
+    'admin_error_extend' => '延長中にエラーが発生しました。',
 
     // Magic link email
     'email_magic_link_subject' => 'Secret Dropアクセスリンク',
@@ -328,6 +352,7 @@ return [
     'superadmin_dashboard_subtitle' => 'Secret Dropインスタンスの匿名使用データ。',
 
     // Periods
+    'period_today' => '今日',
     'period_7d' => '過去7日間',
     'period_30d' => '過去30日間',
     'period_90d' => '過去90日間',
@@ -500,4 +525,26 @@ return [
     'val_days_integer' => '日数は整数でなければなりません。',
     'val_days_min' => '日数は1以上でなければなりません。',
     'val_days_max' => '日数は30を超えてはなりません。',
+
+    // Monitoring
+    'monitoring_title' => 'モニタリング',
+    'stat_errors_4xx' => 'クライアントエラー (4xx)',
+    'stat_errors_5xx' => 'サーバーエラー (5xx)',
+    'stat_errors_422' => 'バリデーション (422)',
+    'stat_errors_429' => 'レート制限 (429)',
+    'chart_error_trends' => 'エラー傾向',
+    'chart_error_breakdown' => 'エラー内訳',
+    'stat_total_errors' => '合計',
+    'no_errors' => 'この期間にエラーはありません',
+    'hint_errors_4xx' => 'クライアントエラーの合計（400-499）。ページ未検出、バリデーションエラー、レート制限を含みます。高い数値はスキャンや設定ミスのリンクを示す可能性があります。',
+    'hint_errors_5xx' => 'サーバーエラーの合計（500-599）。0を超える値はバグまたはインフラの問題を意味します — すぐにログを確認してください。',
+    'hint_errors_422' => 'バリデーションにより拒否されたリクエスト（無効なペイロード形式、暗号フィールドサイズの誤り）。急増はAPIの不正使用や不正データによる攻撃を示す可能性があります。',
+    'hint_errors_429' => 'レート制限によりブロックされたリクエスト。急増はサービスへの悪用や自動化された攻撃を示します。',
+
+    // 構造的暗号バリデーション
+    'val_invalid_base64url' => '値は有効なBase64URLエンコード文字列である必要があります。',
+    'val_invalid_byte_length' => '無効なバイト長: :expected バイトが必要ですが、:actual を受信しました。',
+    'val_min_byte_length' => '最小バイト長は :min ですが、:actual を受信しました。',
+    'val_salt_iv2_consistency' => 'SaltとIV2は両方存在するか、両方存在しない必要があります。',
+    'val_passphrase_requires_salt' => 'パスフレーズフラグにはSaltとIV2の存在が必要です。',
 ];

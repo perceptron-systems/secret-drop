@@ -111,6 +111,22 @@ class Secret extends Model
         $this->save();
     }
 
+    public static function findByAdminToken(string $adminToken): ?self
+    {
+        $hash = hash('sha256', $adminToken);
+        $prefix = substr($hash, 0, 12);
+
+        $candidates = self::where('admin_token_hash', 'like', "{$prefix}%")->get();
+
+        foreach ($candidates as $candidate) {
+            if (hash_equals($candidate->admin_token_hash, $hash)) {
+                return $candidate;
+            }
+        }
+
+        return null;
+    }
+
     public function hasCreatorEmail(): bool
     {
         return $this->creator_email_hash !== null;

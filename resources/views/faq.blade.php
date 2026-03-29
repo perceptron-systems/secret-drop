@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', __('messages.faq_title'))
+@section('title', __('messages.faq_meta_title'))
 @section('description', __('messages.faq_meta_description'))
 
 @push('schema')

@@ -7,6 +7,15 @@ use Tests\TestCase;
 
 class CreateSecretTest extends TestCase
 {
+    // Valid base64url test values (correct decoded byte lengths)
+    private const VALID_IV = 'YWFhYWFhYWFhYWFh'; // 12 bytes
+
+    private const VALID_SALT = 'YmJiYmJiYmJiYmJiYmJiYg'; // 16 bytes
+
+    private const VALID_IV2 = 'Y2NjY2NjY2NjY2Nj'; // 12 bytes
+
+    private const VALID_CIPHERTEXT = 'ZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGQ'; // 32 bytes
+
     /** Vérifie que la racine redirige vers la page d'accueil localisée. */
     public function testRootRedirectsToLocalizedHome(): void
     {
@@ -29,10 +38,10 @@ class CreateSecretTest extends TestCase
     {
         $response = $this->postJson('/api/secrets', [
             'type' => 'text',
-            'ciphertext' => 'base64encodedciphertext',
+            'ciphertext' => self::VALID_CIPHERTEXT,
             'cipher_meta' => [
                 'alg' => 'AES-256-GCM',
-                'iv' => 'base64encodediv',
+                'iv' => self::VALID_IV,
                 'version' => 1,
             ],
             'expiration' => '7d',
@@ -49,7 +58,7 @@ class CreateSecretTest extends TestCase
         $secret = Secret::where('token', $token)->first();
         $this->assertNotNull($secret);
         $this->assertEquals('text', $secret->type);
-        $this->assertEquals('base64encodedciphertext', $secret->ciphertext);
+        $this->assertEquals(self::VALID_CIPHERTEXT, $secret->ciphertext);
         $this->assertEquals(1, $secret->max_views);
         $this->assertNotNull($secret->expire_at);
 
@@ -61,13 +70,15 @@ class CreateSecretTest extends TestCase
     {
         $response = $this->postJson('/api/secrets', [
             'type' => 'text',
-            'ciphertext' => 'encrypteddata',
+            'ciphertext' => self::VALID_CIPHERTEXT,
             'cipher_meta' => [
                 'alg' => 'AES-256-GCM',
-                'iv' => 'randomiv',
+                'iv' => self::VALID_IV,
                 'version' => 1,
-                'salt' => 'randomsalt',
-                'kdf' => 'PBKDF2-SHA256-200k',
+                'salt' => self::VALID_SALT,
+                'iv2' => self::VALID_IV2,
+                'kdf' => 'PBKDF2-SHA256-600k',
+                'has_passphrase' => true,
             ],
             'expiration' => '1h',
             'max_views' => 5,
@@ -79,7 +90,7 @@ class CreateSecretTest extends TestCase
         $secret = Secret::where('token', $response->json('token'))->first();
         $this->assertEquals(5, $secret->max_views);
         $this->assertTrue($secret->verifyCreatorEmail('test@example.com'));
-        $this->assertEquals('randomsalt', $secret->cipher_meta['salt']);
+        $this->assertEquals(self::VALID_SALT, $secret->cipher_meta['salt']);
 
         $secret->delete();
     }
@@ -91,7 +102,7 @@ class CreateSecretTest extends TestCase
             'type' => 'text',
             'cipher_meta' => [
                 'alg' => 'AES-256-GCM',
-                'iv' => 'randomiv',
+                'iv' => self::VALID_IV,
                 'version' => 1,
             ],
             'expiration' => '7d',
@@ -106,7 +117,7 @@ class CreateSecretTest extends TestCase
     {
         $response = $this->postJson('/api/secrets', [
             'type' => 'text',
-            'ciphertext' => 'encrypted',
+            'ciphertext' => self::VALID_CIPHERTEXT,
             'expiration' => '7d',
         ]);
 
@@ -119,10 +130,10 @@ class CreateSecretTest extends TestCase
     {
         $response = $this->postJson('/api/secrets', [
             'type' => 'text',
-            'ciphertext' => 'encrypted',
+            'ciphertext' => self::VALID_CIPHERTEXT,
             'cipher_meta' => [
                 'alg' => 'AES-256-GCM',
-                'iv' => 'randomiv',
+                'iv' => self::VALID_IV,
                 'version' => 1,
             ],
             'expiration' => '1y',
@@ -137,10 +148,10 @@ class CreateSecretTest extends TestCase
     {
         $response = $this->postJson('/api/secrets', [
             'type' => 'text',
-            'ciphertext' => 'encrypted',
+            'ciphertext' => self::VALID_CIPHERTEXT,
             'cipher_meta' => [
                 'alg' => 'AES-256-GCM',
-                'iv' => 'randomiv',
+                'iv' => self::VALID_IV,
                 'version' => 1,
             ],
             'expiration' => '7d',
@@ -156,10 +167,10 @@ class CreateSecretTest extends TestCase
     {
         $response = $this->postJson('/api/secrets', [
             'type' => 'text',
-            'ciphertext' => 'encrypted',
+            'ciphertext' => self::VALID_CIPHERTEXT,
             'cipher_meta' => [
                 'alg' => 'AES-256-GCM',
-                'iv' => 'randomiv',
+                'iv' => self::VALID_IV,
                 'version' => 1,
             ],
             'expiration' => '7d',

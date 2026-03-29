@@ -10,6 +10,14 @@ use Tests\TestCase;
 
 class SecretWorkflowTest extends TestCase
 {
+    private const VALID_IV = 'YWFhYWFhYWFhYWFh'; // 12 bytes
+
+    private const VALID_SALT = 'YmJiYmJiYmJiYmJiYmJiYg'; // 16 bytes
+
+    private const VALID_IV2 = 'Y2NjY2NjY2NjY2Nj'; // 12 bytes
+
+    private const VALID_CIPHERTEXT = 'ZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGQ'; // 32 bytes
+
     private TokenService $tokenService;
 
     private SecretStorageService $storage;
@@ -27,10 +35,10 @@ class SecretWorkflowTest extends TestCase
         // Step 1: Create secret with max_views = 1 (single use)
         $createResponse = $this->postJson('/api/secrets', [
             'type' => 'text',
-            'ciphertext' => 'encrypted_message_content',
+            'ciphertext' => self::VALID_CIPHERTEXT,
             'cipher_meta' => [
                 'alg' => 'AES-256-GCM',
-                'iv' => 'randomiv12345',
+                'iv' => self::VALID_IV,
                 'version' => 1,
             ],
             'expiration' => '7d',
@@ -49,7 +57,7 @@ class SecretWorkflowTest extends TestCase
         $fetchResponse->assertStatus(200);
         $fetchResponse->assertJson([
             'type' => 'text',
-            'ciphertext' => 'encrypted_message_content',
+            'ciphertext' => self::VALID_CIPHERTEXT,
             'will_be_destroyed' => true,
         ]);
 
@@ -82,7 +90,7 @@ class SecretWorkflowTest extends TestCase
             'encrypted_file' => $file,
             'cipher_meta' => json_encode([
                 'alg' => 'AES-256-GCM',
-                'iv' => 'randomiv12345',
+                'iv' => self::VALID_IV,
                 'version' => 1,
             ]),
             'expiration' => '1d',
@@ -127,10 +135,10 @@ class SecretWorkflowTest extends TestCase
         // Create secret with 3 max views
         $createResponse = $this->postJson('/api/secrets', [
             'type' => 'text',
-            'ciphertext' => 'multi_use_content',
+            'ciphertext' => self::VALID_CIPHERTEXT,
             'cipher_meta' => [
                 'alg' => 'AES-256-GCM',
-                'iv' => 'randomiv12345',
+                'iv' => self::VALID_IV,
                 'version' => 1,
             ],
             'expiration' => '7d',
@@ -167,19 +175,21 @@ class SecretWorkflowTest extends TestCase
         Secret::where('token', $token)->delete();
     }
 
-    /** Vérifie le workflow avec passphrase (salt + kdf). */
+    /** Vérifie le workflow avec passphrase (salt + kdf + iv2). */
     public function testSecretWithPassphraseWorkflow(): void
     {
-        // Create secret with passphrase metadata (salt + kdf indicate passphrase)
+        // Create secret with passphrase metadata (salt + kdf + iv2 indicate passphrase)
         $createResponse = $this->postJson('/api/secrets', [
             'type' => 'text',
-            'ciphertext' => 'passphrase_protected_content',
+            'ciphertext' => self::VALID_CIPHERTEXT,
             'cipher_meta' => [
                 'alg' => 'AES-256-GCM',
-                'iv' => 'randomiv12345',
+                'iv' => self::VALID_IV,
                 'version' => 1,
-                'salt' => 'randomsalt12345',
-                'kdf' => 'PBKDF2-SHA256-200k',
+                'salt' => self::VALID_SALT,
+                'iv2' => self::VALID_IV2,
+                'kdf' => 'PBKDF2-SHA256-600k',
+                'has_passphrase' => true,
             ],
             'expiration' => '7d',
         ]);
@@ -190,8 +200,8 @@ class SecretWorkflowTest extends TestCase
         // Fetch should return passphrase metadata (salt + kdf)
         $fetchResponse = $this->getJson("/api/secrets/{$token}");
         $fetchResponse->assertStatus(200);
-        $fetchResponse->assertJsonPath('cipher_meta.salt', 'randomsalt12345');
-        $fetchResponse->assertJsonPath('cipher_meta.kdf', 'PBKDF2-SHA256-200k');
+        $fetchResponse->assertJsonPath('cipher_meta.salt', self::VALID_SALT);
+        $fetchResponse->assertJsonPath('cipher_meta.kdf', 'PBKDF2-SHA256-600k');
 
         // Cleanup
         Secret::where('token', $token)->delete();
@@ -203,10 +213,10 @@ class SecretWorkflowTest extends TestCase
         // Create secret with creator email
         $createResponse = $this->postJson('/api/secrets', [
             'type' => 'text',
-            'ciphertext' => 'content_with_email',
+            'ciphertext' => self::VALID_CIPHERTEXT,
             'cipher_meta' => [
                 'alg' => 'AES-256-GCM',
-                'iv' => 'randomiv12345',
+                'iv' => self::VALID_IV,
                 'version' => 1,
             ],
             'expiration' => '7d',
@@ -239,10 +249,10 @@ class SecretWorkflowTest extends TestCase
             'type' => 'text',
             'cipher_meta' => [
                 'alg' => 'AES-256-GCM',
-                'iv' => 'randomiv12345',
+                'iv' => self::VALID_IV,
                 'version' => 1,
             ],
-            'ciphertext' => 'soon_to_be_revoked',
+            'ciphertext' => self::VALID_CIPHERTEXT,
             'expire_at' => now()->addDays(7),
         ]);
 
@@ -275,10 +285,10 @@ class SecretWorkflowTest extends TestCase
         // Create unlimited secret
         $createResponse = $this->postJson('/api/secrets', [
             'type' => 'text',
-            'ciphertext' => 'concurrent_access_content',
+            'ciphertext' => self::VALID_CIPHERTEXT,
             'cipher_meta' => [
                 'alg' => 'AES-256-GCM',
-                'iv' => 'randomiv12345',
+                'iv' => self::VALID_IV,
                 'version' => 1,
             ],
             'expiration' => '7d',
@@ -308,10 +318,10 @@ class SecretWorkflowTest extends TestCase
         // Create secret
         $createResponse = $this->postJson('/api/secrets', [
             'type' => 'text',
-            'ciphertext' => 'first_read_test',
+            'ciphertext' => self::VALID_CIPHERTEXT,
             'cipher_meta' => [
                 'alg' => 'AES-256-GCM',
-                'iv' => 'randomiv12345',
+                'iv' => self::VALID_IV,
                 'version' => 1,
             ],
             'expiration' => '7d',
@@ -347,10 +357,10 @@ class SecretWorkflowTest extends TestCase
     {
         $createResponse = $this->postJson('/api/secrets', [
             'type' => 'text',
-            'ciphertext' => 'token_test',
+            'ciphertext' => self::VALID_CIPHERTEXT,
             'cipher_meta' => [
                 'alg' => 'AES-256-GCM',
-                'iv' => 'randomiv12345',
+                'iv' => self::VALID_IV,
                 'version' => 1,
             ],
             'expiration' => '7d',

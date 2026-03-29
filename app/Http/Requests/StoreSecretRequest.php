@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\Base64UrlBytes;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Validator;
 
 class StoreSecretRequest extends FormRequest
 {
@@ -38,7 +40,10 @@ class StoreSecretRequest extends FormRequest
             'type' => ['required', 'in:text,file'],
 
             // Text secrets (~50 KB plaintext = ~70 KB ciphertext in base64)
-            'ciphertext' => ['required_if:type,text', 'string', 'max:70000'],
+            'ciphertext' => [
+                'bail', 'required_if:type,text', 'string', 'max:70000',
+                new Base64UrlBytes(minBytes: 16),
+            ],
 
             // File secrets: 10 MB before encryption = ~14 MB after (metadata encrypted in payload)
             'encrypted_file' => ['required_if:type,file', 'file', 'max:14336'], // ~14 MB
@@ -46,10 +51,10 @@ class StoreSecretRequest extends FormRequest
             // Common
             'cipher_meta' => ['required', 'array'],
             'cipher_meta.alg' => ['required', 'in:AES-256-GCM'],
-            'cipher_meta.iv' => ['required', 'string'],
+            'cipher_meta.iv' => ['bail', 'required', 'string', new Base64UrlBytes(exactBytes: 12)],
             'cipher_meta.version' => ['required', 'integer', 'min:1'],
-            'cipher_meta.salt' => ['nullable', 'string'],
-            'cipher_meta.iv2' => ['nullable', 'string'],
+            'cipher_meta.salt' => ['bail', 'nullable', 'string', new Base64UrlBytes(exactBytes: 16)],
+            'cipher_meta.iv2' => ['bail', 'nullable', 'string', new Base64UrlBytes(exactBytes: 12)],
             'cipher_meta.kdf' => ['nullable', 'string'],
             'cipher_meta.has_passphrase' => ['boolean'],
             'expiration' => ['required', 'in:'.implode(',', array_keys(config('secrets.expirations')))],
@@ -57,6 +62,35 @@ class StoreSecretRequest extends FormRequest
             'creator_email' => ['nullable', 'email', 'max:255'],
             'split_mode' => ['boolean'],
         ];
+    }
+
+    public function withValidator(Validator $validator): void
+    {
+        $validator->after(function (Validator $validator) {
+            $meta = $this->input('cipher_meta', []);
+
+            if (! is_array($meta)) {
+                return;
+            }
+
+            $hasSalt = ! empty($meta['salt']);
+            $hasIv2 = ! empty($meta['iv2']);
+            $hasPassphrase = ! empty($meta['has_passphrase']);
+
+            if ($hasSalt !== $hasIv2) {
+                $validator->errors()->add(
+                    'cipher_meta.salt',
+                    __('messages.val_salt_iv2_consistency')
+                );
+            }
+
+            if ($hasPassphrase && ! $hasSalt) {
+                $validator->errors()->add(
+                    'cipher_meta.has_passphrase',
+                    __('messages.val_passphrase_requires_salt')
+                );
+            }
+        });
     }
 
     /**

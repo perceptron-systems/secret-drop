@@ -6,6 +6,7 @@ use App\Http\Middleware\SanitizeRequestLogging;
 use App\Http\Middleware\SecurityHeaders;
 use App\Http\Middleware\SetLocale;
 use App\Http\Middleware\ThrottleWithCaptcha;
+use App\Http\Middleware\TrackHttpErrors;
 use App\Http\Middleware\TrackPageView;
 use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Application;
@@ -26,7 +27,9 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->append(SecurityHeaders::class);
 
         $middleware->appendToGroup('web', TrackPageView::class);
+        $middleware->appendToGroup('web', TrackHttpErrors::class);
         $middleware->appendToGroup('web', \Illuminate\Routing\Middleware\ThrottleRequests::class.':global');
+        $middleware->appendToGroup('api', TrackHttpErrors::class);
         $middleware->appendToGroup('api', \Illuminate\Routing\Middleware\ThrottleRequests::class.':global');
 
         $middleware->prependToPriorityList(
