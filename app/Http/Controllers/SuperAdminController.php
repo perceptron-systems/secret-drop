@@ -10,6 +10,9 @@ use App\Services\TokenService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+
+use function Illuminate\Support\defer;
+
 use Illuminate\Support\Facades\Mail;
 use Illuminate\View\View;
 
@@ -55,7 +58,7 @@ class SuperAdminController extends Controller
                 ->locale(app()->getLocale())
                 ->send(new SuperAdminMagicLinkMail($url));
 
-            $this->stats->increment(StatsService::MAGIC_LINKS_REQUESTED);
+            defer(fn () => $this->stats->increment(StatsService::MAGIC_LINKS_REQUESTED));
         }
 
         return redirect()->route('superadmin.accessSent');
@@ -80,7 +83,7 @@ class SuperAdminController extends Controller
         }
 
         $magicLink->markAsUsed();
-        $this->stats->increment(StatsService::MAGIC_LINKS_USED);
+        defer(fn () => $this->stats->increment(StatsService::MAGIC_LINKS_USED));
 
         $request->session()->regenerate();
         $request->session()->put(self::SESSION_KEY, true);
@@ -139,6 +142,7 @@ class SuperAdminController extends Controller
             'heatmapCreated' => $this->stats->getHeatmap(StatsService::HEATMAP_SECRETS_CREATED, $startDate),
             'heatmapRead' => $this->stats->getHeatmap(StatsService::HEATMAP_SECRETS_READ, $startDate),
             'avgFirstReadDelay' => $this->stats->getAverageFirstReadDelay($startDate),
+            'medianFirstReadDelay' => $this->stats->getMedianFirstReadDelay($startDate),
             'currentDiskUsage' => $this->stats->getCurrentDiskUsage(),
             'pageviews' => $this->stats->getPageviews($startDate),
             'readRate' => $this->stats->getReadRate($startDate),
@@ -151,7 +155,10 @@ class SuperAdminController extends Controller
                 'total_4xx' => $stats['totals'][StatsService::HTTP_ERRORS_4XX] ?? 0,
                 'total_5xx' => $stats['totals'][StatsService::HTTP_ERRORS_5XX] ?? 0,
                 'by_code' => $this->stats->getErrorCodeBreakdown($startDate),
+                'by_route' => $this->stats->getErrorRoutes($startDate),
             ],
+            'responseTime' => $this->stats->getResponseTimeP95($startDate),
+            'avgSecretSize' => $this->stats->getAverageSecretSize($startDate),
         ];
     }
 }

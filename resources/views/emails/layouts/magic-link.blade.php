@@ -244,7 +244,7 @@
             </div>
 
             <div class="warning">
-                <p>{{ __('messages.email_magic_link_warning') }}</p>
+                <p>{{ __('messages.email_magic_link_warning', ['minutes' => config('secrets.magic_link_ttl')]) }}</p>
             </div>
 
             <div class="url-section">

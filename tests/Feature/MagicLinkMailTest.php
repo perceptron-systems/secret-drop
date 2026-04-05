@@ -26,7 +26,7 @@ class MagicLinkMailTest extends TestCase
 
         $this->assertStringContainsString($url, $rendered);
         $this->assertStringContainsString(__('messages.email_magic_link_button'), $rendered);
-        $this->assertStringContainsString(e(__('messages.email_magic_link_warning')), $rendered);
+        $this->assertStringContainsString(e(__('messages.email_magic_link_warning', ['minutes' => config('secrets.magic_link_ttl')])), $rendered);
     }
 
     /** Vérifie que l'email contient un lien cliquable. */

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ContactController;
+use App\Http\Controllers\GeoController;
 use App\Http\Controllers\LocalizedPagesController;
 use App\Http\Controllers\RedirectController;
 use App\Http\Controllers\SecretsController;
@@ -27,7 +28,11 @@ Route::get('/superadmin', [RedirectController::class, 'superadmin']);
 Route::get('/robots.txt', [SeoController::class, 'robots']);
 Route::get('/sitemap.xml', [SeoController::class, 'sitemap'])->name('sitemap');
 Route::get('/sitemap.xsl', [SeoController::class, 'sitemapStylesheet']);
-Route::get('/.well-known/security.txt', [SeoController::class, 'securityTxt']);
+
+// GEO (AI discoverability)
+Route::get('/llms.txt', [GeoController::class, 'llmsTxt']);
+Route::get('/llms-full.txt', [GeoController::class, 'llmsFullTxt']);
+Route::get('/.well-known/security.txt', [GeoController::class, 'securityTxt']);
 
 // Localized pages (public + admin + superadmin)
 Route::prefix('{locale}')

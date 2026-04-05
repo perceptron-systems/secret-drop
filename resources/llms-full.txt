@@ -1,0 +1,64 @@
+# Secret Drop -- Full Documentation
+
+> Free, open-source zero-knowledge secret sharing application. Encrypts text and files client-side with AES-256-GCM before transmission -- the server never sees plaintext data or decryption keys.
+
+## Docs
+
+- [Homepage](BASE_URL): Main entry point for creating encrypted secrets. Users type or upload content, the browser encrypts it locally, and generates a shareable self-destructing link. Supports optional passphrase protection, configurable expiration (1 hour to 90 days), single-use mode, and view count limits. No account or registration needed.
+- [How It Works](BASE_URL/how-it-works): Detailed technical walkthrough of Secret Drop's zero-knowledge encryption architecture. Explains the 6-step process: key generation, AES-256-GCM encryption in the browser via Web Crypto API, ciphertext transmission, URL fragment key delivery (never sent to server), client-side decryption, and automatic secret destruction. Covers PBKDF2 key derivation with 600,000 SHA-256 iterations for passphrase-protected secrets.
+- [Use Cases](BASE_URL/use-cases): Six detailed real-world scenarios with recommended security configurations. Covers: (1) password sharing between team members, (2) confidential document exchange, (3) API key and credential distribution for developers, (4) SSH key transfer, (5) Wi-Fi password sharing, (6) personal information exchange (SSN, medical records). Each scenario includes expiration time and view limit recommendations.
+- [FAQ](BASE_URL/faq): Ten frequently asked questions covering: cost (free), account requirements (none), encryption method (AES-256-GCM), data storage location (France), GDPR compliance (by design), open-source license (AGPL-3.0), file size limits (10 MB text, 50,000 characters), secret management via admin links, and the zero-knowledge guarantee that servers cannot access plaintext even under legal compulsion.
+- [Legal Notice](BASE_URL/legal-notice): Full legal disclosures including operator identity, hosting provider (OVH Cloud, 2 rue Kellermann, 59100 Roubaix, France), cookie policy (essential technical cookies only, no tracking), GDPR data processing details, and intellectual property information. Built with Laravel framework.
+- [Source Code](GITHUB_URL): Complete source code repository under AGPL-3.0 license. Built with Laravel, Alpine.js (CSP build), Tailwind CSS, and Vite. Publicly auditable encryption implementation using the Web Crypto API.
+
+## Localized Versions
+
+Secret Drop is available in 11 languages. Each language has its own URL prefix:
+
+- [English](BASE_URL): /en/
+- [French](SITE_URL/fr): /fr/
+- [German](SITE_URL/de): /de/
+- [Spanish](SITE_URL/es): /es/
+- [Italian](SITE_URL/it): /it/
+- [Portuguese](SITE_URL/pt): /pt/
+- [Dutch](SITE_URL/nl): /nl/
+- [Polish](SITE_URL/pl): /pl/
+- [Japanese](SITE_URL/ja): /ja/
+- [Korean](SITE_URL/ko): /ko/
+- [Arabic](SITE_URL/ar): /ar/
+
+## Security Architecture
+
+- Encryption: AES-256-GCM via Web Crypto API (client-side only)
+- Key derivation: PBKDF2 with SHA-256, 600,000 iterations (for passphrase-protected secrets)
+- Key transmission: Via URL fragment (#), which browsers never send to servers
+- IV: 96 bits (12 bytes), randomly generated per encryption
+- Salt: 128 bits (16 bytes), randomly generated per passphrase derivation
+- Key size: 256 bits
+- Encoding: Base64URL (URL-safe, no padding)
+- Double encryption: When a passphrase is used, content is first encrypted with a random key, then encrypted again with the passphrase-derived key
+- Token entropy: 128 bits (32 hex characters)
+- Magic link tokens: Stored as SHA-256 hashes (plain token sent by email, only hash in database)
+- Content Security Policy: Strict CSP with nonce-based inline script/style control
+- No unsafe-eval: Alpine.js CSP build used to avoid eval-based XSS vectors
+- Server stores: Only ciphertext, IV, salt, and metadata -- never plaintext or keys
+
+## Key Facts
+
+- Created by EDITOR_NAME
+- Hosted in France on OVH Cloud servers (2 rue Kellermann, 59100 Roubaix)
+- Open source under GNU Affero General Public License v3 (AGPL-3.0)
+- Text secrets: up to 50,000 characters
+- File secrets: up to 10 MB
+- Expiration options: 1 hour, 24 hours, 7 days, 30 days, 90 days
+- View limits: single-use or configurable max views (up to 100)
+- Available in 11 languages with localized URLs
+- No user accounts, no tracking cookies, no third-party analytics
+- GDPR compliant by design -- zero-knowledge architecture means no personal data processing
+
+## Contact
+
+- Creator: EDITOR_NAME
+- Website: WEBSITE_URL
+- Contact form: CONTACT_URL
+- Source code: GITHUB_URL

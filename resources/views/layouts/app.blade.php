@@ -35,104 +35,128 @@
     {{-- Alternate languages --}}
     {!! hreflang_tags() !!}
 
-    {{-- Open Graph --}}
+    {{-- Open Graph / Twitter: decode HTML entities from @section for crawler compatibility --}}
+    @php
+        $rawTitle = html_entity_decode(trim($__env->yieldContent('title')), ENT_QUOTES, 'UTF-8');
+        $ogTitle = $rawTitle
+            ? htmlspecialchars($rawTitle . ' - ' . config('app.name'), ENT_COMPAT, 'UTF-8')
+            : htmlspecialchars(config('app.name'), ENT_COMPAT, 'UTF-8');
+        $ogDescription = htmlspecialchars(
+            html_entity_decode($__env->yieldContent('description', __('messages.app_description')), ENT_QUOTES, 'UTF-8'),
+            ENT_COMPAT,
+            'UTF-8'
+        );
+    @endphp
     <meta property="og:type" content="website">
     <meta property="og:url" content="{{ url()->current() }}">
-    <meta property="og:title" content="@hasSection('title')@yield('title') - {{ config('app.name') }}@else{{ config('app.name') }}@endif">
-    <meta property="og:description" content="@yield('description', __('messages.app_description'))">
+    <meta property="og:title" content="{!! $ogTitle !!}">
+    <meta property="og:description" content="{!! $ogDescription !!}">
     <meta property="og:locale" content="{{ str_replace('-', '_', app()->getLocale()) }}">
-    <meta property="og:site_name" content="{{ config('app.name') }}">
+    <meta property="og:site_name" content="{!! htmlspecialchars(config('app.name'), ENT_COMPAT, 'UTF-8') !!}">
     <meta property="og:image" content="{{ asset('og-image.png') }}">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
-    <meta property="og:image:alt" content="{{ __('messages.app_description') }}">
+    <meta property="og:image:alt" content="{!! htmlspecialchars(__('messages.app_description'), ENT_COMPAT, 'UTF-8') !!}">
 
     {{-- Twitter Card --}}
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:site" content="@perceptron_sys">
     <meta name="twitter:creator" content="@perceptron_sys">
-    <meta name="twitter:title" content="@hasSection('title')@yield('title') - {{ config('app.name') }}@else{{ config('app.name') }}@endif">
-    <meta name="twitter:description" content="@yield('description', __('messages.app_description'))">
+    <meta name="twitter:title" content="{!! $ogTitle !!}">
+    <meta name="twitter:description" content="{!! $ogDescription !!}">
     <meta name="twitter:image" content="{{ asset('og-image.png') }}">
     @endunless
 
-    {{-- Schema.org JSON-LD (only on homepage) --}}
+    {{-- Schema.org JSON-LD @graph (only on homepage) --}}
     @if(request()->routeIs('home'))
     <script type="application/ld+json" nonce="@nonce">
     {
         "@@context": "https://schema.org",
-        "@@type": "WebApplication",
-        "name": "{{ config('app.name') }}",
-        "description": "{{ __('messages.app_description') }}",
-        "url": "{{ url('/') }}",
-        "applicationCategory": "SecurityApplication",
-        "operatingSystem": "Any",
-        "browserRequirements": "Requires JavaScript, Web Crypto API",
-        "inLanguage": {!! json_encode(\App\Support\LocaleConfig::SUPPORTED_LOCALES) !!},
-        "image": "{{ asset('icon-512.png') }}",
-        "isAccessibleForFree": true,
-        "offers": {
-            "@@type": "Offer",
-            "price": "0",
-            "priceCurrency": "EUR"
-        },
-        "featureList": [
-            "{{ __('messages.feature_encryption') }}",
-            "{{ __('messages.feature_zero_knowledge') }}",
-            "{{ __('messages.feature_auto_destroy') }}",
-            "{{ __('messages.feature_expiration') }}"
-        ],
-        "author": {
-            "@@type": "Person",
-            "name": "{{ config('legal.editor_name') }}"
-        }
-    }
-    </script>
-    <script type="application/ld+json" nonce="@nonce">
-    {
-        "@@context": "https://schema.org",
-        "@@type": "Organization",
-        "name": "{{ config('legal.organization_name', config('app.name')) }}",
-        "url": "{{ url('/') }}",
-        "logo": {
-            "@@type": "ImageObject",
-            "url": "{{ asset('icon-512.png') }}",
-            "width": 512,
-            "height": 512
-        },
-        "description": "{{ __('messages.legal_about_text') }}"@if(config('legal.contact_email')),
-        "email": "{{ config('legal.contact_email') }}"@endif,
-        "knowsAbout": ["zero-knowledge encryption", "end-to-end encryption", "secure file sharing", "password sharing"],
-        "founder": {
-            "@@type": "Person",
-            "name": "{{ config('legal.editor_name') }}"
-        },
-        @if(collect(config('legal.social'))->filter()->isNotEmpty())
-        "sameAs": {!! json_encode(collect(config('legal.social'))->filter()->values()) !!},
-        @endif
-        "owns": {
-            "@@type": "WebApplication",
-            "name": "{{ config('app.name') }}",
-            "url": "{{ url('/') }}"
-        }
-    }
-    </script>
-    <script type="application/ld+json" nonce="@nonce">
-    {
-        "@@context": "https://schema.org",
-        "@@type": "Person",
-        "name": "{{ config('legal.editor_name') }}",
-        "url": "https://www.orsal.fr",
-        "jobTitle": "Software Engineer",
-        "knowsAbout": ["web application security", "zero-knowledge encryption", "Laravel development", "end-to-end encryption"],
-        @if(collect(config('legal.social'))->filter()->isNotEmpty())
-        "sameAs": {!! json_encode(collect(config('legal.social'))->filter()->values()) !!},
-        @endif
-        "owns": {
-            "@@type": "WebApplication",
-            "name": "{{ config('app.name') }}",
-            "url": "{{ url('/') }}"
-        }
+        "@@graph": [
+            {
+                "@@type": "WebSite",
+                "@@id": "{{ url('/') }}/#website",
+                "name": "{{ config('app.name') }}",
+                "url": "{{ url('/') }}",
+                "description": "{{ __('messages.app_description') }}",
+                "inLanguage": {!! json_encode(\App\Support\LocaleConfig::SUPPORTED_LOCALES) !!},
+                "publisher": {
+                    "@@id": "{{ url('/') }}/#person"
+                }
+            },
+            {
+                "@@type": "Organization",
+                "@@id": "{{ url('/') }}/#organization",
+                "name": "{{ config('legal.organization_name', config('app.name')) }}",
+                "url": "{{ url('/') }}",
+                "logo": {
+                    "@@type": "ImageObject",
+                    "url": "{{ asset('icon-512.png') }}",
+                    "width": 512,
+                    "height": 512
+                },
+                "description": "{{ __('messages.legal_about_text') }}",
+                "foundingDate": "2026"@if(config('legal.contact_email')),
+                "email": "{{ config('legal.contact_email') }}",
+                "contactPoint": {
+                    "@@type": "ContactPoint",
+                    "contactType": "customer service",
+                    "email": "{{ config('legal.contact_email') }}",
+                    "url": "{{ url('/contact') }}"
+                }@endif,
+                "knowsAbout": ["zero-knowledge encryption", "end-to-end encryption", "secure file sharing", "password sharing"],
+                "founder": {
+                    "@@id": "{{ url('/') }}/#person"
+                },
+                @if(collect(config('legal.social'))->filter()->isNotEmpty())
+                "sameAs": {!! json_encode(collect(config('legal.social'))->filter()->values()) !!},
+                @endif
+                "owns": {
+                    "@@id": "{{ url('/') }}/#application"
+                }
+            },
+            {
+                "@@type": "Person",
+                "@@id": "{{ url('/') }}/#person",
+                "name": "{{ config('legal.editor_name') }}",
+                "url": "{{ config('legal.social.website', 'https://www.orsal.fr') }}",
+                "jobTitle": "Software Engineer",
+                "knowsAbout": ["web application security", "zero-knowledge encryption", "Laravel development", "end-to-end encryption"],
+                @if(collect(config('legal.social'))->filter()->isNotEmpty())
+                "sameAs": {!! json_encode(collect(config('legal.social'))->filter()->values()) !!},
+                @endif
+                "worksFor": {
+                    "@@id": "{{ url('/') }}/#organization"
+                }
+            },
+            {
+                "@@type": "WebApplication",
+                "@@id": "{{ url('/') }}/#application",
+                "name": "{{ config('app.name') }}",
+                "description": "{{ __('messages.app_description') }}",
+                "url": "{{ url('/') }}",
+                "applicationCategory": "SecurityApplication",
+                "operatingSystem": "Any",
+                "browserRequirements": "Requires JavaScript, Web Crypto API",
+                "inLanguage": {!! json_encode(\App\Support\LocaleConfig::SUPPORTED_LOCALES) !!},
+                "image": "{{ asset('icon-512.png') }}",
+                "isAccessibleForFree": true,
+                "offers": {
+                    "@@type": "Offer",
+                    "price": "0",
+                    "priceCurrency": "EUR"
+                },
+                "featureList": [
+                    "{{ __('messages.feature_secure_by_design') }}",
+                    "{{ __('messages.feature_no_account') }}",
+                    "{{ __('messages.feature_hosted_france') }}",
+                    "{{ __('messages.feature_open_source') }}"
+                ],
+                "author": {
+                    "@@id": "{{ url('/') }}/#person"
+                }
+            }
+        ]
     }
     </script>
     @endif
@@ -242,6 +266,8 @@
             </nav>
             <div class="flex items-center gap-2">
                 <span>&copy; 2026 <a href="https://www.orsal.fr" target="_blank" rel="noopener" class="hover:text-gray-700 dark:hover:text-slate-200 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:rounded transition-colors">Guillaume Orsal</a></span>
+                <span aria-hidden="true">·</span>
+                <span>Built with <a href="https://laravel.com" target="_blank" rel="noopener" class="hover:text-gray-700 dark:hover:text-slate-200 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:rounded transition-colors">Laravel</a></span>
                 <a href="https://github.com/perceptron-systems/secret-drop" target="_blank" rel="noopener" aria-label="GitHub" class="hover:text-gray-700 dark:hover:text-slate-200 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:rounded transition-colors">
                     <x-icon.github class="w-4 h-4" />
                 </a>

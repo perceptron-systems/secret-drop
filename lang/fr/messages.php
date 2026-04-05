@@ -2,20 +2,18 @@
 
 return [
     // App
-    'app_description' => 'Partagez mots de passe et fichiers confidentiels sans jamais les exposer. Chiffré de bout en bout. Autodestructible. Le serveur ne voit rien.',
+    'app_description' => 'Partagez mots de passe et fichiers confidentiels sans jamais les exposer. Chiffré de bout en bout. Autodestructible. Gratuit et open source.',
     'home_title' => 'Partagez vos secrets en toute sécurité',
     'home_hook' => 'Arrêtez d\'envoyer vos mots de passe en clair.',
-    'home_meta_description' => 'Échange sécurisé de données confidentielles via un lien autodestructible. Mot de passe, clé API, fichier — chiffré de bout en bout, le serveur ne voit rien.',
+    'home_meta_description' => 'Partagez un mot de passe, une clé API ou un fichier confidentiel via un lien qui s\'autodétruit. Chiffré dans votre navigateur, le serveur ne voit jamais le contenu.',
+    'home_answer_target' => 'Secret Drop chiffre vos mots de passe et fichiers confidentiels dans votre navigateur avant tout envoi. Le serveur ne stocke que des données illisibles et ne peut jamais accéder au contenu. Les secrets s\'autodétruisent après lecture. Gratuit, sans compte, sans traceur.',
     'home_view_source' => 'Voir le code source',
 
-    // Features
-    'feature_encryption' => 'Chiffré dans votre navigateur avant tout envoi',
-    'feature_zero_knowledge' => 'Sécurisé par conception : illisible, même pour nous',
-    'feature_auto_destroy' => 'Vous décidez quand il s\'autodétruit',
-    'feature_expiration' => 'Ni compte, ni mot de passe : rien à pirater',
-    'feature_hosted_eu' => 'Hébergé en France, juridiction UE',
-    'feature_no_tracking' => 'Aucun cookie tiers, aucun service de tracking',
-    'feature_hosted_no_tracking' => 'Hébergé en France, aucun service de tracking',
+    // Features (homepage bullets)
+    'feature_secure_by_design' => 'Sécurisé par conception',
+    'feature_no_account' => 'Sans compte ni inscription',
+    'feature_hosted_france' => 'Hébergé en France, aucun traceur',
+    'feature_open_source' => 'Open source : le code est public et vérifiable',
 
     // Form labels
     'your_secret' => 'Votre secret',
@@ -25,7 +23,7 @@ return [
     'max_reads' => 'Lectures max',
     'max_reads_hint' => 'Limite le nombre de fois que le secret peut être consulté. Une fois atteint, le secret est automatiquement supprimé.',
     'advanced_options' => 'Options avancées',
-    'max_security' => 'Activer la sécurité max',
+    'max_security' => "Activer la sécurité\u{00A0}max",
     'passphrase' => 'Phrase secrète',
     'passphrase_hint' => 'Protection supplémentaire. Le destinataire devra la connaître pour déchiffrer. Elle n\'est jamais transmise au serveur.',
     'passphrase_placeholder' => 'Protection supplémentaire',
@@ -158,7 +156,7 @@ return [
     'how_step1_title' => 'Vous écrivez votre secret',
     'how_step1_desc' => 'Vous entrez votre message ou sélectionnez un fichier dans votre navigateur.',
     'how_step2_title' => 'Chiffrement dans votre navigateur',
-    'how_step2_desc' => 'Votre navigateur génère une clé aléatoire et chiffre le contenu localement avec AES-256-GCM. Le serveur ne reçoit que les données chiffrées.',
+    'how_step2_desc' => 'Votre navigateur génère une clé aléatoire et chiffre le contenu localement avec <a href="https://csrc.nist.gov/pubs/sp/800/38d/final" target="_blank" rel="noopener" class="text-violet-600 dark:text-violet-400 hover:underline">AES-256-GCM</a> via la <a href="https://www.w3.org/TR/WebCryptoAPI/" target="_blank" rel="noopener" class="text-violet-600 dark:text-violet-400 hover:underline">Web Crypto API</a>. Le serveur ne reçoit que les données chiffrées.',
     'how_step3_title' => 'Le serveur stocke le contenu chiffré',
     'how_step3_desc' => 'Le serveur enregistre uniquement les données chiffrées. Il ne peut pas les déchiffrer car il n\'a jamais accès à la clé.',
     'how_step4_title' => 'La clé reste dans l\'URL',
@@ -197,7 +195,7 @@ return [
 
     // Sécurité
     'faq_q5' => 'Comment mes données sont-elles chiffrées ?',
-    'faq_a5' => 'Votre navigateur génère une clé aléatoire et chiffre le contenu localement (AES-256-GCM via Web Crypto API). Le serveur ne reçoit que des données chiffrées — il ne voit jamais le contenu en clair.',
+    'faq_a5' => 'Votre navigateur génère une clé aléatoire et chiffre le contenu localement avec <a href="https://csrc.nist.gov/pubs/sp/800/38d/final" target="_blank" rel="noopener" class="text-violet-600 dark:text-violet-400 hover:underline">AES-256-GCM</a>, l\'algorithme recommandé par le NIST, via la <a href="https://www.w3.org/TR/WebCryptoAPI/" target="_blank" rel="noopener" class="text-violet-600 dark:text-violet-400 hover:underline">Web Crypto API</a> du W3C. Le serveur ne reçoit que des données chiffrées — il ne voit jamais le contenu en clair.',
     'faq_q6' => 'Le serveur peut-il lire mes secrets ?',
     'faq_a6' => 'Non. La clé de déchiffrement reste dans le fragment de l\'URL (après le #), qui n\'est jamais envoyé au serveur. C\'est une impossibilité technique, pas une promesse.',
     'faq_q7' => 'Que se passe-t-il après la lecture ?',
@@ -215,13 +213,13 @@ return [
     'faq_q11' => 'Quelle différence avec un email chiffré ?',
     'faq_a11' => 'L\'email chiffré (PGP, S/MIME) exige que les deux parties configurent des clés au préalable. Secret Drop ne demande rien au destinataire — juste un lien. Et le secret s\'autodétruit, contrairement à un email qui reste dans les deux boîtes.',
     'faq_q12' => 'Comment gérer mes secrets après leur création ?',
-    'faq_a12' => 'Si vous avez fourni votre email, vous pouvez révoquer ou prolonger vos secrets via le lien :manage_link en bas de chaque page. Vous recevrez un lien à usage unique valable 10 minutes — un magic link, sans mot de passe. Rien à voler, rien à pirater.',
+    'faq_a12' => 'Si vous avez fourni votre email, vous pouvez révoquer ou prolonger vos secrets via le lien :manage_link en bas de chaque page. Vous recevrez un lien à usage unique valable :minutes minutes — un magic link, sans mot de passe. Rien à voler, rien à pirater.',
     'faq_meta_description' => 'Retrouvez les réponses aux questions fréquentes sur Secret Drop : chiffrement, zero-knowledge, confidentialité, partage de fichiers et plus.',
     'faq_see_how' => 'Découvrez comment fonctionne Secret Drop',
     'secure_by_design_title' => 'Secure by design',
     'secure_by_design_intro' => 'La sécurité n\'est pas une fonctionnalité ajoutée — c\'est le fondement de chaque décision architecturale.',
     'sbd_zk_title' => 'Zero-knowledge',
-    'sbd_zk_desc' => 'Le serveur ne reçoit jamais la clé de chiffrement. Même si la base de données est compromise, un attaquant n\'obtient que du bruit inutilisable. Ce n\'est pas une promesse — c\'est une impossibilité mathématique.',
+    'sbd_zk_desc' => 'Le serveur ne reçoit jamais la clé de chiffrement — conformément aux principes de <a href="https://cheatsheetseries.owasp.org/cheatsheets/Cryptographic_Storage_Cheat_Sheet.html" target="_blank" rel="noopener" class="text-violet-600 dark:text-violet-400 hover:underline">stockage cryptographique OWASP</a>. Même si la base de données est compromise, un attaquant n\'obtient que du bruit inutilisable. Ce n\'est pas une promesse — c\'est une impossibilité mathématique.',
     'sbd_ml_title' => 'Authentification sans mot de passe',
     'sbd_ml_desc' => 'Un magic link à usage unique remplace le mot de passe. Rien à voler, fuiter ou forcer. Une base de données compromise ne révèle aucun identifiant, car il n\'y en a pas.',
     'sbd_fragment_title' => 'La clé ne transite pas',
@@ -246,21 +244,27 @@ return [
     'usecase1_title' => 'Mots de passe et identifiants',
     'usecase1_desc' => 'Un nouveau collaborateur a besoin des accès. Au lieu d\'un email que tout le monde peut lire, envoyez un lien qui s\'autodétruit après lecture.',
     'usecase1_example' => 'Accès CMS, comptes partagés, identifiants Wi-Fi pour un prestataire.',
+    'usecase1_tip' => 'Expiration 1h, lecture unique. Changez le mot de passe si le lien n\'a pas été ouvert à temps.',
     'usecase2_title' => 'Documents confidentiels',
     'usecase2_desc' => 'Contrat, pièce d\'identité, fiche de paie — des fichiers qui ne devraient pas traîner dans une boîte mail ou sur un serveur tiers.',
     'usecase2_example' => 'Pièce d\'identité pour une banque, contrat signé, bulletin de salaire.',
+    'usecase2_tip' => 'Expiration 24h, lecture unique, phrase de passe recommandée pour les documents sensibles.',
     'usecase3_title' => 'Clés API et tokens',
     'usecase3_desc' => 'Une clé API dans un chat Slack, c\'est un secret en clair accessible à toute l\'équipe. Un lien à usage unique, c\'est un secret qui disparaît.',
     'usecase3_example' => 'Clé Stripe, token GitHub, variables d\'environnement.',
+    'usecase3_tip' => 'Expiration 1h, lecture unique, mode séparé conseillé : le lien par email, la clé par messagerie.',
     'usecase4_title' => 'Clés SSH et certificats',
     'usecase4_desc' => 'Donner un accès serveur ne devrait pas impliquer de copier-coller une clé privée dans un email.',
     'usecase4_example' => 'Accès serveur temporaire, certificat de signature, clé de déploiement.',
+    'usecase4_tip' => 'Expiration 1h, lecture unique, mode séparé. Révoquez la clé SSH côté serveur après utilisation.',
     'usecase5_title' => 'Mots de passe Wi-Fi',
     'usecase5_desc' => 'Partagez le Wi-Fi sans l\'écrire sur un post-it. Le QR code intégré simplifie la connexion mobile.',
     'usecase5_example' => 'Visiteurs au bureau, invités Airbnb, salle de réunion.',
+    'usecase5_tip' => 'Expiration 7 jours, plusieurs lectures autorisées. Utilisez le QR code pour un partage mobile instantané.',
     'usecase6_title' => 'Informations personnelles',
     'usecase6_desc' => 'Numéro de carte, code PIN, informations médicales — des données qui ne devraient jamais rester dans un historique de conversation.',
     'usecase6_example' => 'Numéro de carte pour un achat, codes d\'accès en cas d\'urgence.',
+    'usecase6_tip' => 'Expiration 1h, lecture unique, phrase de passe. Prévenez le destinataire par un autre canal.',
     'use_cases_tips_title' => 'Pour aller plus loin',
     'use_cases_tip1' => 'Expiration courte (1h ou 1j) pour les informations très sensibles.',
     'use_cases_tip2' => 'Limite de lecture à 1 pour garantir que le secret ne peut être lu qu\'une seule fois.',
@@ -305,7 +309,7 @@ return [
     'admin_back_home' => 'Retour à l\'accueil',
     'admin_link_sent_title' => 'Vérifiez votre boîte mail',
     'admin_link_sent_description' => 'Si des secrets existent pour cet email, un lien magique a été envoyé.',
-    'admin_link_sent_warning' => 'Le lien est valable 10 minutes et ne peut être utilisé qu\'une seule fois.',
+    'admin_link_sent_warning' => 'Le lien est valable :minutes minutes et ne peut être utilisé qu\'une seule fois.',
     'admin_invalid_link_title' => 'Lien invalide ou expiré',
     'admin_invalid_link_description' => 'Ce lien magique est invalide ou a déjà été utilisé. Veuillez en demander un nouveau.',
     'verify_confirm_title' => 'Confirmer votre accès',
@@ -347,7 +351,7 @@ return [
     'email_magic_link_subject' => 'Votre lien d\'accès à Secret Drop',
     'email_magic_link_intro' => 'Vous avez demandé l\'accès pour gérer vos secrets. Cliquez sur le bouton ci-dessous pour vous connecter.',
     'email_magic_link_button' => 'Accéder à mes secrets',
-    'email_magic_link_warning' => 'Ce lien expire dans 10 minutes et ne peut être utilisé qu\'une seule fois.',
+    'email_magic_link_warning' => 'Ce lien expire dans :minutes minutes et ne peut être utilisé qu\'une seule fois.',
 
     // Super Admin
     'superadmin_title' => 'Super Admin',
@@ -408,7 +412,9 @@ return [
     'chart_heatmap_read' => 'Heatmap lecture (jour/heure)',
 
     // Stats
-    'stat_avg_first_read' => 'Délai moyen 1ère lecture',
+    'stat_first_read_delay' => 'Délai 1ère lecture',
+    'stat_median_abbr' => 'médian',
+    'stat_avg_abbr' => 'moyen',
 
     // Days
     'day_sunday' => 'Dim',
@@ -420,7 +426,7 @@ return [
     'day_saturday' => 'Sam',
 
     // File size units
-    'unit_bytes' => 'octets',
+    'unit_bytes' => 'o',
     'unit_kilobytes' => 'Ko',
     'unit_megabytes' => 'Mo',
     'unit_gigabytes' => 'Go',
@@ -467,6 +473,19 @@ return [
     'stat_by_referrer' => 'Par source de trafic',
     'stat_no_data' => 'Aucune donnée pour le moment.',
     'stat_gini_tooltip' => 'Gini : 0 = usage réparti également, 1 = un seul créateur domine',
+    'hint_first_read_delay' => 'Temps entre la création et la première lecture. La médiane est plus représentative car elle est insensible aux valeurs extrêmes. Si la moyenne est bien supérieure à la médiane, quelques secrets sont lus très tardivement.',
+    'stat_5xx_by_route' => 'Erreurs 5xx par page',
+    'stat_route_create' => 'Création',
+    'stat_route_read' => 'Lecture',
+    'stat_route_confirm_read' => 'Confirmation lecture',
+    'stat_route_download' => 'Téléchargement',
+    'stat_group_pages' => 'Pages (accueil, FAQ, mentions légales)',
+    'stat_p95_by_group' => 'P95 par groupe',
+    'stat_response_p95' => 'P95 temps de réponse',
+    'hint_response_p95' => '95 % des requêtes répondent en dessous de ce seuil. Un P95 élevé signifie que certaines requêtes sont lentes.',
+    'hint_p95_by_group' => "P95 par type de route :\ncreate = création de secret\nread = lecture / téléchargement\nadmin = espace admin\nsuperadmin = tableau de bord\npages = accueil, FAQ, mentions légales…",
+    'stat_avg_secret_size' => 'Taille moy. secrets',
+    'hint_avg_secret_size' => 'Taille moyenne du chiffré stocké. Texte : taille du ciphertext en base de données. Fichier : taille moyenne des fichiers chiffrés sur disque.',
     'stat_page_home' => 'Accueil',
     'stat_page_download' => 'Téléchargement',
     'stat_page_admin_login' => 'Admin - Connexion',
@@ -554,4 +573,7 @@ return [
     'val_min_byte_length' => 'Taille minimale requise : :min octets, :actual reçus.',
     'val_salt_iv2_consistency' => 'Salt et IV2 doivent être présents ensemble ou absents ensemble.',
     'val_passphrase_requires_salt' => 'Le flag passphrase nécessite la présence de salt et IV2.',
+
+    // Content dates
+    'last_updated' => 'Dernière mise à jour : :date',
 ];

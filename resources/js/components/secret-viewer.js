@@ -270,17 +270,37 @@ export default () => ({
         },
 
         async confirmRead() {
-            try {
-                await fetch(`/api/secrets/${this.token}/read`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || '',
-                    },
-                });
-            } catch {
-                // Network error — silent, secret was already decrypted
+            const url = `/api/secrets/${this.token}/read`;
+            const csrf = document.querySelector('meta[name="csrf-token"]')?.content || '';
+
+            for (let attempt = 0; attempt < 3; attempt++) {
+                try {
+                    const res = await fetch(url, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': csrf,
+                        },
+                    });
+
+                    if (res.ok) {
+                        return;
+                    }
+                } catch {
+                    // Network error — retry
+                }
+
+                await new Promise(r => setTimeout(r, 1000 * (attempt + 1)));
             }
+
+            // Last resort: sendBeacon survives tab close
+            navigator.sendBeacon?.(
+                url,
+                new Blob(
+                    [JSON.stringify({ _token: csrf })],
+                    { type: 'application/json' }
+                )
+            );
         },
 
         secretTypeTitle() {

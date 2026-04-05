@@ -42,43 +42,63 @@
         @php
             $totals = $stats['totals'];
 
-            if ($avgFirstReadDelay === null) {
-                $formattedDelay = '-';
-            } elseif ($avgFirstReadDelay < 60) {
-                $formattedDelay = number_format($avgFirstReadDelay, 0) . 's';
-            } elseif ($avgFirstReadDelay < 3600) {
-                $formattedDelay = number_format($avgFirstReadDelay / 60, 1) . 'm';
-            } elseif ($avgFirstReadDelay < 86400) {
-                $formattedDelay = number_format($avgFirstReadDelay / 3600, 1) . 'h';
-            } else {
-                $formattedDelay = number_format($avgFirstReadDelay / 86400, 1) . 'j';
-            }
+            $formatDelay = function (?float $seconds): string {
+                if ($seconds === null) {
+                    return '-';
+                }
+                if ($seconds < 60) {
+                    return nfmt($seconds) . 's';
+                }
+                if ($seconds < 3600) {
+                    return nfmt($seconds / 60, 1) . 'm';
+                }
+                if ($seconds < 86400) {
+                    return nfmt($seconds / 3600, 1) . 'h';
+                }
+                return nfmt($seconds / 86400, 1) . 'j';
+            };
+
+            $formattedAvgDelay = $formatDelay($avgFirstReadDelay);
+            $formattedMedianDelay = $formatDelay($medianFirstReadDelay);
 
             $formatBytes = function (int|float $bytes) {
                 if ($bytes >= 1073741824) {
-                    return number_format($bytes / 1073741824, 1) . ' ' . __('messages.unit_gigabytes');
+                    return nfmt($bytes / 1073741824, 1) . ' ' . __('messages.unit_gigabytes');
                 }
                 if ($bytes >= 1048576) {
-                    return number_format($bytes / 1048576, 1) . ' ' . __('messages.unit_megabytes');
+                    return nfmt($bytes / 1048576, 1) . ' ' . __('messages.unit_megabytes');
                 }
                 if ($bytes >= 1024) {
-                    return number_format($bytes / 1024, 1) . ' ' . __('messages.unit_kilobytes');
+                    return nfmt($bytes / 1024, 1) . ' ' . __('messages.unit_kilobytes');
                 }
-                return $bytes . ' ' . __('messages.unit_bytes');
+                return nfmt($bytes) . ' ' . __('messages.unit_bytes');
             };
 
         @endphp
         <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
-            <x-stat-card kpi="secrets_created" :value="number_format(($totals['secrets_created_text'] ?? 0) + ($totals['secrets_created_file'] ?? 0))" :label="__('messages.stat_secrets_created')" />
-            <x-stat-card kpi="secrets_read" :value="number_format($totals['secrets_read'] ?? 0)" :label="__('messages.stat_secrets_read')" />
-            <x-stat-card kpi="active_secrets" :value="number_format($systemHealth['active_secrets'])" :label="__('messages.stat_active_secrets')" />
-            <x-stat-card kpi="read_rate" :value="$readRate !== null ? number_format($readRate, 1) . '%' : '-'" :label="__('messages.stat_read_rate')" />
-            <x-stat-card kpi="avg_first_read" :value="$formattedDelay" :label="__('messages.stat_avg_first_read')" />
-            <x-stat-card kpi="files_shared" :value="number_format($totals['secrets_created_file'] ?? 0)" :label="__('messages.stat_files_shared')" />
+            <x-stat-card kpi="secrets_created" :value="nfmt(($totals['secrets_created_text'] ?? 0) + ($totals['secrets_created_file'] ?? 0))" :label="__('messages.stat_secrets_created')" />
+            <x-stat-card kpi="secrets_read" :value="nfmt($totals['secrets_read'] ?? 0)" :label="__('messages.stat_secrets_read')" />
+            <x-stat-card kpi="active_secrets" :value="nfmt($systemHealth['active_secrets'])" :label="__('messages.stat_active_secrets')" />
+            <x-stat-card kpi="read_rate" :value="$readRate !== null ? nfmt($readRate, 1) . '%' : '-'" :label="__('messages.stat_read_rate')" />
+            <x-card class="p-6">
+                <div class="flex items-baseline gap-2">
+                    <span class="text-3xl font-bold text-gray-900 dark:text-white" data-kpi="median_first_read">{{ $formattedMedianDelay }}</span>
+                    <span class="text-sm text-gray-500 dark:text-slate-400">{{ __('messages.stat_median_abbr') }}</span>
+                </div>
+                <div class="flex items-baseline gap-2 mt-1">
+                    <span class="text-lg font-semibold text-gray-500 dark:text-slate-400" data-kpi="avg_first_read">{{ $formattedAvgDelay }}</span>
+                    <span class="text-xs text-gray-400 dark:text-slate-500">{{ __('messages.stat_avg_abbr') }}</span>
+                </div>
+                <div class="flex items-center gap-1 mt-1">
+                    <span class="text-sm text-gray-600 dark:text-slate-400">{{ __('messages.stat_first_read_delay') }}</span>
+                    <x-hint-tooltip id="hintFirstReadDelay" :text="__('messages.hint_first_read_delay')" direction="below" />
+                </div>
+            </x-card>
+            <x-stat-card kpi="files_shared" :value="nfmt($totals['secrets_created_file'] ?? 0)" :label="__('messages.stat_files_shared')" />
             <x-stat-card kpi="volume" :value="$formatBytes($totals['total_file_size_bytes'] ?? 0)" :label="__('messages.stat_volume')" />
             <x-stat-card kpi="disk_usage" :value="$formatBytes($currentDiskUsage)" :label="__('messages.stat_current_disk_usage')" />
-            <x-card class="p-6 overflow-visible relative z-10">
-                <div class="text-3xl font-bold text-gray-900 dark:text-white" data-kpi="creators">{{ number_format($creatorConcentration['unique_creators']) }} <span class="text-lg font-normal text-gray-500 dark:text-slate-400">G={{ number_format($creatorConcentration['gini'], 2) }}</span></div>
+            <x-card class="p-6">
+                <div class="text-3xl font-bold text-gray-900 dark:text-white" data-kpi="creators">{{ nfmt($creatorConcentration['unique_creators']) }} <span class="text-lg font-normal text-gray-500 dark:text-slate-400">G={{ nfmt($creatorConcentration['gini'], 2) }}</span></div>
                 <div class="flex items-center gap-1 mt-1">
                     <span class="text-sm text-gray-600 dark:text-slate-400">{{ __('messages.stat_unique_creators') }}</span>
                     <x-hint-tooltip id="giniHint" :text="__('messages.stat_gini_tooltip')" direction="below" />
@@ -108,15 +128,21 @@
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
             <x-card class="p-6">
                 <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">{{ __('messages.chart_secret_types') }}</h2>
-                <canvas id="secretTypesChart" height="200" role="img" aria-label="{{ __('messages.chart_secret_types') }}"></canvas>
+                <div class="h-48">
+                    <canvas id="secretTypesChart" role="img" aria-label="{{ __('messages.chart_secret_types') }}"></canvas>
+                </div>
             </x-card>
             <x-card class="p-6">
                 <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">{{ __('messages.chart_secret_options') }}</h2>
-                <canvas id="secretOptionsChart" height="200" role="img" aria-label="{{ __('messages.chart_secret_options') }}"></canvas>
+                <div class="h-48">
+                    <canvas id="secretOptionsChart" role="img" aria-label="{{ __('messages.chart_secret_options') }}"></canvas>
+                </div>
             </x-card>
             <x-card class="p-6">
                 <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">{{ __('messages.chart_secret_outcomes') }}</h2>
-                <canvas id="secretOutcomesChart" height="200" role="img" aria-label="{{ __('messages.chart_secret_outcomes') }}"></canvas>
+                <div class="h-48">
+                    <canvas id="secretOutcomesChart" role="img" aria-label="{{ __('messages.chart_secret_outcomes') }}"></canvas>
+                </div>
             </x-card>
         </div>
 
@@ -130,33 +156,65 @@
         {{-- Monitoring section --}}
         <h2 class="text-xl font-bold text-gray-900 dark:text-white mt-10 mb-6">{{ __('messages.monitoring_title') }}</h2>
 
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
-            <x-card class="p-6 overflow-visible relative z-10">
-                <div class="text-3xl font-bold text-gray-900 dark:text-white" data-kpi="errors_4xx">{{ number_format($errorStats['total_4xx']) }}</div>
+        @php
+            $fmtP95 = function (?float $ms): string {
+                if ($ms === null) {
+                    return '-';
+                }
+                if ($ms < 1000) {
+                    return nfmt($ms) . ' ms';
+                }
+                return nfmt($ms / 1000, 1) . ' s';
+            };
+        @endphp
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
+            <x-card class="p-6">
+                <div class="text-3xl font-bold text-gray-900 dark:text-white" data-kpi="errors_4xx">{{ nfmt($errorStats['total_4xx']) }}</div>
                 <div class="flex items-center gap-1 mt-1">
                     <span class="text-sm text-gray-600 dark:text-slate-400">{{ __('messages.stat_errors_4xx') }}</span>
                     <x-hint-tooltip id="hint4xx" :text="__('messages.hint_errors_4xx')" direction="below" />
                 </div>
             </x-card>
-            <x-card class="p-6 overflow-visible relative z-10">
-                <div class="text-3xl font-bold text-gray-900 dark:text-white" data-kpi="errors_5xx">{{ number_format($errorStats['total_5xx']) }}</div>
+            <x-card class="p-6">
+                <div class="text-3xl font-bold text-gray-900 dark:text-white" data-kpi="errors_5xx">{{ nfmt($errorStats['total_5xx']) }}</div>
                 <div class="flex items-center gap-1 mt-1">
                     <span class="text-sm text-gray-600 dark:text-slate-400">{{ __('messages.stat_errors_5xx') }}</span>
                     <x-hint-tooltip id="hint5xx" :text="__('messages.hint_errors_5xx')" direction="below" />
                 </div>
             </x-card>
-            <x-card class="p-6 overflow-visible relative z-10">
-                <div class="text-3xl font-bold text-gray-900 dark:text-white" data-kpi="errors_422">{{ number_format($errorStats['by_code'][422] ?? 0) }}</div>
+            <x-card class="p-6">
+                <div class="text-3xl font-bold text-gray-900 dark:text-white" data-kpi="errors_422">{{ nfmt($errorStats['by_code'][422] ?? 0) }}</div>
                 <div class="flex items-center gap-1 mt-1">
                     <span class="text-sm text-gray-600 dark:text-slate-400">{{ __('messages.stat_errors_422') }}</span>
                     <x-hint-tooltip id="hint422" :text="__('messages.hint_errors_422')" direction="below" />
                 </div>
             </x-card>
-            <x-card class="p-6 overflow-visible relative z-10">
-                <div class="text-3xl font-bold text-gray-900 dark:text-white" data-kpi="errors_429">{{ number_format($errorStats['by_code'][429] ?? 0) }}</div>
+            <x-card class="p-6">
+                <div class="text-3xl font-bold text-gray-900 dark:text-white" data-kpi="errors_429">{{ nfmt($errorStats['by_code'][429] ?? 0) }}</div>
                 <div class="flex items-center gap-1 mt-1">
                     <span class="text-sm text-gray-600 dark:text-slate-400">{{ __('messages.stat_errors_429') }}</span>
                     <x-hint-tooltip id="hint429" :text="__('messages.hint_errors_429')" direction="below" />
+                </div>
+            </x-card>
+            <x-card class="p-6">
+                <div class="text-3xl font-bold text-gray-900 dark:text-white" data-kpi="response_p95">{{ $fmtP95($responseTime['p95']) }}</div>
+                <div class="flex items-center gap-1 mt-1">
+                    <span class="text-sm text-gray-600 dark:text-slate-400">{{ __('messages.stat_response_p95') }}</span>
+                    <x-hint-tooltip id="hintP95" :text="__('messages.hint_response_p95')" direction="below" position="end" />
+                </div>
+            </x-card>
+            <x-card class="p-6">
+                <div class="flex items-baseline gap-2">
+                    <span class="text-3xl font-bold text-gray-900 dark:text-white" data-kpi="avg_size_text">{{ $avgSecretSize['text'] !== null ? $formatBytes($avgSecretSize['text']) : '-' }}</span>
+                    <span class="text-xs text-gray-400 dark:text-slate-500">{{ __('messages.stat_text') }}</span>
+                </div>
+                <div class="flex items-baseline gap-2 mt-1">
+                    <span class="text-lg font-semibold text-gray-500 dark:text-slate-400" data-kpi="avg_size_file">{{ $avgSecretSize['file'] !== null ? $formatBytes($avgSecretSize['file']) : '-' }}</span>
+                    <span class="text-xs text-gray-400 dark:text-slate-500">{{ __('messages.stat_file') }}</span>
+                </div>
+                <div class="flex items-center gap-1 mt-1">
+                    <span class="text-sm text-gray-600 dark:text-slate-400">{{ __('messages.stat_avg_secret_size') }}</span>
+                    <x-hint-tooltip id="hintSize" :text="__('messages.hint_avg_secret_size')" direction="below" position="end" />
                 </div>
             </x-card>
         </div>
@@ -186,11 +244,83 @@
                                 <div class="flex-1 h-1.5 bg-gray-200 dark:bg-slate-700 rounded-full overflow-hidden">
                                     <div class="h-full {{ $color }} rounded-full" style="width: {{ min($pct, 100) }}%"></div>
                                 </div>
-                                <span class="text-gray-900 dark:text-white font-medium w-12 text-right">{{ number_format($count) }}</span>
+                                <span class="text-gray-900 dark:text-white font-medium w-12 text-right">{{ nfmt($count) }}</span>
                             </div>
                         </div>
                     @empty
                         <p class="text-sm text-gray-400 dark:text-slate-500">{{ __('messages.no_errors') }}</p>
+                    @endforelse
+                </div>
+            </x-card>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            {{-- 5xx by route --}}
+            <x-card class="p-6">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">{{ __('messages.stat_5xx_by_route') }}</h3>
+                <div id="pollErrorRoutes" class="space-y-2">
+                    @php
+                        $byRoute = $errorStats['by_route'] ?? [];
+                        $routeLabels = [
+                            'home' => __('messages.stat_page_home'),
+                            'secrets.store' => __('messages.stat_route_create'),
+                            'secrets.show' => __('messages.stat_route_read'),
+                            'secrets.fetch' => __('messages.stat_route_read') . ' (API)',
+                            'secrets.confirmRead' => __('messages.stat_route_confirm_read'),
+                            'secrets.download' => __('messages.stat_route_download'),
+                            'admin.index' => 'Admin',
+                            'admin.dashboard' => 'Admin dashboard',
+                            'admin.poll' => 'Admin poll',
+                            'admin.requestAccess' => 'Admin login',
+                            'admin.verify' => 'Admin verify',
+                            'admin.extend' => 'Admin extend',
+                            'admin.revoke' => 'Admin revoke',
+                            'superadmin.index' => 'Superadmin',
+                            'superadmin.dashboard' => 'Superadmin dashboard',
+                            'superadmin.poll' => 'Superadmin poll',
+                            'superadmin.requestAccess' => 'Superadmin login',
+                            'superadmin.verify' => 'Superadmin verify',
+                        ];
+                    @endphp
+                    @forelse($byRoute as $route => $statuses)
+                        <div class="flex items-center justify-between text-sm">
+                            <span class="text-gray-700 dark:text-slate-300 truncate max-w-xs">{{ $routeLabels[$route] ?? $route }}</span>
+                            <div class="flex items-center gap-2">
+                                @foreach($statuses as $code => $count)
+                                    <span class="inline-flex items-center px-1.5 py-0.5 rounded bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400 text-xs font-mono font-medium">{{ $code }}</span>
+                                    <span class="text-gray-900 dark:text-white font-medium">{{ nfmt($count) }}</span>
+                                @endforeach
+                            </div>
+                        </div>
+                    @empty
+                        <p class="text-sm text-gray-400 dark:text-slate-500">{{ __('messages.no_errors') }}</p>
+                    @endforelse
+                </div>
+            </x-card>
+
+            {{-- P95 by route group --}}
+            @php
+                $groupLabels = [
+                    'create' => __('messages.stat_route_create'),
+                    'read' => __('messages.stat_route_read'),
+                    'admin' => 'Admin',
+                    'superadmin' => 'Superadmin',
+                    'pages' => __('messages.stat_group_pages'),
+                ];
+            @endphp
+            <x-card class="p-6">
+                <div class="flex items-center gap-1 mb-4">
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white">{{ __('messages.stat_p95_by_group') }}</h3>
+                    <x-hint-tooltip id="hintP95Group" :text="__('messages.hint_response_p95')" direction="below" position="end" />
+                </div>
+                <div id="pollP95Groups" class="space-y-2">
+                    @forelse($responseTime['by_group'] as $group => $p95)
+                        <div class="flex items-center justify-between text-sm">
+                            <span class="text-gray-700 dark:text-slate-300">{{ $groupLabels[$group] ?? $group }}</span>
+                            <span class="text-gray-900 dark:text-white font-medium">{{ $fmtP95($p95) }}</span>
+                        </div>
+                    @empty
+                        <p class="text-sm text-gray-400 dark:text-slate-500">-</p>
                     @endforelse
                 </div>
             </x-card>
@@ -225,10 +355,10 @@
             $conversionRate = $totalViews > 0 ? ($createdInPeriod / $totalViews) * 100 : 0;
         @endphp
         <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
-            <x-stat-card kpi="pv_visitors" :value="number_format($pageviews['total_human'])" :label="__('messages.stat_visitors')" />
-            <x-stat-card kpi="pv_bots" :value="number_format($pageviews['total_bot'])" :label="__('messages.stat_bots')" />
+            <x-stat-card kpi="pv_visitors" :value="nfmt($pageviews['total_human'])" :label="__('messages.stat_visitors')" />
+            <x-stat-card kpi="pv_bots" :value="nfmt($pageviews['total_bot'])" :label="__('messages.stat_bots')" />
             <x-stat-card kpi="pv_countries" :value="count($pageviews['by_country'])" :label="__('messages.stat_countries')" />
-            <x-stat-card kpi="pv_conversion" :value="$totalViews > 0 ? number_format($conversionRate, 1) . '%' : '-'" :label="__('messages.stat_conversion')" />
+            <x-stat-card kpi="pv_conversion" :value="$totalViews > 0 ? nfmt($conversionRate, 1) . '%' : '-'" :label="__('messages.stat_conversion')" />
         </div>
 
         {{-- Daily visits chart --}}
@@ -299,8 +429,8 @@
                         <div class="flex items-center justify-between text-sm">
                             <span class="text-gray-700 dark:text-slate-300">{{ $title }}</span>
                             <div class="flex items-center gap-3">
-                                <span class="text-gray-900 dark:text-white font-medium">{{ number_format($counts['human']) }}</span>
-                                <span class="text-gray-400 dark:text-slate-500 text-xs">{{ number_format($counts['bot']) }} bot</span>
+                                <span class="text-gray-900 dark:text-white font-medium">{{ nfmt($counts['human']) }}</span>
+                                <span class="text-gray-400 dark:text-slate-500 text-xs">{{ nfmt($counts['bot']) }} bot</span>
                             </div>
                         </div>
                     @endforeach
@@ -321,7 +451,7 @@
                                 <div class="w-20 h-1.5 bg-gray-200 dark:bg-slate-700 rounded-full overflow-hidden">
                                     <div class="h-full bg-violet-500 rounded-full" style="width: {{ min($pct, 100) }}%"></div>
                                 </div>
-                                <span class="text-gray-900 dark:text-white font-medium w-10 text-right">{{ number_format($count) }}</span>
+                                <span class="text-gray-900 dark:text-white font-medium w-10 text-right">{{ nfmt($count) }}</span>
                             </div>
                         </div>
                     @endforeach
@@ -402,7 +532,7 @@
                                 <div class="w-20 h-1.5 bg-gray-200 dark:bg-slate-700 rounded-full overflow-hidden">
                                     <div class="h-full bg-amber-500 rounded-full" style="width: {{ min($pct, 100) }}%"></div>
                                 </div>
-                                <span class="text-gray-900 dark:text-white font-medium w-10 text-right">{{ number_format($count) }}</span>
+                                <span class="text-gray-900 dark:text-white font-medium w-10 text-right">{{ nfmt($count) }}</span>
                             </div>
                         </div>
                     @endforeach
@@ -430,7 +560,7 @@
                                         @endif
                                         {{ $deviceLabels[$device] ?? $device }}
                                     </span>
-                                    <span class="text-gray-900 dark:text-white font-medium">{{ number_format($count) }} <span class="text-gray-400 dark:text-slate-500 text-xs">({{ number_format($pct, 1) }}%)</span></span>
+                                    <span class="text-gray-900 dark:text-white font-medium">{{ nfmt($count) }} <span class="text-gray-400 dark:text-slate-500 text-xs">({{ nfmt($pct, 1) }}%)</span></span>
                                 </div>
                                 <div class="w-full h-2 bg-gray-200 dark:bg-slate-700 rounded-full overflow-hidden">
                                     <div class="h-full bg-indigo-500 rounded-full" style="width: {{ min($pct, 100) }}%"></div>
@@ -463,7 +593,7 @@
                                     <div class="w-20 h-1.5 bg-gray-200 dark:bg-slate-700 rounded-full overflow-hidden">
                                         <div class="h-full bg-sky-500 rounded-full" style="width: {{ min($pct, 100) }}%"></div>
                                     </div>
-                                    <span class="text-gray-900 dark:text-white font-medium w-10 text-right">{{ number_format($count) }}</span>
+                                    <span class="text-gray-900 dark:text-white font-medium w-10 text-right">{{ nfmt($count) }}</span>
                                 </div>
                             </div>
                         @endforeach
@@ -493,8 +623,8 @@
                                     <div class="w-24 h-1.5 bg-gray-200 dark:bg-slate-700 rounded-full overflow-hidden">
                                         <div class="h-full bg-emerald-500 rounded-full" style="width: {{ min($pct, 100) }}%"></div>
                                     </div>
-                                    <span class="text-gray-900 dark:text-white font-medium w-10 text-right">{{ number_format($counts['human']) }}</span>
-                                    <span class="text-gray-400 dark:text-slate-500 text-xs w-14 text-right">{{ number_format($counts['bot']) }} bot</span>
+                                    <span class="text-gray-900 dark:text-white font-medium w-10 text-right">{{ nfmt($counts['human']) }}</span>
+                                    <span class="text-gray-400 dark:text-slate-500 text-xs w-14 text-right">{{ nfmt($counts['bot']) }} bot</span>
                                 </div>
                             </div>
                         @endforeach
@@ -512,12 +642,14 @@
     window.superAdminData = {
         pollUrl: '{{ route('superadmin.poll', ['locale' => app()->getLocale()]) }}',
         pollInterval: 30000,
+        locale: '{{ app()->getLocale() }}',
         period: '{{ $period }}',
         stats: @json($stats),
         heatmapCreated: @json($heatmapCreated),
         heatmapRead: @json($heatmapRead),
         pageviewsDaily: @json($pageviews['daily']),
         avgFirstReadDelay: @json($avgFirstReadDelay),
+        medianFirstReadDelay: @json($medianFirstReadDelay),
         currentDiskUsage: @json($currentDiskUsage),
         activeSecrets: @json($systemHealth['active_secrets']),
         readRate: @json($readRate),
@@ -528,6 +660,8 @@
         deviceStats: @json($deviceStats),
         pageviews: @json($pageviews),
         pageTitleMap: @json($pageTitleMap),
+        routeLabels: @json($routeLabels),
+        groupLabels: @json($groupLabels),
         localeMap: @json(\App\Support\LocaleConfig::FLAGS),
         localeNames: @json(\App\Support\LocaleConfig::NATIVE_NAMES),
         noDataText: '{{ __('messages.stat_no_data') }}',
@@ -563,6 +697,8 @@
             tablet: '{{ __('messages.stat_device_tablet') }}'
         },
         errorStats: @json($errorStats),
+        responseTime: @json($responseTime),
+        avgSecretSize: @json($avgSecretSize),
         errorTranslations: {
             errors_4xx: '{{ __('messages.stat_errors_4xx') }}',
             errors_5xx: '{{ __('messages.stat_errors_5xx') }}',

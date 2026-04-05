@@ -141,12 +141,6 @@ body::after {
     position: relative;
     overflow: hidden;
 }
-.card-accent.overflow-visible {
-    overflow: visible;
-}
-.card-accent.overflow-visible:has([x-show]:not([style*="display: none"])) {
-    z-index: 20;
-}
 .card-accent::before {
     content: "";
     position: absolute;
@@ -199,8 +193,8 @@ body::after {
 
 /* ── Input focus accent ── */
 input:focus, textarea:focus, select:focus {
-    border-left: 3px solid rgba(var(--accent-rgb, 139, 92, 246), 1) !important;
-    padding-left: calc(1rem - 2px) !important;
+    border-inline-start: 3px solid rgba(var(--accent-rgb, 139, 92, 246), 1) !important;
+    padding-inline-start: calc(1rem - 2px) !important;
 }
 
 /* ── Logo icon breathe ── */
@@ -213,7 +207,10 @@ input:focus, textarea:focus, select:focus {
     100% { box-shadow: 0 10px 25px -3px rgba(var(--accent-rgb, 139, 92, 246), 0.45); }
 }
 @media (prefers-reduced-motion: reduce) {
-    .logo-icon {
+    .logo-icon,
+    .card-accent::before,
+    body::after,
+    .star {
         animation: none;
     }
 }

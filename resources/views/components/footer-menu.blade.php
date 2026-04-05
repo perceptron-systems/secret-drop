@@ -37,7 +37,7 @@
     <x-modal-overlay show="open" close="close()" role="menu" aria-modal="true" aria-label="{{ __('messages.a11y_footer_nav') }}">
         <div
             @click.stop
-            class="fixed bottom-16 start-4 w-56
+            class="fixed bottom-16 start-4 w-64
                    bg-white/80 dark:bg-slate-800/50 backdrop-blur-xl rounded-xl shadow-2xl
                    border border-gray-200 dark:border-slate-700/50
                    overflow-hidden"

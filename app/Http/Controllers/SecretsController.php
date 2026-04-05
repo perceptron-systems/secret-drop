@@ -9,6 +9,9 @@ use App\Services\StatsService;
 use App\Services\TokenService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
+
+use function Illuminate\Support\defer;
+
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 use Symfony\Component\HttpFoundation\StreamedResponse;
@@ -60,7 +63,7 @@ class SecretsController extends Controller
 
         $secret = Secret::create($secretData);
 
-        $this->trackCreationStats($secret, $validated, $fileSize);
+        defer(fn () => $this->trackCreationStats($secret, $validated, $fileSize));
 
         return response()->json([
             'token' => $secret->token,
@@ -137,27 +140,31 @@ class SecretsController extends Controller
             }
 
             $isFirstRead = $secret->first_read_at === null;
-            $createdAt = $secret->created_at;
+            $delaySeconds = $isFirstRead ? (int) $secret->created_at->diffInSeconds(now()) : null;
 
             $secret->incrementReadCount();
-            $this->stats->increment(StatsService::SECRETS_READ);
-            $this->stats->incrementHeatmap(StatsService::HEATMAP_SECRETS_READ);
 
-            if ($isFirstRead) {
-                $delaySeconds = (int) $createdAt->diffInSeconds(now());
-                $this->stats->trackFirstReadDelay($delaySeconds);
-            }
-
+            $maxViewsReached = false;
             if ($secret->shouldBeDestroyed()) {
                 if ($secret->type === 'file' && $secret->file_path) {
                     $this->storage->delete($secret->file_path);
                 }
                 $secret->destroyContent();
+                $maxViewsReached = $secret->hasReachedMaxViews();
+            }
 
-                if ($secret->hasReachedMaxViews()) {
+            defer(function () use ($isFirstRead, $delaySeconds, $maxViewsReached) {
+                $this->stats->increment(StatsService::SECRETS_READ);
+                $this->stats->incrementHeatmap(StatsService::HEATMAP_SECRETS_READ);
+
+                if ($isFirstRead && $delaySeconds !== null) {
+                    $this->stats->trackFirstReadDelay($delaySeconds);
+                }
+
+                if ($maxViewsReached) {
                     $this->stats->increment(StatsService::SECRETS_MAX_VIEWS_REACHED);
                 }
-            }
+            });
 
             return response()->json(['success' => true]);
         });

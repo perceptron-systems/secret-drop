@@ -20,7 +20,11 @@ const META_HEADER_LENGTH_BYTES = 4; // Uint32 for metadata length
  * @returns {string}
  */
 export function bytesToBase64Url(bytes) {
-    const base64 = btoa(String.fromCharCode(...bytes));
+    let binary = '';
+    for (let i = 0; i < bytes.length; i++) {
+        binary += String.fromCharCode(bytes[i]);
+    }
+    const base64 = btoa(binary);
     return base64
         .replace(/\+/g, '-')
         .replace(/\//g, '_')
@@ -88,7 +92,7 @@ async function deriveKeyFromPassphrase(passphrase, salt) {
         },
         keyMaterial,
         { name: 'AES-GCM', length: AES_KEY_LENGTH },
-        true, // extractable
+        false, // not extractable — only used for encrypt/decrypt
         ['encrypt', 'decrypt']
     );
 }
@@ -119,6 +123,21 @@ async function importKey(rawKey) {
 }
 
 /**
+ * Validate decoded IV and salt lengths
+ * @param {Uint8Array} ivBytes
+ * @param {Uint8Array|null} saltBytes
+ */
+function validateCryptoParams(ivBytes, saltBytes = null) {
+    if (ivBytes.length !== IV_LENGTH) {
+        throw new Error(`Invalid IV length: expected ${IV_LENGTH}, got ${ivBytes.length}`);
+    }
+
+    if (saltBytes !== null && saltBytes.length !== SALT_LENGTH) {
+        throw new Error(`Invalid salt length: expected ${SALT_LENGTH}, got ${saltBytes.length}`);
+    }
+}
+
+/**
  * Encrypt plaintext using AES-256-GCM
  * If passphrase is provided, applies double encryption:
  * 1. First layer: random 256-bit key (transmitted in URL fragment)
@@ -136,6 +155,7 @@ export async function encryptSecret(plaintext, passphrase = null) {
     const randomKey = await generateKey();
     const rawKey = await exportKey(randomKey);
     const keyMaterial = bytesToBase64Url(rawKey);
+    rawKey.fill(0);
 
     // First encryption layer with random key
     const iv = generateRandomBytes(IV_LENGTH);
@@ -201,6 +221,7 @@ export async function decryptSecret(ciphertext, iv, keyMaterial, salt = null, iv
     if (salt && iv2 && passphrase) {
         const saltBytes = base64UrlToBytes(salt);
         const iv2Bytes = base64UrlToBytes(iv2);
+        validateCryptoParams(iv2Bytes, saltBytes);
         const passphraseKey = await deriveKeyFromPassphrase(passphrase, saltBytes);
 
         dataBytes = new Uint8Array(await crypto.subtle.decrypt(
@@ -212,8 +233,10 @@ export async function decryptSecret(ciphertext, iv, keyMaterial, salt = null, iv
 
     // Then: decrypt with random key
     const ivBytes = base64UrlToBytes(iv);
+    validateCryptoParams(ivBytes);
     const rawKey = base64UrlToBytes(keyMaterial);
     const randomKey = await importKey(rawKey);
+    rawKey.fill(0);
 
     const plaintextBytes = await crypto.subtle.decrypt(
         { name: 'AES-GCM', iv: ivBytes },
@@ -265,8 +288,8 @@ export function parseKeyFragment(fragment) {
         throw new Error('Format de fragment invalide');
     }
 
-    if (!rest) {
-        throw new Error('Clé manquante dans le fragment');
+    if (!rest || rest.length !== 43) {
+        throw new Error('Clé manquante ou invalide dans le fragment');
     }
 
     return { keyMaterial: rest, version: 1 };
@@ -311,10 +334,18 @@ function packFileWithMeta(fileBytes, filename, mime, size) {
  * @returns {{data: ArrayBuffer, filename: string, mime: string, size: number}}
  */
 function unpackFileWithMeta(decryptedBytes) {
+    if (decryptedBytes.byteLength < META_HEADER_LENGTH_BYTES) {
+        throw new Error('Decrypted data too short for metadata header');
+    }
+
     const view = new DataView(decryptedBytes.buffer, decryptedBytes.byteOffset, decryptedBytes.byteLength);
 
     // Read metadata length (4 bytes, big-endian)
     const metaLength = view.getUint32(0, false);
+
+    if (metaLength > decryptedBytes.byteLength - META_HEADER_LENGTH_BYTES) {
+        throw new Error('Invalid metadata length');
+    }
 
     // Extract and parse metadata JSON
     const metaStart = META_HEADER_LENGTH_BYTES;
@@ -359,6 +390,7 @@ export async function encryptFile(file, passphrase = null) {
     const randomKey = await generateKey();
     const rawKey = await exportKey(randomKey);
     const keyMaterial = bytesToBase64Url(rawKey);
+    rawKey.fill(0);
 
     // First encryption layer with random key
     const iv = generateRandomBytes(IV_LENGTH);
@@ -425,6 +457,7 @@ export async function decryptFile(encryptedData, iv, keyMaterial, salt = null, i
     if (salt && iv2 && passphrase) {
         const saltBytes = base64UrlToBytes(salt);
         const iv2Bytes = base64UrlToBytes(iv2);
+        validateCryptoParams(iv2Bytes, saltBytes);
         const passphraseKey = await deriveKeyFromPassphrase(passphrase, saltBytes);
 
         dataBytes = new Uint8Array(await crypto.subtle.decrypt(
@@ -436,8 +469,10 @@ export async function decryptFile(encryptedData, iv, keyMaterial, salt = null, i
 
     // Then: decrypt with random key
     const ivBytes = base64UrlToBytes(iv);
+    validateCryptoParams(ivBytes);
     const rawKey = base64UrlToBytes(keyMaterial);
     const randomKey = await importKey(rawKey);
+    rawKey.fill(0);
 
     const decryptedBytes = new Uint8Array(await crypto.subtle.decrypt(
         { name: 'AES-GCM', iv: ivBytes },

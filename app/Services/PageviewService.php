@@ -131,20 +131,22 @@ class PageviewService
 
         $domain = $this->extractReferrerDomain($referrer);
 
-        if ($domain !== '') {
-            DB::table('stats_referrers')->upsert(
-                [
-                    'date' => $now->toDateString(),
-                    'referrer_domain' => $domain,
-                    'is_bot' => $isBot,
-                    'count' => 1,
-                    'created_at' => $now,
-                    'updated_at' => $now,
-                ],
-                ['date', 'referrer_domain', 'is_bot'],
-                ['count' => DB::raw('count + 1'), 'updated_at' => $now]
-            );
+        if ($domain === '') {
+            $domain = '(direct)';
         }
+
+        DB::table('stats_referrers')->upsert(
+            [
+                'date' => $now->toDateString(),
+                'referrer_domain' => $domain,
+                'is_bot' => $isBot,
+                'count' => 1,
+                'created_at' => $now,
+                'updated_at' => $now,
+            ],
+            ['date', 'referrer_domain', 'is_bot'],
+            ['count' => DB::raw('count + 1'), 'updated_at' => $now]
+        );
     }
 
     public function isBot(string $userAgent): bool
@@ -192,6 +194,38 @@ class PageviewService
         return 'Other';
     }
 
+    private const LANG_TO_COUNTRY = [
+        'en' => 'US',
+        'fr' => 'FR',
+        'de' => 'DE',
+        'es' => 'ES',
+        'it' => 'IT',
+        'pt' => 'PT',
+        'nl' => 'NL',
+        'pl' => 'PL',
+        'ja' => 'JP',
+        'ko' => 'KR',
+        'ar' => 'SA',
+        'zh' => 'CN',
+        'ru' => 'RU',
+        'sv' => 'SE',
+        'da' => 'DK',
+        'fi' => 'FI',
+        'nb' => 'NO',
+        'uk' => 'UA',
+        'cs' => 'CZ',
+        'el' => 'GR',
+        'he' => 'IL',
+        'hi' => 'IN',
+        'th' => 'TH',
+        'vi' => 'VN',
+        'tr' => 'TR',
+        'id' => 'ID',
+        'ms' => 'MY',
+        'ro' => 'RO',
+        'hu' => 'HU',
+    ];
+
     private function detectCountry(string $acceptLanguage): string
     {
         if (empty($acceptLanguage)) {
@@ -207,7 +241,9 @@ class PageviewService
             return strtoupper($parts[1]);
         }
 
-        return strtoupper(substr($locale, 0, 2));
+        $lang = strtolower(substr($locale, 0, 2));
+
+        return self::LANG_TO_COUNTRY[$lang] ?? 'XX';
     }
 
     private function getLocalHour(Carbon $now, int $tzOffset): int
@@ -244,7 +280,9 @@ class PageviewService
                 $appHost = substr($appHost, 4);
             }
 
-            if ($host === $appHost) {
+            $local = ['localhost', '127.0.0.1', '[::1]'];
+
+            if ($host === $appHost || (in_array($host, $local, true) && in_array($appHost, $local, true))) {
                 return '';
             }
         }

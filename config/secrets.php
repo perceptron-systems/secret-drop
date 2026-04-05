@@ -26,6 +26,6 @@ return [
     | Session & Magic Link Durations (minutes)
     |--------------------------------------------------------------------------
     */
-    'magic_link_ttl' => 10,
-    'session_ttl' => 15,
+    'magic_link_ttl' => (int) env('MAGIC_LINK_TTL', 10),
+    'session_ttl' => (int) env('SESSION_TTL', 15),
 ];

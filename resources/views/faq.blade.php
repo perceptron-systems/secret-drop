@@ -35,11 +35,30 @@
             "name": "{{ __("messages.faq_q{$i}") }}",
             "acceptedAnswer": {
                 "@@type": "Answer",
-                "text": "{{ __("messages.faq_a{$i}", ['manage_link' => '« ' . __('messages.footer_manage') . ' »']) }}"
+                "text": "{{ strip_tags(__("messages.faq_a{$i}", ['manage_link' => '« ' . __('messages.footer_manage') . ' »'])) }}"
             }
         }@if($i < 12),@endif
         @endforeach
     ]
+}
+</script>
+<script type="application/ld+json" nonce="@nonce">
+{
+    "@@context": "https://schema.org",
+    "@@type": "WebPage",
+    "name": "{{ __('messages.faq_title') }}",
+    "description": "{{ __('messages.faq_meta_description') }}",
+    "datePublished": "2026-03-01",
+    "dateModified": "{{ date('Y-m-d', filemtime(resource_path('views/faq.blade.php'))) }}",
+    "isPartOf": {
+        "@@type": "WebSite",
+        "name": "{{ config('app.name') }}",
+        "url": "{{ url('/') }}"
+    },
+    "speakable": {
+        "@@type": "SpeakableSpecification",
+        "cssSelector": ["h1", "dt", "dd"]
+    }
 }
 </script>
 @endpush
@@ -60,6 +79,7 @@
                     <dt class="font-medium text-gray-900 dark:text-white mb-2">{{ __("messages.faq_q{$i}") }}</dt>
                     <dd class="text-sm text-gray-600 dark:text-slate-400">{!! __("messages.faq_a{$i}", [
                         'manage_link' => '<a href="' . route('admin.index') . '" class="text-violet-600 dark:text-violet-400 hover:underline">« ' . e(__('messages.footer_manage')) . ' »</a>',
+                        'minutes' => config('secrets.magic_link_ttl'),
                     ]) !!}</dd>
                 </div>
                 @endforeach
@@ -71,6 +91,7 @@
                     {{ __('messages.faq_cta') }}
                 </x-btn-primary>
             </div>
+
         </x-card>
     </div>
 </div>

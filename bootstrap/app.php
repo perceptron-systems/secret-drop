@@ -8,6 +8,7 @@ use App\Http\Middleware\SetLocale;
 use App\Http\Middleware\ThrottleWithCaptcha;
 use App\Http\Middleware\TrackHttpErrors;
 use App\Http\Middleware\TrackPageView;
+use App\Http\Middleware\TrackResponseTime;
 use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -28,8 +29,10 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->appendToGroup('web', TrackPageView::class);
         $middleware->appendToGroup('web', TrackHttpErrors::class);
+        $middleware->appendToGroup('web', TrackResponseTime::class);
         $middleware->appendToGroup('web', \Illuminate\Routing\Middleware\ThrottleRequests::class.':global');
         $middleware->appendToGroup('api', TrackHttpErrors::class);
+        $middleware->appendToGroup('api', TrackResponseTime::class);
         $middleware->appendToGroup('api', \Illuminate\Routing\Middleware\ThrottleRequests::class.':global');
 
         $middleware->prependToPriorityList(

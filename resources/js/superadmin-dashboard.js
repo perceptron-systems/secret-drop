@@ -6,21 +6,29 @@ let pollTimer = null;
 
 // ── Helpers ──────────────────────────────────────────────────────────────
 
+function getLocale() {
+    return window.superAdminData?.locale || 'en';
+}
+
 function fmt(n) {
-    return new Intl.NumberFormat().format(n);
+    return new Intl.NumberFormat(getLocale()).format(n);
+}
+
+function fmtDec(n, decimals = 1) {
+    return new Intl.NumberFormat(getLocale(), { minimumFractionDigits: decimals, maximumFractionDigits: decimals }).format(n);
 }
 
 function fmtBytes(bytes) {
     if (bytes >= 1073741824) {
-        return (bytes / 1073741824).toFixed(1) + ' GB';
+        return fmtDec(bytes / 1073741824) + ' GB';
     }
     if (bytes >= 1048576) {
-        return (bytes / 1048576).toFixed(1) + ' MB';
+        return fmtDec(bytes / 1048576) + ' MB';
     }
     if (bytes >= 1024) {
-        return (bytes / 1024).toFixed(1) + ' KB';
+        return fmtDec(bytes / 1024) + ' KB';
     }
-    return bytes + ' B';
+    return fmt(Math.round(bytes)) + ' B';
 }
 
 function fmtDelay(s) {
@@ -28,15 +36,25 @@ function fmtDelay(s) {
         return '-';
     }
     if (s < 60) {
-        return Math.round(s) + 's';
+        return fmt(Math.round(s)) + 's';
     }
     if (s < 3600) {
-        return (s / 60).toFixed(1) + 'm';
+        return fmtDec(s / 60) + 'm';
     }
     if (s < 86400) {
-        return (s / 3600).toFixed(1) + 'h';
+        return fmtDec(s / 3600) + 'h';
     }
-    return (s / 86400).toFixed(1) + 'j';
+    return fmtDec(s / 86400) + 'j';
+}
+
+function fmtMs(ms) {
+    if (ms === null || ms === undefined) {
+        return '-';
+    }
+    if (ms < 1000) {
+        return fmt(Math.round(ms)) + ' ms';
+    }
+    return fmtDec(ms / 1000) + ' s';
 }
 
 function kpi(name, value) {
@@ -55,11 +73,11 @@ function kpiHtml(name, html) {
 
 function dateRange(start, end) {
     const labels = [];
-    const d = new Date(start);
-    const e = new Date(end);
+    const d = new Date(start + 'T00:00:00Z');
+    const e = new Date(end + 'T00:00:00Z');
     while (d <= e) {
         labels.push(d.toISOString().split('T')[0]);
-        d.setDate(d.getDate() + 1);
+        d.setUTCDate(d.getUTCDate() + 1);
     }
     return labels;
 }
@@ -67,6 +85,18 @@ function dateRange(start, end) {
 function metricData(metrics, metric, labels) {
     const m = metrics[metric] || {};
     return labels.map(d => m[d] || 0);
+}
+
+function toOptionPct(t) {
+    const total = (t.secrets_created_text || 0) + (t.secrets_created_file || 0);
+    if (total === 0) {
+        return [0, 0, 0];
+    }
+    return [
+        +((t.secrets_with_passphrase || 0) / total * 100).toFixed(1),
+        +((t.secrets_with_max_views || 0) / total * 100).toFixed(1),
+        +((t.secrets_split_mode || 0) / total * 100).toFixed(1),
+    ];
 }
 
 // ── KPI update ───────────────────────────────────────────────────────────
@@ -78,15 +108,16 @@ function updateKpis(data) {
     kpi('secrets_created', fmt(created));
     kpi('secrets_read', fmt(t.secrets_read || 0));
     kpi('active_secrets', fmt(data.systemHealth?.active_secrets ?? 0));
-    kpi('read_rate', data.readRate !== null ? data.readRate.toFixed(1) + '%' : '-');
+    kpi('read_rate', data.readRate !== null ? fmtDec(data.readRate) + '%' : '-');
     kpi('avg_first_read', fmtDelay(data.avgFirstReadDelay));
+    kpi('median_first_read', fmtDelay(data.medianFirstReadDelay));
     kpi('files_shared', fmt(t.secrets_created_file || 0));
     kpi('volume', fmtBytes(t.total_file_size_bytes || 0));
     kpi('disk_usage', fmtBytes(data.currentDiskUsage));
 
     const cc = data.creatorConcentration;
     kpiHtml('creators',
-        `${fmt(cc.unique_creators)} <span class="text-lg font-normal text-gray-500 dark:text-slate-400">G=${cc.gini.toFixed(2)}</span>`
+        `${fmt(cc.unique_creators)} <span class="text-lg font-normal text-gray-500 dark:text-slate-400">G=${fmtDec(cc.gini, 2)}</span>`
     );
 
     const h = data.systemHealth;
@@ -99,6 +130,10 @@ function updateKpis(data) {
     kpi('errors_422', fmt(byCode[422] || 0));
     kpi('errors_429', fmt(byCode[429] || 0));
     kpi('errors_total', fmt((err.total_4xx || 0) + (err.total_5xx || 0)));
+
+    kpi('response_p95', fmtMs(data.responseTime?.p95));
+    kpi('avg_size_text', data.avgSecretSize?.text !== null ? fmtBytes(data.avgSecretSize.text) : '-');
+    kpi('avg_size_file', data.avgSecretSize?.file !== null ? fmtBytes(data.avgSecretSize.file) : '-');
 
     const pv = data.pageviews;
     kpi('pv_visitors', fmt(pv.total_human));
@@ -113,7 +148,7 @@ function updateKpis(data) {
             + (metrics.secrets_created_file?.[date] || 0);
     });
     const conv = pv.total_human > 0 ? (createdInPeriod / pv.total_human) * 100 : 0;
-    kpi('pv_conversion', pv.total_human > 0 ? conv.toFixed(1) + '%' : '-');
+    kpi('pv_conversion', pv.total_human > 0 ? fmtDec(conv) + '%' : '-');
 }
 
 // ── Chart helpers ────────────────────────────────────────────────────────
@@ -169,11 +204,7 @@ function updateCharts(data) {
 
     updateDoughnutChart('types', [t.secrets_created_text || 0, t.secrets_created_file || 0]);
 
-    updateBarChart('options', [
-        t.secrets_with_passphrase || 0,
-        t.secrets_with_max_views || 0,
-        t.secrets_split_mode || 0,
-    ]);
+    updateBarChart('options', toOptionPct(t));
 
     updateDoughnutChart('outcomes', [
         t.secrets_read || 0,
@@ -320,7 +351,7 @@ function updateLists(data) {
                 return `<div>
                     <div class="flex items-center justify-between text-sm mb-1">
                         <span class="text-gray-700 dark:text-slate-300 font-medium flex items-center gap-1.5">${icon} ${esc(label)}</span>
-                        <span class="text-gray-900 dark:text-white font-medium">${fmt(count)} <span class="text-gray-400 dark:text-slate-500 text-xs">(${pct.toFixed(1)}%)</span></span>
+                        <span class="text-gray-900 dark:text-white font-medium">${fmt(count)} <span class="text-gray-400 dark:text-slate-500 text-xs">(${fmtDec(pct)}%)</span></span>
                     </div>
                     <div class="w-full h-2 bg-gray-200 dark:bg-slate-700 rounded-full overflow-hidden">
                         <div class="h-full bg-indigo-500 rounded-full" style="width: ${Math.min(pct, 100)}%"></div>
@@ -407,6 +438,52 @@ function updateLists(data) {
             }).join('');
         }
     }
+
+    // 5xx by route
+    const elRoutes = document.getElementById('pollErrorRoutes');
+    if (elRoutes) {
+        const byRoute = (data.errorStats || {}).by_route || {};
+        const entries = Object.entries(byRoute).sort((a, b) => {
+            const totalA = Object.values(a[1]).reduce((s, v) => s + v, 0);
+            const totalB = Object.values(b[1]).reduce((s, v) => s + v, 0);
+            return totalB - totalA;
+        });
+        if (entries.length === 0) {
+            const et = window.superAdminData?.errorTranslations || {};
+            elRoutes.innerHTML = `<p class="text-sm text-gray-400 dark:text-slate-500">${et.no_errors || 'No errors'}</p>`;
+        } else {
+            const rl = window.superAdminData?.routeLabels || {};
+            elRoutes.innerHTML = entries.map(([route, statuses]) => {
+                const label = rl[route] || route;
+                const codes = Object.entries(statuses).map(([code, count]) =>
+                    `<span class="inline-flex items-center px-1.5 py-0.5 rounded bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400 text-xs font-mono font-medium">${code}</span>
+                     <span class="text-gray-900 dark:text-white font-medium">${fmt(count)}</span>`
+                ).join(' ');
+                return `<div class="flex items-center justify-between text-sm">
+                    <span class="text-gray-700 dark:text-slate-300 truncate max-w-xs">${esc(label)}</span>
+                    <div class="flex items-center gap-2">${codes}</div>
+                </div>`;
+            }).join('');
+        }
+    }
+
+    // P95 by route group
+    const elP95 = document.getElementById('pollP95Groups');
+    if (elP95) {
+        const byGroup = (data.responseTime || {}).by_group || {};
+        const entries = Object.entries(byGroup);
+        if (entries.length === 0) {
+            elP95.innerHTML = '<p class="text-sm text-gray-400 dark:text-slate-500">-</p>';
+        } else {
+            const gl = window.superAdminData?.groupLabels || {};
+            elP95.innerHTML = entries.map(([group, p95]) =>
+                `<div class="flex items-center justify-between text-sm">
+                    <span class="text-gray-700 dark:text-slate-300">${esc(gl[group] || group)}</span>
+                    <span class="text-gray-900 dark:text-white font-medium">${fmtMs(p95)}</span>
+                </div>`
+            ).join('');
+        }
+    }
 }
 
 function renderBarList(id, hourData, barClass) {
@@ -468,7 +545,7 @@ function renderHeatmap(containerId, heatmapData, color, translations) {
     let html = '<div class="overflow-x-auto"><table class="w-full border-collapse text-xs">';
     html += '<tr><td class="w-8"></td>';
     for (let i = 0; i < 7; i++) {
-        html += `<td class="text-center text-gray-600 dark:text-slate-400 pb-2 font-medium">${esc(days[i])}</td>`;
+        html += `<td class="text-center text-gray-600 dark:text-slate-400 pb-1 font-medium">${esc(days[i])}</td>`;
     }
     html += '</tr>';
 
@@ -478,7 +555,7 @@ function renderHeatmap(containerId, heatmapData, color, translations) {
             const di = dayOrder[i];
             const val = heatmapData[di]?.[hour] || 0;
             const title = `${esc(days[i])} ${hour}h: ${val}`;
-            html += `<td class="p-0.5"><div class="h-5 rounded-sm flex items-center justify-center text-[10px] ${cls(val, maxValue, color)}" title="${title}">${val > 0 ? val : ''}</div></td>`;
+            html += `<td class="p-px"><div class="h-3 rounded-sm flex items-center justify-center text-[8px] leading-none ${cls(val, maxValue, color)}" title="${title}">${val > 0 ? val : ''}</div></td>`;
         }
         html += '</tr>';
     }
@@ -542,16 +619,17 @@ function initDashboard() {
             labels: [translations.stat_text, translations.stat_file],
             datasets: [{ data: [t.secrets_created_text || 0, t.secrets_created_file || 0], backgroundColor: ['#8b5cf6', '#f59e0b'] }]
         },
-        options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
     });
 
+    const optPct = toOptionPct(t);
     charts.options = new Chart(document.getElementById('secretOptionsChart'), {
         type: 'bar',
         data: {
             labels: [translations.stat_passphrase, translations.stat_max_views, translations.stat_split_mode],
-            datasets: [{ data: [t.secrets_with_passphrase || 0, t.secrets_with_max_views || 0, t.secrets_split_mode || 0], backgroundColor: ['#ec4899', '#84cc16', '#f97316'] }]
+            datasets: [{ data: optPct, backgroundColor: ['#ec4899', '#84cc16', '#f97316'] }]
         },
-        options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: scales.y } }
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, tooltip: { callbacks: { label: (ctx) => fmtDec(ctx.parsed.y) + ' %' } } }, scales: { y: { beginAtZero: true, max: 100, ticks: { callback: (v) => fmtDec(v) + ' %' } } } }
     });
 
     charts.outcomes = new Chart(document.getElementById('secretOutcomesChart'), {
@@ -560,7 +638,7 @@ function initDashboard() {
             labels: [translations.stat_read, translations.stat_expired_unread, translations.stat_revoked, translations.stat_max_reached],
             datasets: [{ data: [t.secrets_read || 0, t.secrets_expired_unread || 0, t.secrets_revoked || 0, t.secrets_max_views_reached || 0], backgroundColor: ['#10b981', '#6b7280', '#ef4444', '#f59e0b'] }]
         },
-        options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
     });
 
     charts.admin = new Chart(document.getElementById('adminActivityChart'), {
@@ -694,6 +772,7 @@ async function poll() {
         data.heatmapRead = newData.heatmapRead;
         data.pageviewsDaily = newData.pageviews.daily;
         data.avgFirstReadDelay = newData.avgFirstReadDelay;
+        data.medianFirstReadDelay = newData.medianFirstReadDelay;
         data.currentDiskUsage = newData.currentDiskUsage;
         data.systemHealth = newData.systemHealth;
         data.readRate = newData.readRate;
@@ -703,6 +782,8 @@ async function poll() {
         data.botStats = newData.botStats;
         data.deviceStats = newData.deviceStats;
         data.errorStats = newData.errorStats;
+        data.responseTime = newData.responseTime;
+        data.avgSecretSize = newData.avgSecretSize;
 
         // In-place updates (no scroll jump)
         updateKpis(newData);

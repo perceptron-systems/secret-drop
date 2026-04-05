@@ -41,6 +41,30 @@ class SeoController extends Controller
             User-agent: ClaudeBot
             Allow: /
 
+            User-agent: OAI-SearchBot
+            Allow: /
+
+            User-agent: bingbot
+            Allow: /
+
+            User-agent: GoogleOther
+            Allow: /
+
+            User-agent: Applebot-Extended
+            Allow: /
+
+            User-agent: Amazonbot
+            Allow: /
+
+            User-agent: FacebookBot
+            Allow: /
+
+            User-agent: Bytespider
+            Disallow: /
+
+            User-agent: CCBot
+            Disallow: /
+
             Sitemap: {$sitemap}
             TXT;
 
@@ -69,19 +93,4 @@ class SeoController extends Controller
         );
     }
 
-    public function securityTxt(): Response
-    {
-        $email = config('legal.contact_email', config('mail.from.address'));
-        $canonical = url('/.well-known/security.txt');
-        $expires = now()->addYear()->utc()->format('Y-m-d\TH:i:s\Z');
-
-        $content = <<<TXT
-            Contact: mailto:{$email}
-            Expires: {$expires}
-            Preferred-Languages: fr, en
-            Canonical: {$canonical}
-            TXT;
-
-        return response($content, 200, ['Content-Type' => 'text/plain']);
-    }
 }

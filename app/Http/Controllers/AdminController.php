@@ -13,6 +13,9 @@ use App\Services\TokenService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+
+use function Illuminate\Support\defer;
+
 use Illuminate\Support\Facades\Mail;
 use Illuminate\View\View;
 
@@ -62,7 +65,7 @@ class AdminController extends Controller
             ->locale(app()->getLocale())
             ->send(new MagicLinkMail($verifyUrl));
 
-        $this->stats->increment(StatsService::MAGIC_LINKS_REQUESTED);
+        defer(fn () => $this->stats->increment(StatsService::MAGIC_LINKS_REQUESTED));
 
         return redirect()->route('admin.accessSent');
     }
@@ -86,7 +89,7 @@ class AdminController extends Controller
         }
 
         $magicLink->markAsUsed();
-        $this->stats->increment(StatsService::MAGIC_LINKS_USED);
+        defer(fn () => $this->stats->increment(StatsService::MAGIC_LINKS_USED));
 
         $request->session()->regenerate();
         $request->session()->put(self::SESSION_KEY, $magicLink->email_hash);
@@ -190,7 +193,7 @@ class AdminController extends Controller
         $secret->revoked_at = now();
         $secret->destroyContent();
 
-        $this->stats->increment(StatsService::SECRETS_REVOKED);
+        defer(fn () => $this->stats->increment(StatsService::SECRETS_REVOKED));
 
         return response()->json(['success' => true]);
     }
@@ -219,7 +222,7 @@ class AdminController extends Controller
         $secret->expire_at = $baseDate->addHours($request->validated('hours'));
         $secret->save();
 
-        $this->stats->increment(StatsService::SECRETS_EXTENDED);
+        defer(fn () => $this->stats->increment(StatsService::SECRETS_EXTENDED));
 
         return response()->json([
             'success' => true,

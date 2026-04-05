@@ -1,11 +1,20 @@
 <?php
 
 use App\Support\LocaleConfig;
+use Illuminate\Support\Number;
+use Illuminate\Support\Str;
+
+if (! function_exists('nfmt')) {
+    function nfmt(int|float $value, int $decimals = 0): string
+    {
+        return Number::format($value, $decimals, locale: app()->getLocale());
+    }
+}
 
 if (! function_exists('csp_nonce')) {
     function csp_nonce(): string
     {
-        return app('csp-nonce');
+        return once(fn () => Str::random(32));
     }
 }
 

@@ -90,14 +90,14 @@ class PageviewServiceTest extends TestCase
         ]);
     }
 
-    /** Vérifie le fallback sur le code langue sans région. */
-    public function testFallsBackToLanguageCodeWhenNoRegion(): void
+    /** Vérifie le mapping langue → pays sans région. */
+    public function testMapsLanguageToCountryWhenNoRegion(): void
     {
         $this->service->track('home', 'Mozilla/5.0 Chrome/120', 'ja', 0);
 
         $this->assertDatabaseHas('stats_pageviews', [
             'page' => 'home',
-            'country' => 'JA',
+            'country' => 'JP',
         ]);
     }
 
