@@ -5,6 +5,7 @@ namespace App\Services;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
+/** Records anonymous pageview statistics with bot detection, device classification, and referrer tracking. */
 class PageviewService
 {
     /** @var array<int, string> */

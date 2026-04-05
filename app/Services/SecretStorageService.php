@@ -7,6 +7,7 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
+/** Manages encrypted file blobs on the dedicated secrets disk with streamed I/O and directory partitioning. */
 class SecretStorageService
 {
     private const DISK_NAME = 'secrets';

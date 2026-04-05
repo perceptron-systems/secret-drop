@@ -2,6 +2,7 @@
 
 namespace App\Support;
 
+/** Central registry of supported locales, native names, flags, and translatable page slug resolution. */
 class LocaleConfig
 {
     /** @var array<int, string> */

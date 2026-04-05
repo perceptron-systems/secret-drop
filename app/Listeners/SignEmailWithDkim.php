@@ -6,6 +6,7 @@ use Illuminate\Mail\Events\MessageSending;
 use Illuminate\Support\Facades\Log;
 use Symfony\Component\Mime\Crypto\DkimSigner;
 
+/** Intercepts outgoing emails to attach a DKIM signature using the configured private key. */
 class SignEmailWithDkim
 {
     public function handle(MessageSending $event): void

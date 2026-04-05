@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\URL;
 use Symfony\Component\HttpFoundation\Response;
 
+/** Resolves the active locale from the URL prefix or Accept-Language header and sets it app-wide. */
 class SetLocale
 {
     public function handle(Request $request, Closure $next): Response

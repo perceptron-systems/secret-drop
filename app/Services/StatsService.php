@@ -3,10 +3,17 @@
 namespace App\Services;
 
 use App\Models\Secret;
+use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
+/**
+ * Aggregates and queries analytics data for the superadmin dashboard.
+ *
+ * All counters are stored in stats_daily (date × metric → count).
+ * Heatmaps, pageviews, response times and error routes have dedicated tables.
+ */
 class StatsService
 {
     public const SECRETS_CREATED_TEXT = 'secrets_created_text';
@@ -55,6 +62,7 @@ class StatsService
 
     public const HTTP_ERRORS_500 = 'http_errors_500';
 
+    /** Upsert a daily counter (insert or add to existing). */
     public function increment(string $metric, int $amount = 1): void
     {
         $date = now()->toDateString();
@@ -93,9 +101,7 @@ class StatsService
             ->select('metric', 'date', 'count')
             ->orderBy('date');
 
-        if ($startDate) {
-            $query->where('date', '>=', $startDate);
-        }
+        $this->applyDateFilter($query, $startDate);
 
         $stats = [];
         foreach ($query->cursor() as $row) {
@@ -123,9 +129,7 @@ class StatsService
             ->select('metric', DB::raw('SUM(count) as total'))
             ->groupBy('metric');
 
-        if ($startDate) {
-            $query->where('date', '>=', $startDate);
-        }
+        $this->applyDateFilter($query, $startDate);
 
         return $query->pluck('total', 'metric')->map(fn ($v) => (int) $v)->toArray();
     }
@@ -170,9 +174,7 @@ class StatsService
             ->where('metric', $metric)
             ->groupBy('day_of_week', 'hour');
 
-        if ($startDate) {
-            $query->where('date', '>=', $startDate);
-        }
+        $this->applyDateFilter($query, $startDate);
 
         $data = $query->get()
             ->keyBy(fn ($row) => "{$row->day_of_week}-{$row->hour}");
@@ -201,9 +203,7 @@ class StatsService
             ->groupBy('metric')
             ->orderByDesc('total');
 
-        if ($startDate) {
-            $query->where('date', '>=', $startDate);
-        }
+        $this->applyDateFilter($query, $startDate);
 
         $result = [];
 
@@ -234,6 +234,7 @@ class StatsService
         return $total / $count;
     }
 
+    /** Compute median from individual secrets (not from aggregated counters). */
     public function getMedianFirstReadDelay(?string $startDate = null): ?float
     {
         $query = Secret::query()
@@ -297,6 +298,8 @@ class StatsService
     }
 
     /**
+     * Unique creators count + Gini coefficient (0 = equal, 1 = one dominates).
+     *
      * @return array{unique_creators: int, gini: float}
      */
     public function getCreatorConcentration(): array
@@ -330,6 +333,7 @@ class StatsService
 
     /**
      * @return array{active_secrets: int, total_files: int, pending_cleanup: int}
+     * Active secrets, file count on disk, and secrets awaiting cleanup.
      */
     public function getSystemHealth(): array
     {
@@ -361,9 +365,6 @@ class StatsService
         ];
     }
 
-    /**
-     * Get the current disk usage of stored secret files in bytes.
-     */
     public function getCurrentDiskUsage(): int
     {
         return Cache::remember('disk_usage_secrets', 3600, function () {
@@ -398,9 +399,7 @@ class StatsService
     {
         $query = DB::table('stats_pageviews');
 
-        if ($startDate) {
-            $query->where('date', '>=', $startDate);
-        }
+        $this->applyDateFilter($query, $startDate);
 
         $rows = $query->get();
 
@@ -458,9 +457,7 @@ class StatsService
     {
         $query = DB::table('stats_referrers');
 
-        if ($startDate) {
-            $query->where('date', '>=', $startDate);
-        }
+        $this->applyDateFilter($query, $startDate);
 
         $rows = $query->get();
         $byDomain = [];
@@ -485,9 +482,7 @@ class StatsService
             ->groupBy('bot_name')
             ->orderByDesc('total');
 
-        if ($startDate) {
-            $query->where('date', '>=', $startDate);
-        }
+        $this->applyDateFilter($query, $startDate);
 
         return $query->pluck('total', 'bot_name')->map(fn ($v) => (int) $v)->toArray();
     }
@@ -502,34 +497,9 @@ class StatsService
             ->groupBy('device_type')
             ->orderByDesc('total');
 
-        if ($startDate) {
-            $query->where('date', '>=', $startDate);
-        }
+        $this->applyDateFilter($query, $startDate);
 
         return $query->pluck('total', 'device_type')->map(fn ($v) => (int) $v)->toArray();
-    }
-
-    /**
-     * @return array<int, int>
-     */
-    private function getLocalHours(?string $startDate = null): array
-    {
-        $query = DB::table('stats_local_hours')
-            ->select('local_hour', DB::raw('SUM(count) as total'))
-            ->groupBy('local_hour');
-
-        if ($startDate) {
-            $query->where('date', '>=', $startDate);
-        }
-
-        $data = $query->pluck('total', 'local_hour');
-        $hours = array_fill(0, 24, 0);
-
-        foreach ($data as $hour => $total) {
-            $hours[$hour] = (int) $total;
-        }
-
-        return $hours;
     }
 
     /**
@@ -542,9 +512,7 @@ class StatsService
             ->groupBy('route', 'status')
             ->orderByDesc('total');
 
-        if ($startDate) {
-            $query->where('date', '>=', $startDate);
-        }
+        $this->applyDateFilter($query, $startDate);
 
         $result = [];
 
@@ -556,7 +524,28 @@ class StatsService
         return $result;
     }
 
+    /** Upsert a 5xx error occurrence for the given route. */
+    public function trackErrorRoute(int $status, string $route): void
+    {
+        $now = now();
+
+        DB::table('stats_error_routes')->upsert(
+            [
+                'date' => $now->toDateString(),
+                'status' => $status,
+                'route' => $route,
+                'count' => 1,
+                'created_at' => $now,
+                'updated_at' => $now,
+            ],
+            ['date', 'status', 'route'],
+            ['count' => DB::raw('count + 1'), 'updated_at' => $now]
+        );
+    }
+
     /**
+     * P95 response time (ms) computed from histogram buckets.
+     *
      * @return array{p95: float|null, by_group: array<string, float|null>}
      */
     public function getResponseTimeP95(?string $startDate = null): array
@@ -565,9 +554,7 @@ class StatsService
             ->select('route_group', 'bucket', DB::raw('SUM(count) as total'))
             ->groupBy('route_group', 'bucket');
 
-        if ($startDate) {
-            $query->where('date', '>=', $startDate);
-        }
+        $this->applyDateFilter($query, $startDate);
 
         $grouped = [];
         $global = [];
@@ -587,6 +574,56 @@ class StatsService
             'p95' => $this->percentileFromBuckets($global, 95),
             'by_group' => $byGroup,
         ];
+    }
+
+    /**
+     * @return array{text: float|null, file: float|null}
+     * Text avg from ciphertext column length, file avg from aggregated counters.
+     */
+    public function getAverageSecretSize(?string $startDate = null): array
+    {
+        $textQuery = Secret::query()
+            ->where('type', 'text')
+            ->whereNotNull('ciphertext');
+
+        if ($startDate) {
+            $textQuery->where('created_at', '>=', $startDate);
+        }
+
+        $textAvg = $textQuery->count() > 0
+            ? (float) $textQuery->selectRaw('AVG(LENGTH(ciphertext)) as avg_size')->value('avg_size')
+            : null;
+
+        $totals = $this->getTotals($startDate);
+        $fileCount = $totals[self::SECRETS_CREATED_FILE] ?? 0;
+        $fileBytes = $totals[self::TOTAL_FILE_SIZE_BYTES] ?? 0;
+        $fileAvg = $fileCount > 0 ? $fileBytes / $fileCount : null;
+
+        return [
+            'text' => $textAvg,
+            'file' => $fileAvg,
+        ];
+    }
+
+    /**
+     * @return array<int, int>
+     */
+    private function getLocalHours(?string $startDate = null): array
+    {
+        $query = DB::table('stats_local_hours')
+            ->select('local_hour', DB::raw('SUM(count) as total'))
+            ->groupBy('local_hour');
+
+        $this->applyDateFilter($query, $startDate);
+
+        $data = $query->pluck('total', 'local_hour');
+        $hours = array_fill(0, 24, 0);
+
+        foreach ($data as $hour => $total) {
+            $hours[$hour] = (int) $total;
+        }
+
+        return $hours;
     }
 
     /** @param array<int, int> $buckets */
@@ -612,32 +649,10 @@ class StatsService
         return (float) array_key_last($buckets);
     }
 
-    /**
-     * @return array{text: float|null, file: float|null}
-     */
-    public function getAverageSecretSize(?string $startDate = null): array
+    private function applyDateFilter(Builder $query, ?string $startDate): void
     {
-        $textQuery = Secret::query()
-            ->where('type', 'text')
-            ->whereNotNull('ciphertext');
-
-        $fileTotal = $this->getTotals($startDate);
-        $fileCount = $fileTotal[self::SECRETS_CREATED_FILE] ?? 0;
-        $fileBytes = $fileTotal[self::TOTAL_FILE_SIZE_BYTES] ?? 0;
-
         if ($startDate) {
-            $textQuery->where('created_at', '>=', $startDate);
+            $query->where('date', '>=', $startDate);
         }
-
-        $textAvg = $textQuery->count() > 0
-            ? (float) $textQuery->selectRaw('AVG(LENGTH(ciphertext)) as avg_size')->value('avg_size')
-            : null;
-
-        $fileAvg = $fileCount > 0 ? $fileBytes / $fileCount : null;
-
-        return [
-            'text' => $textAvg,
-            'file' => $fileAvg,
-        ];
     }
 }

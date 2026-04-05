@@ -6,6 +6,7 @@ use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Translation\PotentiallyTranslatedString;
 
+/** Validates that a value is valid Base64URL and optionally enforces exact or minimum decoded byte length. */
 class Base64UrlBytes implements ValidationRule
 {
     public function __construct(

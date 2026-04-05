@@ -7,6 +7,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\Response;
 
+/**
+ * Terminable middleware that records response time per route group in histogram buckets.
+ * Buckets represent upper bounds in milliseconds (e.g. a 120 ms response lands in the 200 bucket).
+ */
 class TrackResponseTime
 {
     private const BUCKETS = [50, 100, 200, 500, 1000, 2000, 5000, 10000];

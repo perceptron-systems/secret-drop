@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+/** Generates cryptographically secure tokens and their SHA-256 hashes for URLs, admin access, and magic links. */
 class TokenService
 {
     private const TOKEN_BYTES = 16; // 128 bits

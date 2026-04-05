@@ -5,9 +5,12 @@ namespace App\Http\Middleware;
 use App\Services\StatsService;
 use Closure;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\Response;
 
+/**
+ * Terminable middleware that records HTTP 4xx/5xx errors in stats_daily.
+ * For 5xx errors, also tracks the offending route in stats_error_routes.
+ */
 class TrackHttpErrors
 {
     public function __construct(
@@ -23,6 +26,7 @@ class TrackHttpErrors
         return $next($request);
     }
 
+    /** Record error counters after the response has been sent. */
     public function terminate(Request $request, Response $response): void
     {
         $status = $response->getStatusCode();
@@ -33,31 +37,13 @@ class TrackHttpErrors
 
         if ($status >= 500) {
             $this->stats->increment(StatsService::HTTP_ERRORS_5XX);
-            $this->trackErrorRoute($status, $request);
+
+            $route = $request->route()?->getName() ?? $request->getPathInfo();
+            $this->stats->trackErrorRoute($status, mb_substr($route, 0, 100));
         } else {
             $this->stats->increment(StatsService::HTTP_ERRORS_4XX);
         }
 
         $this->stats->increment("http_errors_{$status}");
-    }
-
-    private function trackErrorRoute(int $status, Request $request): void
-    {
-        $route = $request->route()?->getName() ?? $request->getPathInfo();
-        $route = mb_substr($route, 0, 100);
-        $now = now();
-
-        DB::table('stats_error_routes')->upsert(
-            [
-                'date' => $now->toDateString(),
-                'status' => $status,
-                'route' => $route,
-                'count' => 1,
-                'created_at' => $now,
-                'updated_at' => $now,
-            ],
-            ['date', 'status', 'route'],
-            ['count' => DB::raw('count + 1'), 'updated_at' => $now]
-        );
     }
 }

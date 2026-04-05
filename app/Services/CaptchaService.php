@@ -4,6 +4,7 @@ namespace App\Services;
 
 use Illuminate\Support\Facades\Cache;
 
+/** Generates and verifies single-use math challenges to gate rate-limited requests. */
 class CaptchaService
 {
     private const CACHE_PREFIX = 'captcha:';

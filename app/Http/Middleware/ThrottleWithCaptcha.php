@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Symfony\Component\HttpFoundation\Response;
 
+/** Rate-limits requests per IP and requires a math captcha once the threshold is exceeded. */
 class ThrottleWithCaptcha
 {
     private const CACHE_PREFIX = 'throttle:';

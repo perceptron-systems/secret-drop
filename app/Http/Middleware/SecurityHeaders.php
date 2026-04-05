@@ -6,6 +6,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
+/** Applies CSP with per-request nonce, HSTS, frame denial, and other hardening headers. */
 class SecurityHeaders
 {
     public function handle(Request $request, Closure $next): Response

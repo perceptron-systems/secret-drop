@@ -6,6 +6,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
+/** Prevents browsers and proxies from caching sensitive responses. */
 class NoCacheHeaders
 {
     public function handle(Request $request, Closure $next): Response

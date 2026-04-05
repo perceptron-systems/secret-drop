@@ -9,6 +9,7 @@ use App\Services\StatsService;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Cache;
 
+/** Purges expired, revoked, or fully-read secrets along with their files and consumed magic links. */
 class CleanExpiredSecretsCommand extends Command
 {
     protected $signature = 'secrets:clean

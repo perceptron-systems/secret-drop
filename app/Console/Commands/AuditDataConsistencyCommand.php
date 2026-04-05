@@ -6,6 +6,7 @@ use App\Models\Secret;
 use App\Services\SecretStorageService;
 use Illuminate\Console\Command;
 
+/** Detects orphan files, missing blobs, and stale content between the database and encrypted file storage. */
 class AuditDataConsistencyCommand extends Command
 {
     protected $signature = 'secrets:audit

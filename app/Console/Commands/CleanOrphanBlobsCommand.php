@@ -7,6 +7,7 @@ use App\Services\SecretStorageService;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Cache;
 
+/** Removes encrypted files on disk that no longer have a matching secret record. */
 class CleanOrphanBlobsCommand extends Command
 {
     protected $signature = 'secrets:clean-blobs

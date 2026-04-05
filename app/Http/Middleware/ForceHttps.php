@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\URL;
 use Symfony\Component\HttpFoundation\Response;
 
+/** Redirects HTTP requests to HTTPS and forces the URL scheme in production. */
 class ForceHttps
 {
     public function handle(Request $request, Closure $next): Response

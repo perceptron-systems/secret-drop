@@ -8,6 +8,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
+/** Fires a pageview tracking event after successful GET responses using the named route as page identifier. */
 class TrackPageView
 {
     public function __construct(
