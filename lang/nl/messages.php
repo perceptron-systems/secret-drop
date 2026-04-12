@@ -457,6 +457,7 @@ return [
     'stat_unique_creators' => 'Unieke makers (Gini)',
     'stat_health_active_short' => 'actief',
     'stat_health_cleanup_short' => 'op te ruimen',
+    'stat_health_files_short' => 'bestanden',
     'stat_by_device' => 'Per apparaat',
     'stat_device_desktop' => 'Desktop',
     'stat_device_mobile' => 'Mobiel',

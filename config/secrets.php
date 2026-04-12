@@ -41,5 +41,6 @@ return [
     |--------------------------------------------------------------------------
     */
     'magic_link_ttl' => (int) env('MAGIC_LINK_TTL', 10),
-    'session_ttl' => (int) env('SESSION_TTL', 15),
+    'admin_session_ttl' => (int) env('ADMIN_SESSION_TTL', 15),
+    'super_admin_session_ttl' => (int) env('SUPER_ADMIN_SESSION_TTL', 15),
 ];

@@ -24,6 +24,11 @@ class SuperAdminController extends Controller
     protected const SESSION_EXPIRES_KEY = 'super_admin_expires_at';
     private const VALID_PERIODS = ['today', '7d', '30d', '90d', '1y', 'all'];
 
+    private function sessionTtl(): int
+    {
+        return config('secrets.super_admin_session_ttl');
+    }
+
     public function __construct(
         private TokenService $tokenService,
         private StatsService $stats,
@@ -87,7 +92,7 @@ class SuperAdminController extends Controller
 
         $request->session()->regenerate();
         $request->session()->put(self::SESSION_KEY, true);
-        $request->session()->put(self::SESSION_EXPIRES_KEY, now()->addMinutes(config('secrets.session_ttl'))->timestamp);
+        $request->session()->put(self::SESSION_EXPIRES_KEY, now()->addMinutes($this->sessionTtl())->timestamp);
 
         return redirect()->route('superadmin.dashboard');
     }

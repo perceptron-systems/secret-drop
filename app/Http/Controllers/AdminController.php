@@ -26,6 +26,11 @@ class AdminController extends Controller
     protected const SESSION_KEY = 'admin_email_hash';
     protected const SESSION_EXPIRES_KEY = 'admin_expires_at';
 
+    private function sessionTtl(): int
+    {
+        return config('secrets.admin_session_ttl');
+    }
+
     public function __construct(
         private TokenService $tokenService,
         private SecretStorageService $storage,
@@ -93,7 +98,7 @@ class AdminController extends Controller
 
         $request->session()->regenerate();
         $request->session()->put(self::SESSION_KEY, $magicLink->email_hash);
-        $request->session()->put(self::SESSION_EXPIRES_KEY, now()->addMinutes(config('secrets.session_ttl'))->timestamp);
+        $request->session()->put(self::SESSION_EXPIRES_KEY, now()->addMinutes($this->sessionTtl())->timestamp);
 
         return redirect()->route('admin.dashboard');
     }

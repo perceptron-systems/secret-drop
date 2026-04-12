@@ -457,6 +457,7 @@ return [
     'stat_unique_creators' => '고유 생성자 (Gini)',
     'stat_health_active_short' => '활성',
     'stat_health_cleanup_short' => '정리 대기',
+    'stat_health_files_short' => '파일',
     'stat_by_device' => '기기별',
     'stat_device_desktop' => '데스크톱',
     'stat_device_mobile' => '모바일',

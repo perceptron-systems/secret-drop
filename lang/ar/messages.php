@@ -457,6 +457,7 @@ return [
     'stat_unique_creators' => 'المنشئون الفريدون (Gini)',
     'stat_health_active_short' => 'نشط',
     'stat_health_cleanup_short' => 'للتنظيف',
+    'stat_health_files_short' => 'ملفات',
     'stat_by_device' => 'حسب الجهاز',
     'stat_device_desktop' => 'حاسوب',
     'stat_device_mobile' => 'هاتف',

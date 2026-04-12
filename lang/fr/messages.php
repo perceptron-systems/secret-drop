@@ -465,6 +465,7 @@ return [
     'stat_unique_creators' => 'Créateurs uniques (Gini)',
     'stat_health_active_short' => 'actifs',
     'stat_health_cleanup_short' => 'à purger',
+    'stat_health_files_short' => 'fichiers',
     'stat_by_device' => 'Par appareil',
     'stat_device_desktop' => 'Ordinateur',
     'stat_device_mobile' => 'Mobile',

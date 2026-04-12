@@ -263,21 +263,6 @@ class StatsService
         return (float) $delays[$middle];
     }
 
-    public function getActiveSecretsCount(): int
-    {
-        return Secret::query()
-            ->whereNull('revoked_at')
-            ->where(function ($q) {
-                $q->whereNull('expire_at')
-                    ->orWhere('expire_at', '>', now());
-            })
-            ->where(function ($q) {
-                $q->whereNull('max_views')
-                    ->orWhereColumn('read_count', '<', 'max_views');
-            })
-            ->count();
-    }
-
     public function getReadRate(?string $startDate = null): ?float
     {
         $totals = $this->getTotals($startDate);

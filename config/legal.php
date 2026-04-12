@@ -6,7 +6,7 @@ return [
     'editor_phone' => env('LEGAL_EDITOR_PHONE'),
     'contact_email' => env('LEGAL_CONTACT_EMAIL', 'contact@example.com'),
 
-    'organization_name' => env('LEGAL_ORGANIZATION_NAME', 'Secret Drop'),
+    'organization_name' => env('LEGAL_ORGANIZATION_NAME', config('app.name')),
 
     'social' => [
         'github' => env('SOCIAL_GITHUB'),

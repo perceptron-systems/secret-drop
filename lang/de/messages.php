@@ -457,6 +457,7 @@ return [
     'stat_unique_creators' => 'Einzigartige Ersteller (Gini)',
     'stat_health_active_short' => 'aktiv',
     'stat_health_cleanup_short' => 'zu bereinigen',
+    'stat_health_files_short' => 'Dateien',
     'stat_by_device' => 'Nach Gerät',
     'stat_device_desktop' => 'Desktop',
     'stat_device_mobile' => 'Mobil',

@@ -121,7 +121,7 @@ function updateKpis(data) {
     );
 
     const h = data.systemHealth;
-    kpi('health', `${h.active_secrets} / ${h.pending_cleanup}`);
+    kpi('health', `${h.pending_cleanup} / ${h.total_files}`);
 
     const err = data.errorStats || {};
     const byCode = err.by_code || {};

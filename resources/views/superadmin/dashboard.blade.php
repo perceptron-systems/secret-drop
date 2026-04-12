@@ -105,8 +105,8 @@
                 </div>
             </x-card>
             <x-card class="p-6">
-                <div class="text-3xl font-bold text-gray-900 dark:text-white" data-kpi="health">{{ $systemHealth['active_secrets'] }} / {{ $systemHealth['pending_cleanup'] }}</div>
-                <div class="text-sm text-gray-600 dark:text-slate-400 mt-1">{{ __('messages.stat_health_active_short') }} / {{ __('messages.stat_health_cleanup_short') }}</div>
+                <div class="text-3xl font-bold text-gray-900 dark:text-white" data-kpi="health">{{ $systemHealth['pending_cleanup'] }} / {{ $systemHealth['total_files'] }}</div>
+                <div class="text-sm text-gray-600 dark:text-slate-400 mt-1">{{ __('messages.stat_health_cleanup_short') }} / {{ __('messages.stat_health_files_short') }}</div>
             </x-card>
         </div>
 
@@ -651,7 +651,6 @@
         avgFirstReadDelay: @json($avgFirstReadDelay),
         medianFirstReadDelay: @json($medianFirstReadDelay),
         currentDiskUsage: @json($currentDiskUsage),
-        activeSecrets: @json($systemHealth['active_secrets']),
         readRate: @json($readRate),
         creatorConcentration: @json($creatorConcentration),
         systemHealth: @json($systemHealth),

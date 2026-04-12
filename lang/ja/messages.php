@@ -457,6 +457,7 @@ return [
     'stat_unique_creators' => 'ユニーク作成者 (Gini)',
     'stat_health_active_short' => 'アクティブ',
     'stat_health_cleanup_short' => '削除待ち',
+    'stat_health_files_short' => 'ファイル',
     'stat_by_device' => 'デバイス別',
     'stat_device_desktop' => 'デスクトップ',
     'stat_device_mobile' => 'モバイル',

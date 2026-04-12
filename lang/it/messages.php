@@ -457,6 +457,7 @@ return [
     'stat_unique_creators' => 'Creatori unici (Gini)',
     'stat_health_active_short' => 'attivi',
     'stat_health_cleanup_short' => 'da eliminare',
+    'stat_health_files_short' => 'file',
     'stat_by_device' => 'Per dispositivo',
     'stat_device_desktop' => 'Desktop',
     'stat_device_mobile' => 'Mobile',

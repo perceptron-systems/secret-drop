@@ -30,10 +30,12 @@ trait HasSessionAuth
         return $value;
     }
 
+    abstract private function sessionTtl(): int;
+
     private function renewSessionExpiry(Request $request): void
     {
         if ($request->session()->has(static::SESSION_EXPIRES_KEY)) {
-            $request->session()->put(static::SESSION_EXPIRES_KEY, now()->addMinutes(config('secrets.session_ttl'))->timestamp);
+            $request->session()->put(static::SESSION_EXPIRES_KEY, now()->addMinutes($this->sessionTtl())->timestamp);
         }
     }
 }
