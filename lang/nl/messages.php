@@ -492,10 +492,12 @@ return [
     'stat_page_content' => 'Inhoudspagina',
 
     // Rate limiting & Captcha
-    'rate_limit_exceeded' => 'Te veel verzoeken. Los de berekening hieronder op om door te gaan.',
-    'captcha_label' => 'Anti-robot verificatie',
-    'captcha_placeholder' => 'Uw antwoord',
-    'captcha_invalid' => 'Onjuist antwoord. Probeer het opnieuw.',
+    'rate_limit_exceeded' => 'Te veel verzoeken. Even geduld terwijl we uw browser verifiëren.',
+    'pow_computing' => 'Verificatie bezig...',
+    'pow_failed' => 'Verificatie mislukt. Probeer het opnieuw.',
+    'pow_timeout' => 'Verificatie verlopen. Probeer het opnieuw.',
+    'daily_limit_exceeded' => 'Dagelijkse limiet bereikt. Probeer het morgen opnieuw.',
+    'storage_quota_exceeded' => 'De bestandsdelingsservice is tijdelijk niet beschikbaar. Probeer het later opnieuw.',
 
     // Labels
     'label_important' => 'Belangrijk:',

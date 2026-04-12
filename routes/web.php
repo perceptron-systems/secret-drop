@@ -43,7 +43,7 @@ Route::prefix('{locale}')
         // Admin (user secrets management)
         Route::get('/admin', [AdminController::class, 'index'])->name('admin.index');
         Route::post('/admin/request-access', [AdminController::class, 'requestAccess'])
-            ->middleware('throttle.captcha:3,10')
+            ->middleware('throttle.pow:3,10')
             ->name('admin.requestAccess');
         Route::get('/admin/access-sent', fn () => view('admin.access-sent'))->name('admin.accessSent');
         Route::match(['GET', 'POST'], '/admin/verify/{token}', [AdminController::class, 'verify'])
@@ -58,7 +58,7 @@ Route::prefix('{locale}')
         // Super Admin (global statistics)
         Route::get('/superadmin', [SuperAdminController::class, 'index'])->name('superadmin.index');
         Route::post('/superadmin/request-access', [SuperAdminController::class, 'requestAccess'])
-            ->middleware('throttle.captcha:3,10')
+            ->middleware('throttle.pow:3,10')
             ->name('superadmin.requestAccess');
         Route::get('/superadmin/access-sent', fn () => view('superadmin.access-sent'))->name('superadmin.accessSent');
         Route::match(['GET', 'POST'], '/superadmin/verify/{token}', [SuperAdminController::class, 'verify'])

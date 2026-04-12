@@ -30,6 +30,17 @@ class AppServiceProvider extends ServiceProvider
             return Limit::perMinute(120)->by($request->ip());
         });
 
+        RateLimiter::for('daily', function (Request $request) {
+            return Limit::perDay(config('secrets.daily_limit_per_ip'))
+                ->by($request->ip())
+                ->response(function () {
+                    return response()->json([
+                        'error' => 'daily_limit_exceeded',
+                        'message' => __('messages.daily_limit_exceeded'),
+                    ], 429);
+                });
+        });
+
         Vite::useCspNonce(csp_nonce());
         Blade::directive('nonce', fn () => '<?php echo csp_nonce(); ?>');
     }

@@ -492,10 +492,12 @@ return [
     'stat_page_content' => 'Página de conteúdo',
 
     // Rate limiting & Captcha
-    'rate_limit_exceeded' => 'Muitas solicitações. Por favor, resolva o cálculo abaixo para continuar.',
-    'captcha_label' => 'Verificação anti-robô',
-    'captcha_placeholder' => 'Sua resposta',
-    'captcha_invalid' => 'Resposta incorreta. Por favor, tente novamente.',
+    'rate_limit_exceeded' => 'Muitas solicitações. Por favor, aguarde enquanto verificamos o seu navegador.',
+    'pow_computing' => 'Verificando o seu navegador...',
+    'pow_failed' => 'A verificação falhou. Por favor, tente novamente.',
+    'pow_timeout' => 'A verificação expirou. Por favor, tente novamente.',
+    'daily_limit_exceeded' => 'Limite diário atingido. Por favor, tente novamente amanhã.',
+    'storage_quota_exceeded' => 'O serviço de compartilhamento de arquivos está temporariamente indisponível. Por favor, tente novamente mais tarde.',
 
     // Labels
     'label_important' => 'Importante:',

@@ -491,10 +491,12 @@ return [
     'stat_page_content' => 'Content page',
 
     // Rate limiting & Captcha
-    'rate_limit_exceeded' => 'Too many requests. Please solve the calculation below to continue.',
-    'captcha_label' => 'Anti-robot verification',
-    'captcha_placeholder' => 'Your answer',
-    'captcha_invalid' => 'Incorrect answer. Please try again.',
+    'rate_limit_exceeded' => 'Too many requests. Please wait while we verify your browser.',
+    'pow_computing' => 'Verifying your browser...',
+    'pow_failed' => 'Verification failed. Please try again.',
+    'pow_timeout' => 'Verification timed out. Please try again.',
+    'daily_limit_exceeded' => 'Daily limit reached. Please try again tomorrow.',
+    'storage_quota_exceeded' => 'File sharing service is temporarily unavailable. Please try again later.',
 
     // Labels
     'label_important' => 'Important:',

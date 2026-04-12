@@ -65,7 +65,7 @@ php artisan test --filter=SecretTest   # run a single test
 | IV, salt, metadata | Encryption key |
 | Hashed email (SHA-256) | URL fragment (`#key`) |
 
-Additional measures: strict CSP with nonce, HSTS, log sanitization (tokens and secrets are never logged), rate limiting with progressive captcha, DKIM email signing.
+Additional measures: strict CSP with nonce, HSTS, log sanitization (tokens and secrets are never logged), rate limiting with SHA-256 proof-of-work, honeypot, daily per-IP limits, file storage quota, CORS restriction, DKIM email signing.
 
 ## Deployment
 

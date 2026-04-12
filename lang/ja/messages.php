@@ -492,10 +492,12 @@ return [
     'stat_page_content' => 'コンテンツページ',
 
     // Rate limiting & Captcha
-    'rate_limit_exceeded' => 'リクエストが多すぎます。続行するには以下の計算を解いてください。',
-    'captcha_label' => 'ロボット検証',
-    'captcha_placeholder' => '答え',
-    'captcha_invalid' => '答えが間違っています。もう一度お試しください。',
+    'rate_limit_exceeded' => 'リクエストが多すぎます。ブラウザの検証中です。お待ちください。',
+    'pow_computing' => 'ブラウザを検証中...',
+    'pow_failed' => '検証に失敗しました。もう一度お試しください。',
+    'pow_timeout' => '検証がタイムアウトしました。もう一度お試しください。',
+    'daily_limit_exceeded' => '1日の上限に達しました。明日もう一度お試しください。',
+    'storage_quota_exceeded' => 'ファイル共有サービスは一時的にご利用いただけません。後ほどお試しください。',
 
     // Labels
     'label_important' => '重要：',

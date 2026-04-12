@@ -167,7 +167,9 @@
         $jsTranslations = array_intersect_key(__('messages'), array_flip([
             'btn_encrypting',
             'btn_encrypting_upload',
-            'captcha_invalid',
+            'pow_computing',
+            'pow_failed',
+            'pow_timeout',
             'crypto_clipboard_failed',
             'crypto_creation_error',
             'crypto_decryption_error',

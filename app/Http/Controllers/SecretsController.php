@@ -32,7 +32,23 @@ class SecretsController extends Controller
 
     public function store(StoreSecretRequest $request): JsonResponse
     {
+        // Honeypot: bots fill hidden fields, humans don't — return fake success to avoid retries
+        if ($request->filled('website')) {
+            return response()->json([
+                'token' => bin2hex(random_bytes(16)),
+                'expire_at' => now()->addDays(7)->toIso8601String(),
+            ], 201);
+        }
+
         $validated = $request->validated();
+
+        // Check file storage quota before accepting uploads
+        if ($validated['type'] === 'file' && $this->storage->isQuotaExceeded()) {
+            return response()->json([
+                'error' => 'service_unavailable',
+                'message' => __('messages.storage_quota_exceeded'),
+            ], 503);
+        }
 
         $expireAt = $this->calculateExpireAt($validated['expiration']);
         $token = $this->tokenService->generatePublicToken();
@@ -174,16 +190,12 @@ class SecretsController extends Controller
     {
         $secret = Secret::where('token', $token)->first();
 
-        if (! $secret || $secret->type !== 'file') {
+        if (! $secret || $secret->type !== 'file' || ! $secret->isAccessible()) {
             return response()->view('secrets.not-found', [], 404);
         }
 
-        if (! $secret->isAccessible()) {
-            return response(__('messages.error_secret_unavailable'), 410);
-        }
-
         if (! $secret->file_path || ! $this->storage->exists($secret->file_path)) {
-            return response(__('messages.error_file_not_found'), 404);
+            return response()->view('secrets.not-found', [], 404);
         }
 
         return $this->storage->download($secret->file_path);

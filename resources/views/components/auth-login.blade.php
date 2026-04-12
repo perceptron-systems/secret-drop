@@ -40,7 +40,7 @@
                         type="email"
                         required
                         aria-required="true"
-                        @if(!session('captcha_required')) autofocus @endif
+                        @if(!session('pow_required')) autofocus @endif
                         autocomplete="off"
                         value="{{ old('email') }}"
                         placeholder="{{ __('messages.admin_email_placeholder') }}"
@@ -52,35 +52,27 @@
                     @enderror
                 </div>
 
-                @if(session('captcha_required'))
-                    <div class="p-4 bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 rounded-xl">
-                        <p class="text-sm text-amber-700 dark:text-amber-300 mb-3">
-                            {{ __('messages.rate_limit_exceeded') }}
-                        </p>
-                        <label for="captcha_answer" class="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-2">
-                            {{ __('messages.captcha_label') }}
-                        </label>
+                @if(session('pow_required'))
+                    <div id="pow-status" class="p-4 bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 rounded-xl">
                         <div class="flex items-center gap-3">
-                            <div class="px-4 py-2 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-600 rounded-xl font-mono text-lg text-gray-900 dark:text-white">
-                                {{ session('captcha_challenge') }} = ?
-                            </div>
-                            <input
-                                id="captcha_answer"
-                                name="captcha_answer"
-                                type="number"
-                                required
-                                aria-required="true"
-                                autofocus
-                                placeholder="{{ __('messages.captcha_placeholder') }}"
-                                @error('captcha') aria-describedby="captcha-error" aria-invalid="true" @enderror
-                                class="flex-1 px-4 py-2 bg-gray-50 dark:bg-slate-900/50 border border-gray-300 dark:border-slate-600/50 rounded-xl text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-slate-400 focus:outline-none focus:ring-2 {{ $ringColor }} transition"
-                            >
+                            <x-spinner />
+                            <p class="text-sm text-amber-700 dark:text-amber-300">
+                                {{ __('messages.pow_computing') }}
+                            </p>
                         </div>
-                        <input type="hidden" name="captcha_token" value="{{ session('captcha_token') }}">
-                        @error('captcha')
-                            <p id="captcha-error" class="mt-2 text-sm text-red-600 dark:text-red-300" role="alert">{{ $message }}</p>
-                        @enderror
                     </div>
+                    <input type="hidden" name="pow_token" value="{{ session('pow_token') }}">
+                    <input type="hidden" name="pow_nonce" id="pow-nonce" value="">
+                    <script @nonce>
+                        document.addEventListener('DOMContentLoaded', function() {
+                            window.solvePow('{{ session('pow_challenge') }}', {{ session('pow_difficulty') }}).then(function(nonce) {
+                                document.getElementById('pow-nonce').value = nonce;
+                                document.getElementById('pow-nonce').closest('form').submit();
+                            }).catch(function() {
+                                document.getElementById('pow-status').innerHTML = '<p class="text-sm text-red-600 dark:text-red-300">{{ __("messages.pow_failed") }}</p>';
+                            });
+                        });
+                    </script>
                 @endif
 
                 <x-btn-primary type="submit" :color="$color" class="w-full">

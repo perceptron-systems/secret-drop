@@ -130,8 +130,8 @@ class DownloadSecurityTest extends TestCase
         $secret->delete();
     }
 
-    /** Vérifie que le download retourne 410 pour un secret expiré. */
-    public function testDownloadReturns410ForExpiredSecret(): void
+    /** Vérifie que le download retourne 404 pour un secret expiré (pas de fuite d'état). */
+    public function testDownloadReturns404ForExpiredSecret(): void
     {
         $token = $this->tokenService->generatePublicToken();
         $file = UploadedFile::fake()->create('test.bin', 256);
@@ -148,13 +148,13 @@ class DownloadSecurityTest extends TestCase
 
         $response = $this->get("/s/{$secret->token}/download");
 
-        $response->assertStatus(410);
+        $response->assertStatus(404);
 
         $this->cleanup($secret);
     }
 
-    /** Vérifie que le download retourne 410 pour un secret révoqué. */
-    public function testDownloadReturns410ForRevokedSecret(): void
+    /** Vérifie que le download retourne 404 pour un secret révoqué (pas de fuite d'état). */
+    public function testDownloadReturns404ForRevokedSecret(): void
     {
         $token = $this->tokenService->generatePublicToken();
         $file = UploadedFile::fake()->create('test.bin', 256);
@@ -172,7 +172,7 @@ class DownloadSecurityTest extends TestCase
 
         $response = $this->get("/s/{$secret->token}/download");
 
-        $response->assertStatus(410);
+        $response->assertStatus(404);
 
         $this->cleanup($secret);
     }

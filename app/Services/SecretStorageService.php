@@ -4,6 +4,7 @@ namespace App\Services;
 
 use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
@@ -34,6 +35,8 @@ class SecretStorageService
                 fclose($stream);
             }
         }
+
+        $this->invalidateSizeCache();
 
         return $path;
     }
@@ -100,6 +103,7 @@ class SecretStorageService
         }
 
         $this->disk()->delete($path);
+        $this->invalidateSizeCache();
 
         $dir = dirname($path);
 
@@ -108,6 +112,33 @@ class SecretStorageService
         }
 
         return true;
+    }
+
+    /**
+     * Total size of all stored files in bytes (cached 5 minutes).
+     */
+    public function totalSize(): int
+    {
+        return (int) Cache::remember('secrets:total_file_size', 300, function () {
+            return collect($this->disk()->allFiles())
+                ->sum(fn (string $file) => $this->disk()->size($file));
+        });
+    }
+
+    public function isQuotaExceeded(): bool
+    {
+        $quotaMb = config('secrets.file_storage_quota_mb');
+
+        if ($quotaMb <= 0) {
+            return false;
+        }
+
+        return $this->totalSize() >= $quotaMb * 1024 * 1024;
+    }
+
+    private function invalidateSizeCache(): void
+    {
+        Cache::forget('secrets:total_file_size');
     }
 
     /**

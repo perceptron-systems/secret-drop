@@ -104,11 +104,11 @@ export default () => ({
             return `${widthClass} ${colorClass}`;
         },
 
-        // Captcha state
-        captchaRequired: false,
-        captchaToken: null,
-        captchaChallenge: null,
-        captchaAnswer: '',
+        // Proof-of-Work state
+        powRequired: false,
+        powSolving: false,
+        powToken: null,
+        powNonce: null,
         pendingEncrypted: null,
         pendingPassphrase: null,
 
@@ -210,10 +210,10 @@ export default () => ({
                 split_mode: this.splitMode
             };
 
-            // Add captcha if required
-            if (this.captchaToken && this.captchaAnswer) {
-                payload.captcha_token = this.captchaToken;
-                payload.captcha_answer = this.captchaAnswer;
+            // Add PoW if solved
+            if (this.powToken && this.powNonce) {
+                payload.pow_token = this.powToken;
+                payload.pow_nonce = this.powNonce;
             }
 
             const response = await fetch('/api/secrets', {
@@ -229,13 +229,13 @@ export default () => ({
             const data = await response.json();
 
             if (!response.ok) {
-                if (this.handleCaptchaChallenge(response, data, encrypted, passphrase)) {
+                if (this.handlePowChallenge(response, data, encrypted, passphrase)) {
                     return;
                 }
                 throw new Error(data.message || t('crypto_creation_error'));
             }
 
-            this.clearCaptcha();
+            this.clearPow();
             this.buildShareUrl(data.token, encrypted.keyMaterial, !!passphrase, encrypted.version);
         },
 
@@ -265,10 +265,10 @@ export default () => ({
                 formData.append('split_mode', '1');
             }
 
-            // Add captcha if required
-            if (this.captchaToken && this.captchaAnswer) {
-                formData.append('captcha_token', this.captchaToken);
-                formData.append('captcha_answer', this.captchaAnswer);
+            // Add PoW if solved
+            if (this.powToken && this.powNonce) {
+                formData.append('pow_token', this.powToken);
+                formData.append('pow_nonce', this.powNonce);
             }
 
             const response = await fetch('/api/secrets', {
@@ -283,13 +283,13 @@ export default () => ({
             const data = await response.json();
 
             if (!response.ok) {
-                if (this.handleCaptchaChallenge(response, data, encrypted, passphrase)) {
+                if (this.handlePowChallenge(response, data, encrypted, passphrase)) {
                     return;
                 }
                 throw new Error(data.message || t('crypto_creation_error'));
             }
 
-            this.clearCaptcha();
+            this.clearPow();
             this.buildShareUrl(data.token, encrypted.keyMaterial, !!passphrase);
         },
 
@@ -307,14 +307,15 @@ export default () => ({
             this.passphraseUsed = hasPassphrase;
         },
 
-        handleCaptchaChallenge(response, data, encrypted, passphrase) {
-            if (response.status === 429 && data.captcha_required) {
-                this.captchaRequired = true;
-                this.captchaToken = data.captcha_token;
-                this.captchaChallenge = data.captcha_challenge;
-                this.captchaAnswer = '';
+        handlePowChallenge(response, data, encrypted, passphrase) {
+            if (response.status === 429 && data.pow_required) {
+                this.powRequired = true;
+                this.powSolving = true;
+                this.powToken = data.pow_token;
                 this.pendingEncrypted = encrypted;
                 this.pendingPassphrase = passphrase;
+
+                this.solvePowAndResubmit(data.pow_challenge, data.pow_difficulty);
                 return true;
             }
 
@@ -384,32 +385,29 @@ export default () => ({
             link.click();
         },
 
-        clearCaptcha() {
-            this.captchaRequired = false;
-            this.captchaToken = null;
-            this.captchaChallenge = null;
-            this.captchaAnswer = '';
+        clearPow() {
+            this.powRequired = false;
+            this.powSolving = false;
+            this.powToken = null;
+            this.powNonce = null;
             this.pendingEncrypted = null;
             this.pendingPassphrase = null;
         },
 
-        async submitWithCaptcha() {
-            if (!this.captchaAnswer.trim()) {
-                this.error = t('captcha_invalid');
-                return;
-            }
-
-            this.error = null;
-            this.isSubmitting = true;
-
+        async solvePowAndResubmit(challenge, difficulty) {
             try {
+                this.powNonce = await window.solvePow(challenge, difficulty);
+                this.powSolving = false;
+                this.isSubmitting = true;
+
                 if (this.mode === 'text') {
                     await this.submitText(this.pendingPassphrase);
                 } else {
                     await this.submitFile(this.pendingPassphrase);
                 }
             } catch (e) {
-                this.error = e.message || t('crypto_creation_error');
+                this.powSolving = false;
+                this.error = e.message === 'pow_timeout' ? t('pow_timeout') : t('pow_failed');
             } finally {
                 this.isSubmitting = false;
             }
@@ -431,7 +429,7 @@ export default () => ({
             this.error = null;
             this.showQrCode = false;
             this.qrCodeDataUrl = null;
-            this.clearCaptcha();
+            this.clearPow();
         },
 
         async applyMaxSecurity() {

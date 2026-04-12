@@ -499,10 +499,12 @@ return [
     'stat_page_content' => 'Page de contenu',
 
     // Rate limiting & Captcha
-    'rate_limit_exceeded' => 'Trop de requêtes. Veuillez résoudre le calcul ci-dessous pour continuer.',
-    'captcha_label' => 'Vérification anti-robot',
-    'captcha_placeholder' => 'Votre réponse',
-    'captcha_invalid' => 'Réponse incorrecte. Veuillez réessayer.',
+    'rate_limit_exceeded' => 'Trop de requêtes. Veuillez patienter pendant la vérification.',
+    'pow_computing' => 'Vérification en cours...',
+    'pow_failed' => 'La vérification a échoué. Veuillez réessayer.',
+    'pow_timeout' => 'La vérification a expiré. Veuillez réessayer.',
+    'daily_limit_exceeded' => 'Limite quotidienne atteinte. Veuillez réessayer demain.',
+    'storage_quota_exceeded' => 'Le service de partage de fichiers est temporairement indisponible. Veuillez réessayer plus tard.',
 
     // Labels
     'label_important' => 'Important :',

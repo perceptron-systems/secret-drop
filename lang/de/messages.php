@@ -492,10 +492,12 @@ return [
     'stat_page_content' => 'Inhaltsseite',
 
     // Rate limiting & Captcha
-    'rate_limit_exceeded' => 'Zu viele Anfragen. Bitte lösen Sie die Berechnung unten, um fortzufahren.',
-    'captcha_label' => 'Anti-Roboter-Verifizierung',
-    'captcha_placeholder' => 'Ihre Antwort',
-    'captcha_invalid' => 'Falsche Antwort. Bitte versuchen Sie es erneut.',
+    'rate_limit_exceeded' => 'Zu viele Anfragen. Bitte warten Sie, während wir Ihren Browser verifizieren.',
+    'pow_computing' => 'Verifizierung läuft...',
+    'pow_failed' => 'Verifizierung fehlgeschlagen. Bitte versuchen Sie es erneut.',
+    'pow_timeout' => 'Verifizierung abgelaufen. Bitte versuchen Sie es erneut.',
+    'daily_limit_exceeded' => 'Tageslimit erreicht. Bitte versuchen Sie es morgen erneut.',
+    'storage_quota_exceeded' => 'Der Dateifreigabedienst ist vorübergehend nicht verfügbar. Bitte versuchen Sie es später erneut.',
 
     // Labels
     'label_important' => 'Wichtig:',

@@ -4,7 +4,7 @@ use App\Http\Controllers\SecretsController;
 use Illuminate\Support\Facades\Route;
 
 Route::post('/secrets', [SecretsController::class, 'store'])
-    ->middleware('throttle.captcha:10,1'); // 10 per minute
+    ->middleware(['throttle:daily', 'throttle.pow:3,1']);
 
 Route::middleware(['throttle:20,1', 'no.cache'])->group(function () {
     Route::get('/secrets/{token}', [SecretsController::class, 'fetch']);

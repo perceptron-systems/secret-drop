@@ -11,6 +11,7 @@ import collapse from '@alpinejs/collapse';
 import focus from '@alpinejs/focus';
 
 import * as SecretCrypto from './crypto';
+import { solvePow } from './pow-solver.js';
 import secretForm from './components/secret-form.js';
 import secretViewer from './components/secret-viewer.js';
 import themeToggle from './components/theme-toggle.js';
@@ -31,5 +32,6 @@ Alpine.data('hintTooltip', hintTooltip);
 
 window.Alpine = Alpine;
 window.SecretCrypto = SecretCrypto;
+window.solvePow = solvePow;
 
 Alpine.start();

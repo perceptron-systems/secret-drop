@@ -5,7 +5,7 @@ use App\Http\Middleware\NoCacheHeaders;
 use App\Http\Middleware\SanitizeRequestLogging;
 use App\Http\Middleware\SecurityHeaders;
 use App\Http\Middleware\SetLocale;
-use App\Http\Middleware\ThrottleWithCaptcha;
+use App\Http\Middleware\ThrottleWithPow;
 use App\Http\Middleware\TrackHttpErrors;
 use App\Http\Middleware\TrackPageView;
 use App\Http\Middleware\TrackResponseTime;
@@ -43,7 +43,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->encryptCookies(except: ['tz_offset']);
 
         $middleware->alias([
-            'throttle.captcha' => ThrottleWithCaptcha::class,
+            'throttle.pow' => ThrottleWithPow::class,
             'no.cache' => NoCacheHeaders::class,
         ]);
     })

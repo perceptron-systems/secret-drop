@@ -60,6 +60,12 @@
                 <div class="p-6 md:p-8 lg:p-12 flex flex-col justify-center">
                     {{-- Form --}}
                     <form x-show="!shareUrl" @submit.prevent="handleSubmit" @keydown.ctrl.enter.prevent="handleSubmit()" @keydown.meta.enter.prevent="handleSubmit()" class="space-y-5" autocomplete="off">
+                        {{-- Honeypot: invisible to users, bots fill it --}}
+                        <div class="absolute -left-[9999px]" aria-hidden="true">
+                            <label for="website">Website</label>
+                            <input type="text" name="website" id="website" tabindex="-1" autocomplete="off">
+                        </div>
+
                         {{-- Mode tabs --}}
                         <div class="flex rounded-xl bg-gray-100 dark:bg-slate-900/50 p-1" role="tablist" aria-label="{{ __('messages.tab_text') }} / {{ __('messages.tab_file') }}">
                             <button
@@ -348,61 +354,29 @@
                             </div>
 
                         {{-- Error message --}}
-                        <div x-show="error && !captchaRequired" x-cloak role="alert" class="p-4 bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 rounded-xl transition-colors">
+                        <div x-show="error && !powRequired" x-cloak role="alert" class="p-4 bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 rounded-xl transition-colors">
                             <p class="text-sm text-red-600 dark:text-red-300" x-text="error"></p>
                         </div>
 
-                        {{-- Captcha challenge --}}
-                        <div x-show="captchaRequired" x-cloak class="p-4 bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 rounded-xl transition-colors">
-                            <p class="text-sm text-amber-700 dark:text-amber-300 mb-3">
-                                {{ __('messages.rate_limit_exceeded') }}
-                            </p>
-                            <label for="captchaAnswer" class="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-2">
-                                {{ __('messages.captcha_label') }}
-                            </label>
-                            <div class="flex items-center gap-3">
-                                <div class="px-4 py-2 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-600 rounded-xl font-mono text-lg text-gray-900 dark:text-white">
-                                    <span x-text="captchaChallenge"></span> = ?
-                                </div>
-                                <input
-                                    id="captchaAnswer"
-                                    type="number"
-                                    x-model="captchaAnswer"
-                                    placeholder="{{ __('messages.captcha_placeholder') }}"
-                                    class="flex-1 px-4 py-2 bg-gray-50 dark:bg-slate-900/50 border border-gray-300 dark:border-slate-600/50 rounded-xl text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 transition"
-                                    @keydown.enter.prevent="submitWithCaptcha()"
-                                >
-                            </div>
-                            <div x-show="error" class="mt-2 text-sm text-red-600 dark:text-red-300" x-text="error"></div>
+                        {{-- PoW error (shown after solving failure) --}}
+                        <div x-show="powRequired && error && !powSolving" x-cloak role="alert" class="p-4 bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 rounded-xl transition-colors">
+                            <p class="text-sm text-red-600 dark:text-red-300" x-text="error"></p>
                         </div>
 
-                        {{-- Submit button --}}
+                        {{-- Submit button (always visible, changes state for PoW) --}}
                         <x-btn-primary
-                            x-show="!captchaRequired"
                             type="submit"
-                            x-bind:disabled="isSubmitting || (mode === 'text' && !secret.trim()) || (mode === 'file' && !file)"
+                            x-bind:disabled="isSubmitting || powSolving || (mode === 'text' && !secret.trim()) || (mode === 'file' && !file)"
                             class="w-full"
                         >
-                            <span x-show="!isSubmitting">{{ __('messages.btn_encrypt') }}</span>
-                            <span x-show="isSubmitting" role="status" class="inline-flex items-center justify-center gap-2">
+                            <span x-show="!isSubmitting && !powSolving">{{ __('messages.btn_encrypt') }}</span>
+                            <span x-show="isSubmitting && !powSolving" role="status" class="inline-flex items-center justify-center gap-2">
                                 <x-spinner />
                                 <span x-text="encryptingButtonText()"></span>
                             </span>
-                        </x-btn-primary>
-
-                        {{-- Captcha submit button --}}
-                        <x-btn-primary
-                            x-show="captchaRequired"
-                            x-cloak
-                            type="button"
-                            @click="submitWithCaptcha()"
-                            x-bind:disabled="isSubmitting || !captchaAnswer.trim()"
-                            class="w-full"
-                        >
-                            <span x-show="!isSubmitting">{{ __('messages.btn_encrypt') }}</span>
-                            <span x-show="isSubmitting" role="status" class="inline-flex items-center justify-center gap-2">
+                            <span x-show="powSolving" role="status" class="inline-flex items-center justify-center gap-2">
                                 <x-spinner />
-                                <span x-text="encryptingButtonText()"></span>
+                                {{ __('messages.pow_computing') }}
                             </span>
                         </x-btn-primary>
                     </form>
