@@ -562,6 +562,7 @@ return [
     'hint_errors_5xx' => 'Łączna liczba błędów serwera (500-599). Każda wartość powyżej 0 oznacza błąd lub problem z infrastrukturą — sprawdź logi natychmiast.',
     'hint_errors_422' => 'Żądania odrzucone przez walidację (nieprawidłowy format danych, niepoprawne rozmiary pól kryptograficznych). Nagły wzrost może wskazywać na niewłaściwe użycie API lub ataki z uszkodzonymi danymi.',
     'hint_errors_429' => 'Żądania zablokowane przez ograniczenie częstotliwości. Nagły wzrost wskazuje na nadużycie lub zautomatyzowane ataki na usługę.',
+    'hint_conversion' => 'Procent ludzkich odwiedzających, którzy utworzyli sekret w wyświetlanym okresie. Konwersja = utworzone sekrety ÷ ludzcy odwiedzający.',
 
     // Strukturalna walidacja szyfrowania
     'val_invalid_base64url' => 'Wartość musi być prawidłowym ciągiem zakodowanym w Base64URL.',

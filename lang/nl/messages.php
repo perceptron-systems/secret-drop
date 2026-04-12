@@ -562,6 +562,7 @@ return [
     'hint_errors_5xx' => 'Totaal serverfouten (500-599). Elke waarde boven 0 betekent een bug of infrastructuurprobleem — controleer de logs onmiddellijk.',
     'hint_errors_422' => 'Verzoeken afgewezen door validatie (ongeldig payloadformaat, verkeerde cryptografische veldgroottes). Een piek kan duiden op API-misbruik of aanvallen met onjuiste gegevens.',
     'hint_errors_429' => 'Verzoeken geblokkeerd door snelheidslimitering. Een piek duidt op misbruik of geautomatiseerde aanvallen tegen de dienst.',
+    'hint_conversion' => 'Percentage menselijke bezoekers dat een geheim heeft aangemaakt in de weergegeven periode. Conversie = aangemaakte geheimen ÷ menselijke bezoekers.',
 
     // Structurele versleutelingsvalidatie
     'val_invalid_base64url' => 'De waarde moet een geldige Base64URL-gecodeerde tekenreeks zijn.',

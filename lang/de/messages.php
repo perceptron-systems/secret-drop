@@ -562,6 +562,7 @@ return [
     'hint_errors_5xx' => 'Gesamtzahl der Serverfehler (500-599). Jeder Wert über 0 bedeutet einen Bug oder ein Infrastrukturproblem — prüfen Sie sofort die Logs.',
     'hint_errors_422' => 'Anfragen, die von der Validierung abgelehnt wurden (ungültiges Payload-Format, falsche Krypto-Feldgrößen). Ein Anstieg kann auf API-Missbrauch oder Angriffe mit fehlerhaften Daten hinweisen.',
     'hint_errors_429' => 'Anfragen, die durch Ratenlimitierung blockiert wurden. Ein Anstieg deutet auf Missbrauch oder automatisierte Angriffe gegen den Dienst hin.',
+    'hint_conversion' => 'Anteil der menschlichen Besucher, die im angezeigten Zeitraum ein Secret erstellt haben. Konversion = erstellte Secrets ÷ menschliche Besucher.',
 
     // Strukturelle Verschlüsselungsvalidierung
     'val_invalid_base64url' => 'Der Wert muss eine gültige Base64URL-kodierte Zeichenkette sein.',

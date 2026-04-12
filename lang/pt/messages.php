@@ -562,6 +562,7 @@ return [
     'hint_errors_5xx' => 'Total de erros de servidor (500-599). Qualquer valor acima de 0 indica um bug ou problema de infraestrutura — verifique os logs imediatamente.',
     'hint_errors_422' => 'Requisições rejeitadas pela validação (formato de payload inválido, tamanhos de campos criptográficos incorretos). Um pico pode indicar uso indevido da API ou ataques com dados malformados.',
     'hint_errors_429' => 'Requisições bloqueadas pela limitação de requisições. Um pico indica abuso ou ataques automatizados contra o serviço.',
+    'hint_conversion' => 'Percentagem de visitantes humanos que criaram um segredo no período exibido. Conversão = segredos criados ÷ visitantes humanos.',
 
     // Validação estrutural da criptografia
     'val_invalid_base64url' => 'O valor deve ser uma string codificada em Base64URL válida.',

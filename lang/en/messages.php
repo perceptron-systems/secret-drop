@@ -561,6 +561,7 @@ return [
     'hint_errors_5xx' => 'Total server errors (500-599). Any value above 0 means a bug or infrastructure issue — check the logs immediately.',
     'hint_errors_422' => 'Requests rejected by validation (invalid payload format, wrong crypto field sizes). A spike may indicate API misuse or attacks with malformed data.',
     'hint_errors_429' => 'Requests blocked by rate limiting. A spike indicates abuse or automated attacks against the service.',
+    'hint_conversion' => 'Percentage of human visitors who created a secret during the displayed period. Conversion = secrets created ÷ human visitors.',
 
     // Structural cipher validation
     'val_invalid_base64url' => 'The value must be a valid Base64URL-encoded string.',

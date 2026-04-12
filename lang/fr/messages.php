@@ -569,6 +569,7 @@ return [
     'hint_errors_5xx' => 'Total des erreurs serveur (500-599). Toute valeur supérieure à 0 signifie un bug ou un problème d\'infrastructure — consultez les logs immédiatement.',
     'hint_errors_422' => 'Requêtes rejetées par la validation (format de payload invalide, tailles de champs crypto incorrectes). Un pic peut indiquer un usage abusif de l\'API ou des attaques avec des données malformées.',
     'hint_errors_429' => 'Requêtes bloquées par le rate limiting. Un pic indique un abus ou des attaques automatisées contre le service.',
+    'hint_conversion' => 'Pourcentage de visiteurs humains ayant créé un secret sur la période affichée. Conversion = secrets créés ÷ visiteurs humains.',
 
     // Validation structurelle du chiffrement
     'val_invalid_base64url' => 'La valeur doit être une chaîne Base64URL valide.',
