@@ -19,7 +19,7 @@
 #   - SSH_PATH : chemin du projet sur le serveur (ex: /var/www/secret-drop)
 
 name: CD
-run-name: "CD — ${{ github.event_name == 'workflow_dispatch' && 'manual' || github.event.workflow_run.head_branch || 'deploy' }}"
+run-name: "CD — ${{ github.event_name == 'workflow_dispatch' && 'manual' || format('{0}: {1}', github.event.workflow_run.head_branch, github.event.workflow_run.head_commit.message) }}"
 
 on:
   workflow_run:

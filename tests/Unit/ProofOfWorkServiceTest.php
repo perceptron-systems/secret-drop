@@ -54,6 +54,7 @@ class ProofOfWorkServiceTest extends TestCase
     /** Vérifie que verify retourne false pour un nonce invalide. */
     public function test_verify_returns_false_for_invalid_nonce(): void
     {
+        config(['pow.difficulty' => 20]);
         $identifier = 'test-identifier';
         $result = $this->pow->generate($identifier);
 
