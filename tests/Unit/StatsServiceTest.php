@@ -130,6 +130,54 @@ class StatsServiceTest extends TestCase
         DB::table('stats_daily')->where('metric', 'test_alltime')->delete();
     }
 
+    /** Vérifie que getReadRate utilise les compteurs stats_daily et non la table secrets. */
+    public function testGetReadRateUsesStatsCounters(): void
+    {
+        $metrics = [
+            StatsService::SECRETS_CREATED_TEXT,
+            StatsService::SECRETS_CREATED_FILE,
+            StatsService::SECRETS_READ,
+        ];
+
+        DB::table('stats_daily')->whereIn('metric', $metrics)->delete();
+
+        $this->assertNull($this->statsService->getReadRate());
+
+        DB::table('stats_daily')->insert([
+            ['date' => now()->toDateString(), 'metric' => StatsService::SECRETS_CREATED_TEXT, 'count' => 4, 'created_at' => now(), 'updated_at' => now()],
+            ['date' => now()->toDateString(), 'metric' => StatsService::SECRETS_CREATED_FILE, 'count' => 1, 'created_at' => now(), 'updated_at' => now()],
+            ['date' => now()->toDateString(), 'metric' => StatsService::SECRETS_READ, 'count' => 4, 'created_at' => now(), 'updated_at' => now()],
+        ]);
+
+        $rate = $this->statsService->getReadRate();
+
+        $this->assertNotNull($rate);
+        $this->assertEquals(80.0, $rate);
+
+        DB::table('stats_daily')->whereIn('metric', $metrics)->delete();
+    }
+
+    /** Vérifie que getReadRate retourne 100% quand tous les secrets sont lus. */
+    public function testGetReadRateReturnsHundredPercentWhenAllRead(): void
+    {
+        $metrics = [
+            StatsService::SECRETS_CREATED_TEXT,
+            StatsService::SECRETS_CREATED_FILE,
+            StatsService::SECRETS_READ,
+        ];
+
+        DB::table('stats_daily')->whereIn('metric', $metrics)->delete();
+
+        DB::table('stats_daily')->insert([
+            ['date' => now()->toDateString(), 'metric' => StatsService::SECRETS_CREATED_TEXT, 'count' => 3, 'created_at' => now(), 'updated_at' => now()],
+            ['date' => now()->toDateString(), 'metric' => StatsService::SECRETS_READ, 'count' => 3, 'created_at' => now(), 'updated_at' => now()],
+        ]);
+
+        $this->assertEquals(100.0, $this->statsService->getReadRate());
+
+        DB::table('stats_daily')->whereIn('metric', $metrics)->delete();
+    }
+
     /** Vérifie que les constantes de métriques sont définies. */
     public function testConstantsAreDefined(): void
     {
