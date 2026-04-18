@@ -354,6 +354,7 @@ return [
     'superadmin_link_sent_description' => '승인된 이메일이라면 매직 링크가 전송됩니다.',
     'superadmin_dashboard_title' => '사용 통계',
     'superadmin_dashboard_subtitle' => 'Secret Drop 인스턴스의 익명 사용 데이터.',
+    'superadmin_deployed_on' => ':date에 배포됨',
 
     // Periods
     'period_today' => '오늘',

@@ -354,6 +354,7 @@ return [
     'superadmin_link_sent_description' => 'Als dit e-mailadres geautoriseerd is, is er een magische link verzonden.',
     'superadmin_dashboard_title' => 'Gebruiksstatistieken',
     'superadmin_dashboard_subtitle' => 'Anonieme gebruiksgegevens voor uw Secret Drop-instantie.',
+    'superadmin_deployed_on' => 'Uitgerold op :date',
 
     // Periods
     'period_today' => 'Vandaag',

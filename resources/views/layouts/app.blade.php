@@ -238,6 +238,19 @@
         @yield('content')
     </main>
 
+    @php
+        $showDeployInfo = request()->routeIs('superadmin.*') && ($deployVersion = app_version());
+        $deployLabel = null;
+        if ($showDeployInfo) {
+            $deployRef = $deployVersion['version'] ?? $deployVersion['hash'];
+            $deployDate = $deployVersion['date']
+                ? \Carbon\Carbon::parse($deployVersion['date'])->locale(app()->getLocale())->isoFormat('D MMM YYYY, HH:mm')
+                : null;
+            $deployLabel = $deployDate
+                ? __('messages.superadmin_deployed_on', ['date' => $deployDate])
+                : null;
+        }
+    @endphp
     <footer class="relative z-10 py-4 sm:py-6 text-sm text-gray-500 dark:text-slate-400 transition-colors border-t border-transparent" style="border-image: linear-gradient(90deg, transparent, rgba(139,92,246,0.2), transparent) 1;">
         {{-- Desktop: links top, copyright + github + switchers bottom --}}
         <div class="hidden sm:flex flex-col items-center gap-2 px-4">
@@ -277,6 +290,15 @@
                 <x-language-switcher />
                 <x-theme-toggle />
             </div>
+            @if($showDeployInfo)
+                <div class="text-xs text-gray-400 dark:text-slate-500 flex items-center gap-2">
+                    @if($deployLabel)
+                        <span>{{ $deployLabel }}</span>
+                        <span aria-hidden="true">·</span>
+                    @endif
+                    <span class="font-mono">{{ $deployRef }}</span>
+                </div>
+            @endif
         </div>
 
         {{-- Mobile: icons top, copyright bottom --}}
@@ -292,6 +314,15 @@
                     <x-icon.github class="w-4 h-4" />
                 </a>
             </div>
+            @if($showDeployInfo)
+                <div class="text-[10px] text-gray-400 dark:text-slate-500 flex items-center gap-1.5">
+                    @if($deployLabel)
+                        <span>{{ $deployLabel }}</span>
+                        <span aria-hidden="true">·</span>
+                    @endif
+                    <span class="font-mono">{{ $deployRef }}</span>
+                </div>
+            @endif
         </div>
     </footer>
 </body>

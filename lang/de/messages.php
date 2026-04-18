@@ -354,6 +354,7 @@ return [
     'superadmin_link_sent_description' => 'Wenn diese E-Mail autorisiert ist, wurde ein Magic Link gesendet.',
     'superadmin_dashboard_title' => 'Nutzungsstatistiken',
     'superadmin_dashboard_subtitle' => 'Anonyme Nutzungsdaten für Ihre Secret Drop-Instanz.',
+    'superadmin_deployed_on' => 'Bereitgestellt am :date',
 
     // Periods
     'period_today' => 'Heute',

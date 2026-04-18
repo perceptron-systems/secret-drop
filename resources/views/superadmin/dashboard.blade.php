@@ -19,9 +19,6 @@
                     </h1>
                     <p class="mt-0.5 sm:mt-1 text-sm sm:text-base text-gray-600 dark:text-slate-400">
                         {{ __('messages.superadmin_dashboard_subtitle') }}
-                        @if ($version = app_version())
-                            <span class="ml-2 font-mono text-xs text-gray-400 dark:text-slate-500" title="{{ $version['date'] }}">{{ $version['hash'] }}</span>
-                        @endif
                     </p>
                     </div>
                 </div>

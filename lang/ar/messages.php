@@ -354,6 +354,7 @@ return [
     'superadmin_link_sent_description' => 'إذا كان هذا البريد الإلكتروني مصرحاً به، فقد تم إرسال رابط سحري.',
     'superadmin_dashboard_title' => 'إحصائيات الاستخدام',
     'superadmin_dashboard_subtitle' => 'بيانات استخدام مجهولة الهوية لنسختك من Secret Drop.',
+    'superadmin_deployed_on' => 'تم النشر في :date',
 
     // Periods
     'period_today' => 'اليوم',

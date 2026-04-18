@@ -354,6 +354,7 @@ return [
     'superadmin_link_sent_description' => 'Se este e-mail for autorizado, um link mágico foi enviado.',
     'superadmin_dashboard_title' => 'Estatísticas de Uso',
     'superadmin_dashboard_subtitle' => 'Dados de uso anônimos da sua instância Secret Drop.',
+    'superadmin_deployed_on' => 'Implantado em :date',
 
     // Periods
     'period_today' => 'Hoje',

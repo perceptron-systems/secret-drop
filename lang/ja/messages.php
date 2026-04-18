@@ -354,6 +354,7 @@ return [
     'superadmin_link_sent_description' => 'このメールアドレスが認証されている場合、マジックリンクが送信されました。',
     'superadmin_dashboard_title' => '使用統計',
     'superadmin_dashboard_subtitle' => 'Secret Dropインスタンスの匿名使用データ。',
+    'superadmin_deployed_on' => ':dateにデプロイ',
 
     // Periods
     'period_today' => '今日',

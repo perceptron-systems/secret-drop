@@ -94,7 +94,7 @@ if (! function_exists('locale_switcher_urls')) {
 
 if (! function_exists('app_version')) {
     /**
-     * @return array{hash: string, date: ?string}|null
+     * @return array{version: ?string, hash: string, date: ?string}|null
      */
     function app_version(): ?array
     {
@@ -113,8 +113,13 @@ if (! function_exists('app_version')) {
             }
 
             $date = $lines[1] ?? '';
+            $version = $lines[2] ?? '';
 
-            return ['hash' => $hash, 'date' => $date !== '' ? $date : null];
+            return [
+                'version' => $version !== '' ? $version : null,
+                'hash' => $hash,
+                'date' => $date !== '' ? $date : null,
+            ];
         });
     }
 }
