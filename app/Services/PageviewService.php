@@ -16,21 +16,67 @@ class PageviewService
         'perl', 'libwww', 'apache-http', 'node-fetch', 'axios',
         'postman', 'insomnia', 'httpclient', 'scrapy', 'semrush',
         'ahrefs', 'mj12bot', 'dotbot', 'yandex', 'baidu',
+        // UAs sans mot-clé évident
+        'googledocs', 'google web preview', 'prefetch proxy',
+        'l9scan', 'paloaltonetworks', 'meta-web',
     ];
 
     /** @var array<string, string> */
     private const BOT_NAMES = [
-        'googlebot' => 'Googlebot',
+        // Google (patterns spécifiques avant googlebot)
+        'google-extended' => 'Google Gemini',
         'google-inspectiontool' => 'Google Inspection',
         'adsbot-google' => 'Google Ads',
         'mediapartners-google' => 'Google AdSense',
+        'googlebot-image' => 'Google Images',
+        'googlebot-video' => 'Google Video',
+        'googlebot-news' => 'Google News',
+        'googlebot' => 'Googlebot',
+        'googleother' => 'Google Other',
+        'googledocs' => 'Google Docs',
+        'google web preview' => 'Google Preview',
+        'prefetch proxy' => 'Chrome Prefetch',
+        // Autres moteurs de recherche
         'bingbot' => 'Bingbot',
         'msnbot' => 'Bingbot',
         'slurp' => 'Yahoo',
         'duckduckbot' => 'DuckDuckGo',
+        'qwantify' => 'Qwant',
+        'mojeekbot' => 'Mojeek',
+        'bravebot' => 'Brave',
+        'kagibot' => 'Kagi',
+        'youbot' => 'You.com',
         'baiduspider' => 'Baidu',
         'yandexbot' => 'Yandex',
         'yandex.com/bots' => 'Yandex',
+        'seznambot' => 'Seznam',
+        'yeti' => 'Naver',
+        'sogou' => 'Sogou',
+        // Apple (extended avant applebot)
+        'applebot-extended' => 'Apple Intelligence',
+        'applebot' => 'Apple',
+        // IA / LLM
+        'oai-searchbot' => 'OpenAI Search',
+        'chatgpt-user' => 'OpenAI',
+        'gptbot' => 'OpenAI',
+        'anthropic-ai' => 'Anthropic Training',
+        'claudebot' => 'Anthropic',
+        'claude-web' => 'Anthropic',
+        'perplexitybot' => 'Perplexity',
+        'ccbot' => 'Common Crawl',
+        'cohere-ai' => 'Cohere',
+        'meta-externalagent' => 'Meta AI',
+        'meta-webindexer' => 'Meta AI',
+        'diffbot' => 'Diffbot',
+        'mistralai-user' => 'Mistral',
+        'amazonbot' => 'Amazon',
+        'bytespider' => 'ByteDance',
+        'tiktokspider' => 'TikTok',
+        'petalbot' => 'Huawei',
+        'linkupbot' => 'Linkup',
+        'yisouspider' => 'Yisou',
+        'coccocbot' => 'Cốc Cốc',
+        // Réseaux sociaux
         'facebot' => 'Facebook',
         'facebookexternalhit' => 'Facebook',
         'twitterbot' => 'Twitter',
@@ -39,18 +85,40 @@ class PageviewService
         'whatsapp' => 'WhatsApp',
         'discordbot' => 'Discord',
         'slackbot' => 'Slack',
-        'applebot' => 'Apple',
+        'pinterestbot' => 'Pinterest',
+        'redditbot' => 'Reddit',
+        'blueskybot' => 'Bluesky',
+        // SEO
         'semrushbot' => 'SEMrush',
         'ahrefsbot' => 'Ahrefs',
         'mj12bot' => 'Majestic',
         'dotbot' => 'Moz',
-        'petalbot' => 'Huawei',
-        'bytespider' => 'ByteDance',
-        'gptbot' => 'OpenAI',
-        'claudebot' => 'Anthropic',
-        'claude-web' => 'Anthropic',
-        'chatgpt-user' => 'OpenAI',
-        'perplexitybot' => 'Perplexity',
+        'rogerbot' => 'Moz',
+        'blexbot' => 'WebMeUp',
+        'seranking' => 'SE Ranking',
+        'serpstatbot' => 'Serpstat',
+        'dataforseobot' => 'DataForSEO',
+        'halobot' => 'Haloscan',
+        'barkrowler' => 'Babbar',
+        'iboubot' => 'Ibou',
+        'awariobot' => 'Awario',
+        'imagesiftbot' => 'ImageSift',
+        // Monitoring
+        'uptimerobot' => 'UptimeRobot',
+        'feedly' => 'Feedly',
+        // Sécurité
+        'l9scan' => 'LeakIX',
+        'leakix' => 'LeakIX',
+        'bitsightbot' => 'BitSight',
+        'paloaltonetworks' => 'Palo Alto',
+        'aliyunsecbot' => 'Aliyun Security',
+        // Divers
+        '360spider' => 'Qihoo 360',
+        'zoominfobot' => 'ZoomInfo',
+        'semanticscholar' => 'Semantic Scholar',
+        'bnf.fr_bot' => 'BnF',
+        'snap url preview' => 'Snapchat',
+        // Outils
         'lighthouse' => 'Lighthouse',
         'pagespeed' => 'PageSpeed',
         'headlesschrome' => 'HeadlessChrome',
@@ -63,6 +131,13 @@ class PageviewService
         'node-fetch' => 'Node.js',
         'axios' => 'Axios',
         'postman' => 'Postman',
+    ];
+
+    /** @var array<string, string> */
+    private const AI_APP_PATTERNS = [
+        'chatgpt/' => '(chatgpt-app)',
+        'perplexity/' => '(perplexity-app)',
+        'claude/' => '(claude-app)',
     ];
 
     public function track(string $page, string $userAgent, string $acceptLanguage, int $tzOffset = 0, string $locale = '', string $referrer = ''): void
@@ -130,9 +205,12 @@ class PageviewService
             );
         }
 
+        $aiApp = $this->detectAiApp($userAgent);
         $domain = $this->extractReferrerDomain($referrer);
 
-        if ($domain === '') {
+        if ($aiApp !== null) {
+            $domain = $aiApp;
+        } elseif ($domain === '') {
             $domain = '(direct)';
         }
 
@@ -165,6 +243,19 @@ class PageviewService
         }
 
         return false;
+    }
+
+    public function detectAiApp(string $userAgent): ?string
+    {
+        $ua = strtolower($userAgent);
+
+        foreach (self::AI_APP_PATTERNS as $pattern => $domain) {
+            if (str_contains($ua, $pattern)) {
+                return $domain;
+            }
+        }
+
+        return null;
     }
 
     public function detectDevice(string $userAgent): string

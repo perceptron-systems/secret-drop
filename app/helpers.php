@@ -92,6 +92,31 @@ if (! function_exists('locale_switcher_urls')) {
     }
 }
 
+if (! function_exists('app_version')) {
+    /**
+     * @return array{hash: string, date: ?string}|null
+     */
+    function app_version(): ?array
+    {
+        return once(function () {
+            $path = base_path('VERSION');
+
+            if (! is_file($path)) {
+                return null;
+            }
+
+            $lines = array_map('trim', explode("\n", (string) file_get_contents($path)));
+            $hash = $lines[0] ?? '';
+
+            if ($hash === '') {
+                return null;
+            }
+
+            return ['hash' => $hash, 'date' => ($lines[1] ?? '') !== '' ? $lines[1] : null];
+        });
+    }
+}
+
 if (! function_exists('hreflang_page_url')) {
     function hreflang_page_url(string $locale): ?string
     {

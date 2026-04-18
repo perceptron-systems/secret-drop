@@ -17,7 +17,12 @@
                         {{ __('messages.superadmin_dashboard_title') }}
                         <x-poll-ring color="text-amber-500" />
                     </h1>
-                    <p class="mt-0.5 sm:mt-1 text-sm sm:text-base text-gray-600 dark:text-slate-400">{{ __('messages.superadmin_dashboard_subtitle') }}</p>
+                    <p class="mt-0.5 sm:mt-1 text-sm sm:text-base text-gray-600 dark:text-slate-400">
+                        {{ __('messages.superadmin_dashboard_subtitle') }}
+                        @if ($version = app_version())
+                            <span class="ml-2 font-mono text-xs text-gray-400 dark:text-slate-500" title="{{ $version['date'] }}">{{ $version['hash'] }}</span>
+                        @endif
+                    </p>
                     </div>
                 </div>
                 <div class="flex items-center gap-4">
