@@ -241,14 +241,23 @@
     @php
         $showDeployInfo = request()->routeIs('superadmin.*') && ($deployVersion = app_version());
         $deployLabel = null;
+        $deployRefLabel = null;
+        $deployRefUrl = null;
         if ($showDeployInfo) {
-            $deployRef = $deployVersion['version'] ?? $deployVersion['hash'];
             $deployDate = $deployVersion['date']
                 ? \Carbon\Carbon::parse($deployVersion['date'])->locale(app()->getLocale())->isoFormat('D MMM YYYY, HH:mm')
                 : null;
             $deployLabel = $deployDate
                 ? __('messages.superadmin_deployed_on', ['date' => $deployDate])
                 : null;
+            $repoUrl = rtrim((string) config('legal.social.github'), '/');
+            if ($deployVersion['version']) {
+                $deployRefLabel = $deployVersion['version'];
+                $deployRefUrl = $repoUrl !== '' ? "{$repoUrl}/releases/tag/{$deployVersion['version']}" : null;
+            } else {
+                $deployRefLabel = 'commit '.$deployVersion['hash'];
+                $deployRefUrl = $repoUrl !== '' ? "{$repoUrl}/commit/{$deployVersion['hash']}" : null;
+            }
         }
     @endphp
     <footer class="relative z-10 py-4 sm:py-6 text-sm text-gray-500 dark:text-slate-400 transition-colors border-t border-transparent" style="border-image: linear-gradient(90deg, transparent, rgba(139,92,246,0.2), transparent) 1;">
@@ -296,7 +305,11 @@
                         <span>{{ $deployLabel }}</span>
                         <span aria-hidden="true">·</span>
                     @endif
-                    <span class="font-mono">{{ $deployRef }}</span>
+                    @if($deployRefUrl)
+                        <a href="{{ $deployRefUrl }}" target="_blank" rel="noopener" class="font-mono hover:text-gray-700 dark:hover:text-slate-300 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:rounded transition-colors">{{ $deployRefLabel }}</a>
+                    @else
+                        <span class="font-mono">{{ $deployRefLabel }}</span>
+                    @endif
                 </div>
             @endif
         </div>
@@ -320,7 +333,11 @@
                         <span>{{ $deployLabel }}</span>
                         <span aria-hidden="true">·</span>
                     @endif
-                    <span class="font-mono">{{ $deployRef }}</span>
+                    @if($deployRefUrl)
+                        <a href="{{ $deployRefUrl }}" target="_blank" rel="noopener" class="font-mono hover:text-gray-700 dark:hover:text-slate-300 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:rounded transition-colors">{{ $deployRefLabel }}</a>
+                    @else
+                        <span class="font-mono">{{ $deployRefLabel }}</span>
+                    @endif
                 </div>
             @endif
         </div>
