@@ -106,13 +106,15 @@ if (! function_exists('app_version')) {
             }
 
             $lines = array_map('trim', explode("\n", (string) file_get_contents($path)));
-            $hash = $lines[0] ?? '';
+            $hash = $lines[0];
 
             if ($hash === '') {
                 return null;
             }
 
-            return ['hash' => $hash, 'date' => ($lines[1] ?? '') !== '' ? $lines[1] : null];
+            $date = $lines[1] ?? '';
+
+            return ['hash' => $hash, 'date' => $date !== '' ? $date : null];
         });
     }
 }
