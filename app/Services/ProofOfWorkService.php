@@ -49,6 +49,11 @@ class ProofOfWorkService
             return false;
         }
 
+        // Defense in depth: challenge is server-generated, but guard against any cache corruption.
+        if (! is_string($data['challenge']) || ! ctype_xdigit($data['challenge'])) {
+            return false;
+        }
+
         // Validate nonce format: hex string, max 32 chars
         if (! preg_match('/^[0-9a-f]{1,32}$/i', $nonce)) {
             return false;

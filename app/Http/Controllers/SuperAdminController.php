@@ -49,7 +49,7 @@ class SuperAdminController extends Controller
         $email = strtolower(trim($request->validated('email')));
         $superAdminEmail = strtolower(trim(config('app.super_admin_email', '')));
 
-        if ($email === $superAdminEmail && $superAdminEmail !== '') {
+        if ($superAdminEmail !== '' && hash_equals($superAdminEmail, $email)) {
             $tokenData = $this->tokenService->generateMagicLinkToken();
 
             MagicLink::create([
@@ -64,6 +64,9 @@ class SuperAdminController extends Controller
                 ->send(new SuperAdminMagicLinkMail($url));
 
             defer(fn () => $this->stats->increment(StatsService::MAGIC_LINKS_REQUESTED));
+        } else {
+            // Mimic mail-send latency to prevent super-admin email enumeration via response timing.
+            usleep(random_int(150_000, 400_000));
         }
 
         return redirect()->route('superadmin.accessSent');

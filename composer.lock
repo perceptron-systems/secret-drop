@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "32e7f8bca2be90822c3243d002ac77e0",
+    "content-hash": "c4f479ea1bb357f37ba8cf484f3683dd",
     "packages": [
         {
             "name": "brick/math",
@@ -8793,16 +8793,16 @@
         },
         {
             "name": "nunomaduro/pao",
-            "version": "0.x-dev",
+            "version": "v1.0.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nunomaduro/pao.git",
-                "reference": "372bbe40f22180152a26d7f077facab65ea7ed37"
+                "reference": "710c99489ffe48759aec6a0221698a6f60c5f150"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nunomaduro/pao/zipball/372bbe40f22180152a26d7f077facab65ea7ed37",
-                "reference": "372bbe40f22180152a26d7f077facab65ea7ed37",
+                "url": "https://api.github.com/repos/nunomaduro/pao/zipball/710c99489ffe48759aec6a0221698a6f60c5f150",
+                "reference": "710c99489ffe48759aec6a0221698a6f60c5f150",
                 "shasum": ""
             },
             "require": {
@@ -8811,22 +8811,21 @@
             },
             "conflict": {
                 "laravel/framework": "<12.0",
-                "nunomaduro/collision": "<8.9.2",
-                "pestphp/pest": "<4.4.3 || >=6.0",
-                "phpunit/phpunit": "<12.5.14 || >=13.0.0 <13.0.5 || >=14.0"
+                "nunomaduro/collision": "<8.9.3",
+                "pestphp/pest": "<4.6.3 || >=6.0",
+                "phpunit/phpunit": "<12.5.23 || >=13.0.0 <13.1.7 || >=14.0"
             },
             "require-dev": {
                 "brianium/paratest": "^7.20.0",
                 "laravel/pint": "^1.29.0",
                 "orchestra/testbench": "^10.11.0 || ^11.1.0",
-                "pestphp/pest": "^4.5.0 || ^5.0.0",
-                "pestphp/pest-plugin-type-coverage": "^4.0.3 || ^5.0.0",
+                "pestphp/pest": "^4.6.3 || ^5.0.0",
+                "pestphp/pest-plugin-type-coverage": "^4.0.4 || ^5.0.0",
                 "phpstan/phpstan": "^2.1.50",
                 "rector/rector": "^2.4.2",
-                "symfony/process": "^7.4.5 || ^8.1.0",
-                "symfony/var-dumper": "^7.4.6 || ^8.0.8"
+                "symfony/process": "^7.4.8 || ^8.1.0",
+                "symfony/var-dumper": "^7.4.8 || ^8.0.8"
             },
-            "default-branch": true,
             "type": "library",
             "extra": {
                 "pest": {
@@ -8872,7 +8871,7 @@
             ],
             "support": {
                 "issues": "https://github.com/nunomaduro/pao/issues",
-                "source": "https://github.com/nunomaduro/pao/tree/0.x"
+                "source": "https://github.com/nunomaduro/pao/tree/v1.0.3"
             },
             "funding": [
                 {
@@ -8888,7 +8887,7 @@
                     "type": "patreon"
                 }
             ],
-            "time": "2026-04-17T16:17:44+00:00"
+            "time": "2026-04-18T13:56:51+00:00"
         },
         {
             "name": "phar-io/manifest",
@@ -10640,9 +10639,7 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "nunomaduro/pao": 20
-    },
+    "stability-flags": {},
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {

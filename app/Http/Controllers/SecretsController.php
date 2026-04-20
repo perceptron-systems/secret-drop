@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreSecretRequest;
+use App\Models\MagicLink;
 use App\Models\Secret;
 use App\Services\SecretStorageService;
 use App\Services\StatsService;
@@ -63,7 +64,7 @@ class SecretsController extends Controller
             'cipher_meta' => $validated['cipher_meta'],
             'max_views' => $validated['max_views'] ?? null,
             'expire_at' => $expireAt,
-            'creator_email_hash' => $creatorEmail ? hash('sha256', strtolower(trim($creatorEmail))) : null,
+            'creator_email_hash' => $creatorEmail ? MagicLink::hashEmail($creatorEmail) : null,
         ];
 
         $fileSize = null;

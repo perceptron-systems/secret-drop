@@ -43,4 +43,18 @@ return [
     'magic_link_ttl' => (int) env('MAGIC_LINK_TTL', 10),
     'admin_session_ttl' => (int) env('ADMIN_SESSION_TTL', 15),
     'super_admin_session_ttl' => (int) env('SUPER_ADMIN_SESSION_TTL', 15),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Email Hash Pepper
+    |--------------------------------------------------------------------------
+    |
+    | Used as HMAC key when hashing creator emails. Without a pepper, a leaked
+    | DB allows trivial bruteforce of known email lists against unsalted SHA-256.
+    | Defaults to a value derived from APP_KEY (so zero-config still works).
+    | Override only if you want to rotate the pepper independently of APP_KEY.
+    |
+    */
+    'email_hash_pepper' => env('EMAIL_HASH_PEPPER')
+        ?: hash('sha256', 'secret-drop:email-hash-pepper:'.env('APP_KEY', '')),
 ];

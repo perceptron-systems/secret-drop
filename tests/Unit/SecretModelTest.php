@@ -2,6 +2,7 @@
 
 namespace Tests\Unit;
 
+use App\Models\MagicLink;
 use App\Models\Secret;
 use App\Services\TokenService;
 use Tests\TestCase;
@@ -352,7 +353,7 @@ class SecretModelTest extends TestCase
     public function testHasCreatorEmailReturnsTrueWhenSet(): void
     {
         $secret = $this->createSecret([
-            'creator_email_hash' => hash('sha256', 'test@example.com'),
+            'creator_email_hash' => MagicLink::hashEmail('test@example.com'),
         ]);
 
         $this->assertTrue($secret->hasCreatorEmail());
@@ -375,7 +376,7 @@ class SecretModelTest extends TestCase
     {
         $email = 'test@example.com';
         $secret = $this->createSecret([
-            'creator_email_hash' => hash('sha256', strtolower(trim($email))),
+            'creator_email_hash' => MagicLink::hashEmail($email),
         ]);
 
         $this->assertTrue($secret->verifyCreatorEmail($email));
@@ -389,7 +390,7 @@ class SecretModelTest extends TestCase
     public function testVerifyCreatorEmailReturnsFalseForWrongEmail(): void
     {
         $secret = $this->createSecret([
-            'creator_email_hash' => hash('sha256', 'correct@example.com'),
+            'creator_email_hash' => MagicLink::hashEmail('correct@example.com'),
         ]);
 
         $this->assertFalse($secret->verifyCreatorEmail('wrong@example.com'));

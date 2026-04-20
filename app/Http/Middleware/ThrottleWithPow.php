@@ -28,14 +28,25 @@ class ThrottleWithPow
         $decayMinutes = (int) $decayMinutes;
 
         $identifier = $this->getIdentifier($request);
-        $cacheKey = self::CACHE_PREFIX.$identifier.':'.$request->path();
+        $cacheKey = self::CACHE_PREFIX.$identifier.':'.($request->route()?->getName() ?? $request->path());
+        $ttl = now()->addMinutes($decayMinutes);
 
-        $attempts = (int) Cache::get($cacheKey, 0);
+        // First hit within the window: set counter to 1 with TTL.
+        // Subsequent hits increment without renewing TTL, so the decay window stays fixed.
+        if (Cache::add($cacheKey, 1, $ttl)) {
+            return $next($request);
+        }
 
-        // If under limit, increment and proceed
-        if ($attempts < $maxAttempts) {
-            Cache::put($cacheKey, $attempts + 1, now()->addMinutes($decayMinutes));
+        $attempts = Cache::increment($cacheKey);
 
+        // Key may have expired between add() and increment(); re-seed if so.
+        if ($attempts === false) {
+            Cache::put($cacheKey, 1, $ttl);
+
+            return $next($request);
+        }
+
+        if ($attempts <= $maxAttempts) {
             return $next($request);
         }
 

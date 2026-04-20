@@ -54,6 +54,9 @@ class AdminController extends Controller
         $hasSecrets = Secret::where('creator_email_hash', $emailHash)->exists();
 
         if (! $hasSecrets) {
+            // Mimic mail-send latency to prevent email-enumeration via response timing.
+            usleep(random_int(150_000, 400_000));
+
             return redirect()->route('admin.accessSent');
         }
 
