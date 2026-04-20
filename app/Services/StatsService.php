@@ -462,7 +462,8 @@ class StatsService
         $query = DB::table('stats_bots')
             ->select('bot_name', DB::raw('SUM(count) as total'))
             ->groupBy('bot_name')
-            ->orderByDesc('total');
+            ->orderByDesc('total')
+            ->orderBy('bot_name');
 
         $this->applyDateFilter($query, $startDate);
 

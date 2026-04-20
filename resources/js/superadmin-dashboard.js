@@ -273,13 +273,9 @@ function updateLists(data) {
         }
         const sorted = Object.entries(merged).sort((a, b) => b[1].human - a[1].human);
         el.innerHTML = sorted.map(([title, c]) =>
-            `<div class="flex items-center justify-between text-sm">
-                <span class="text-gray-700 dark:text-slate-300">${esc(title)}</span>
-                <div class="flex items-center gap-3">
-                    <span class="text-gray-900 dark:text-white font-medium">${fmt(c.human)}</span>
-                    <span class="text-gray-400 dark:text-slate-500 text-xs">${fmt(c.bot)} bot</span>
-                </div>
-            </div>`
+            `<span class="text-gray-700 dark:text-slate-300">${esc(title)}</span>
+            <span class="text-right text-gray-900 dark:text-white font-medium tabular-nums">${fmt(c.human)}</span>
+            <span class="text-right text-gray-400 dark:text-slate-500 text-xs tabular-nums">${fmt(c.bot)} bot</span>`
         ).join('');
     }
 

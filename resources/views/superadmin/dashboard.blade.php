@@ -384,15 +384,11 @@
             @endphp
             <x-card class="p-6">
                 <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">{{ __('messages.stat_by_page') }}</h3>
-                <div id="pollByPage" class="space-y-2">
+                <div id="pollByPage" class="grid grid-cols-[1fr_auto_auto] items-center gap-x-4 gap-y-2 text-sm">
                     @foreach($mergedByPage as $title => $counts)
-                        <div class="flex items-center justify-between text-sm">
-                            <span class="text-gray-700 dark:text-slate-300">{{ $title }}</span>
-                            <div class="flex items-center gap-3">
-                                <span class="text-gray-900 dark:text-white font-medium">{{ nfmt($counts['human']) }}</span>
-                                <span class="text-gray-400 dark:text-slate-500 text-xs">{{ nfmt($counts['bot']) }} bot</span>
-                            </div>
-                        </div>
+                        <span class="text-gray-700 dark:text-slate-300">{{ $title }}</span>
+                        <span class="text-right text-gray-900 dark:text-white font-medium tabular-nums">{{ nfmt($counts['human']) }}</span>
+                        <span class="text-right text-gray-400 dark:text-slate-500 text-xs tabular-nums">{{ nfmt($counts['bot']) }} bot</span>
                     @endforeach
                 </div>
             </x-card>
