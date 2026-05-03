@@ -691,7 +691,71 @@ function initDashboard() {
     }
 
     initPeriodSelector();
+    initSectionNav();
     startPolling();
+}
+
+// ── Section nav (sticky anchor bar with scrollspy) ─────────────────────
+
+function initSectionNav() {
+    const links = document.querySelectorAll('.dashboard-nav-link');
+    if (links.length === 0) {
+        return;
+    }
+
+    const sections = [];
+    const linkByTarget = new Map();
+    links.forEach((a) => {
+        const id = a.dataset.navTarget;
+        const el = document.getElementById(id);
+        if (el) {
+            linkByTarget.set(id, a);
+            sections.push(el);
+        }
+    });
+
+    if (sections.length === 0) {
+        return;
+    }
+
+    function setActive(id) {
+        linkByTarget.forEach((a, target) => {
+            const isActive = target === id;
+            a.classList.toggle('border-amber-500', isActive);
+            a.classList.toggle('text-gray-900', isActive);
+            a.classList.toggle('dark:text-white', isActive);
+            a.classList.toggle('border-transparent', !isActive);
+            a.classList.toggle('text-gray-600', !isActive);
+            a.classList.toggle('dark:text-slate-400', !isActive);
+            if (isActive) {
+                a.setAttribute('aria-current', 'location');
+            } else {
+                a.removeAttribute('aria-current');
+            }
+        });
+    }
+
+    if ('IntersectionObserver' in window) {
+        const observer = new IntersectionObserver((entries) => {
+            const visible = entries
+                .filter((e) => e.isIntersecting)
+                .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+            if (visible.length > 0) {
+                setActive(visible[0].target.id);
+            }
+        }, {
+            rootMargin: '-160px 0px -55% 0px',
+            threshold: 0,
+        });
+        sections.forEach((s) => observer.observe(s));
+    }
+
+    links.forEach((a) => {
+        a.addEventListener('click', () => setActive(a.dataset.navTarget));
+    });
+
+    const initialId = (window.location.hash || '').slice(1);
+    setActive(linkByTarget.has(initialId) ? initialId : sections[0].id);
 }
 
 // ── Period selector (no page reload) ────────────────────────────────────

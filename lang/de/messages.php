@@ -549,6 +549,21 @@ return [
     'val_days_min' => 'Die Anzahl der Tage muss mindestens 1 betragen.',
     'val_days_max' => 'Die Anzahl der Tage darf 30 nicht überschreiten.',
 
+    // Dashboard sections
+    'superadmin_section_activity' => 'Secret-Aktivität',
+    'superadmin_section_composition' => 'Nutzung, Typen & Optionen',
+    'superadmin_section_volume' => 'Volumen & Speicher',
+    'superadmin_section_lifecycle' => 'Lebenszyklus der Secrets',
+    'superadmin_section_monitoring' => 'Fehler & Leistung',
+    'superadmin_section_audience' => 'Website-Besuche',
+    'superadmin_nav_activity' => 'Aktivität',
+    'superadmin_nav_composition' => 'Nutzung',
+    'superadmin_nav_volume' => 'Volumen',
+    'superadmin_nav_lifecycle' => 'Lebenszyklus',
+    'superadmin_nav_monitoring' => 'Leistung',
+    'superadmin_nav_audience' => 'Besuche',
+    'superadmin_nav_label' => 'Springe zu',
+
     // Monitoring
     'monitoring_title' => 'Monitoring',
     'stat_errors_4xx' => 'Clientfehler (4xx)',

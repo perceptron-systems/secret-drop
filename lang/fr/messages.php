@@ -556,6 +556,21 @@ return [
     'val_days_min' => 'Le nombre de jours doit être au moins 1.',
     'val_days_max' => 'Le nombre de jours ne peut pas dépasser 30.',
 
+    // Sections du dashboard
+    'superadmin_section_activity' => 'Activité des secrets',
+    'superadmin_section_composition' => 'Usages, types & options',
+    'superadmin_section_volume' => 'Volume & stockage',
+    'superadmin_section_lifecycle' => 'Cycle de vie des secrets',
+    'superadmin_section_monitoring' => 'Erreurs & performance',
+    'superadmin_section_audience' => 'Visites du site',
+    'superadmin_nav_activity' => 'Activité',
+    'superadmin_nav_composition' => 'Usages',
+    'superadmin_nav_volume' => 'Volume',
+    'superadmin_nav_lifecycle' => 'Cycle de vie',
+    'superadmin_nav_monitoring' => 'Performance',
+    'superadmin_nav_audience' => 'Visites',
+    'superadmin_nav_label' => 'Aller à',
+
     // Monitoring
     'monitoring_title' => 'Monitoring',
     'stat_errors_4xx' => 'Erreurs client (4xx)',
