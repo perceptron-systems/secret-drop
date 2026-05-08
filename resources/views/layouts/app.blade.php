@@ -130,7 +130,7 @@
                 }
             },
             {
-                "@@type": "WebApplication",
+                "@@type": ["WebApplication", "SoftwareApplication"],
                 "@@id": "{{ url('/') }}/#application",
                 "name": "{{ config('app.name') }}",
                 "description": "{{ __('messages.app_description') }}",
@@ -140,7 +140,27 @@
                 "browserRequirements": "Requires JavaScript, Web Crypto API",
                 "inLanguage": {!! json_encode(\App\Support\LocaleConfig::SUPPORTED_LOCALES) !!},
                 "image": "{{ asset('icon-512.png') }}",
+                "screenshot": [
+                    {
+                        "@@type": "ImageObject",
+                        "url": "{{ asset('screenshots/home.png') }}",
+                        "caption": "{{ __('messages.app_description') }}"
+                    },
+                    {
+                        "@@type": "ImageObject",
+                        "url": "{{ asset('screenshots/share.png') }}",
+                        "caption": "{{ __('messages.feature_secure_by_design') }}"
+                    },
+                    {
+                        "@@type": "ImageObject",
+                        "url": "{{ asset('screenshots/read.png') }}",
+                        "caption": "{{ __('messages.feature_no_account') }}"
+                    }
+                ],
                 "isAccessibleForFree": true,
+                "license": "https://www.gnu.org/licenses/agpl-3.0",
+                "dateCreated": "2026-01-15",
+                "datePublished": "2026-03-01",
                 "offers": {
                     "@@type": "Offer",
                     "price": "0",
@@ -154,6 +174,24 @@
                 ],
                 "author": {
                     "@@id": "{{ url('/') }}/#person"
+                },
+                "creator": {
+                    "@@id": "{{ url('/') }}/#person"
+                },
+                "publisher": {
+                    "@@id": "{{ url('/') }}/#organization"
+                },
+                "potentialAction": {
+                    "@@type": "CreateAction",
+                    "name": "{{ __('messages.app_description') }}",
+                    "target": {
+                        "@@type": "EntryPoint",
+                        "urlTemplate": "{{ url('/') }}",
+                        "actionPlatform": [
+                            "http://schema.org/DesktopWebPlatform",
+                            "http://schema.org/MobileWebPlatform"
+                        ]
+                    }
                 }
             }
         ]

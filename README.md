@@ -9,7 +9,7 @@ Zero-knowledge secret sharing — end-to-end encrypted, self-destructing, open s
 
 ## Screenshot
 
-![Secret Drop — Create a secret](screenshots/home.png)
+![Secret Drop — Create a secret](public/screenshots/home.png)
 
 ## Why
 

@@ -13,11 +13,37 @@ class SchemaJsonLdTest extends TestCase
         $graphBlock = collect($schemas)->first(fn ($s) => isset($s->{'@graph'}));
         $this->assertNotNull($graphBlock, 'Homepage should have a @graph block');
 
-        $types = collect($graphBlock->{'@graph'})->pluck('@type')->all();
+        $types = collect($graphBlock->{'@graph'})
+            ->flatMap(fn ($s) => is_array($s->{'@type'}) ? $s->{'@type'} : [$s->{'@type'}])
+            ->all();
+
         $this->assertContains('WebSite', $types);
         $this->assertContains('Organization', $types);
         $this->assertContains('Person', $types);
         $this->assertContains('WebApplication', $types);
+        $this->assertContains('SoftwareApplication', $types);
+    }
+
+    public function testWebApplicationHasRichMetadata(): void
+    {
+        $schemas = $this->extractSchemas('/en');
+        $graphBlock = collect($schemas)->first(fn ($s) => isset($s->{'@graph'}));
+
+        $app = collect($graphBlock->{'@graph'})->first(function ($s) {
+            $types = is_array($s->{'@type'}) ? $s->{'@type'} : [$s->{'@type'}];
+
+            return in_array('WebApplication', $types, true);
+        });
+
+        $this->assertNotNull($app, 'Graph should contain a WebApplication entity');
+        $this->assertNotEmpty($app->license ?? null, 'WebApplication should declare a license');
+        $this->assertNotEmpty($app->dateCreated ?? null, 'WebApplication should have dateCreated');
+        $this->assertNotEmpty($app->datePublished ?? null, 'WebApplication should have datePublished');
+        $this->assertNotEmpty($app->creator ?? null, 'WebApplication should have creator');
+        $this->assertNotEmpty($app->publisher ?? null, 'WebApplication should have publisher');
+        $this->assertNotEmpty($app->screenshot ?? null, 'WebApplication should have screenshot');
+        $this->assertNotEmpty($app->potentialAction ?? null, 'WebApplication should have potentialAction');
+        $this->assertSame('CreateAction', $app->potentialAction->{'@type'} ?? null);
     }
 
     public function testHomepageSchemasHaveIds(): void
@@ -26,9 +52,10 @@ class SchemaJsonLdTest extends TestCase
         $graphBlock = collect($schemas)->first(fn ($s) => isset($s->{'@graph'}));
 
         foreach ($graphBlock->{'@graph'} as $item) {
+            $type = is_array($item->{'@type'}) ? implode(',', $item->{'@type'}) : $item->{'@type'};
             $this->assertNotEmpty(
                 $item->{'@id'} ?? null,
-                "Schema @type={$item->{'@type'}} should have @id",
+                "Schema @type={$type} should have @id",
             );
         }
     }
