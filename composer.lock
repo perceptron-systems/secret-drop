@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c4f479ea1bb357f37ba8cf484f3683dd",
+    "content-hash": "8c5d7c85ede68ec454e67f816af704e3",
     "packages": [
         {
             "name": "brick/math",
@@ -6947,16 +6947,16 @@
         },
         {
             "name": "laravel-lang/attributes",
-            "version": "2.15.5",
+            "version": "2.15.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Laravel-Lang/attributes.git",
-                "reference": "b0938874353d376e8f5d646e6f77db265c9aafd5"
+                "reference": "5e1806802af893b9ede26210be1ff90efd0697f1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Laravel-Lang/attributes/zipball/b0938874353d376e8f5d646e6f77db265c9aafd5",
-                "reference": "b0938874353d376e8f5d646e6f77db265c9aafd5",
+                "url": "https://api.github.com/repos/Laravel-Lang/attributes/zipball/5e1806802af893b9ede26210be1ff90efd0697f1",
+                "reference": "5e1806802af893b9ede26210be1ff90efd0697f1",
                 "shasum": ""
             },
             "require": {
@@ -7010,7 +7010,7 @@
             ],
             "support": {
                 "issues": "https://github.com/Laravel-Lang/attributes/issues",
-                "source": "https://github.com/Laravel-Lang/attributes/tree/2.15.5"
+                "source": "https://github.com/Laravel-Lang/attributes/tree/2.15.6"
             },
             "funding": [
                 {
@@ -7022,7 +7022,7 @@
                     "type": "yoomoney"
                 }
             ],
-            "time": "2026-03-24T15:20:52+00:00"
+            "time": "2026-05-09T16:34:18+00:00"
         },
         {
             "name": "laravel-lang/common",
@@ -7336,16 +7336,16 @@
         },
         {
             "name": "laravel-lang/lang",
-            "version": "15.29.4",
+            "version": "15.29.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Laravel-Lang/lang.git",
-                "reference": "c2e40b08fc7bccb8668fdff89b95f504f1ff393c"
+                "reference": "9a1d194c9a72b8ee70a3515d8415e9645fe531fe"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Laravel-Lang/lang/zipball/c2e40b08fc7bccb8668fdff89b95f504f1ff393c",
-                "reference": "c2e40b08fc7bccb8668fdff89b95f504f1ff393c",
+                "url": "https://api.github.com/repos/Laravel-Lang/lang/zipball/9a1d194c9a72b8ee70a3515d8415e9645fe531fe",
+                "reference": "9a1d194c9a72b8ee70a3515d8415e9645fe531fe",
                 "shasum": ""
             },
             "require": {
@@ -7406,7 +7406,7 @@
                     "type": "yoomoney"
                 }
             ],
-            "time": "2026-05-03T18:05:18+00:00"
+            "time": "2026-05-09T16:34:39+00:00"
         },
         {
             "name": "laravel-lang/locale-list",
@@ -7644,16 +7644,16 @@
         },
         {
             "name": "laravel-lang/moonshine",
-            "version": "1.8.0",
+            "version": "1.9.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Laravel-Lang/moonshine.git",
-                "reference": "5daace4284fb706f735b172740bce52f990d2359"
+                "reference": "2340066d456e989f3c40ace85945bc182d64e710"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Laravel-Lang/moonshine/zipball/5daace4284fb706f735b172740bce52f990d2359",
-                "reference": "5daace4284fb706f735b172740bce52f990d2359",
+                "url": "https://api.github.com/repos/Laravel-Lang/moonshine/zipball/2340066d456e989f3c40ace85945bc182d64e710",
+                "reference": "2340066d456e989f3c40ace85945bc182d64e710",
                 "shasum": ""
             },
             "require": {
@@ -7663,7 +7663,7 @@
             },
             "require-dev": {
                 "dragon-code/support": "^6.15.2",
-                "illuminate/support": "^10.0 || ^11.0 || ^12.0",
+                "illuminate/support": "^10.0 || ^11.0 || ^12.0 || ^13.0",
                 "laravel-lang/lang": "^14.8 || ^15.14",
                 "laravel-lang/status-generator": "^2.12",
                 "phpunit/phpunit": "^10.0 || ^11.0 || ^12.0",
@@ -7706,7 +7706,7 @@
             ],
             "support": {
                 "issues": "https://github.com/Laravel-Lang/moonshine/issues",
-                "source": "https://github.com/Laravel-Lang/moonshine/tree/1.8.0"
+                "source": "https://github.com/Laravel-Lang/moonshine/tree/1.9.0"
             },
             "funding": [
                 {
@@ -7718,7 +7718,7 @@
                     "type": "yoomoney"
                 }
             ],
-            "time": "2026-02-01T09:24:41+00:00"
+            "time": "2026-05-09T16:41:40+00:00"
         },
         {
             "name": "laravel-lang/native-country-names",
@@ -8512,6 +8512,90 @@
             "time": "2026-02-09T13:44:54+00:00"
         },
         {
+            "name": "laravel/pao",
+            "version": "v1.0.6",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/laravel/pao.git",
+                "reference": "02f62a64c2b60af44a418ee490fee193590d8269"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/laravel/pao/zipball/02f62a64c2b60af44a418ee490fee193590d8269",
+                "reference": "02f62a64c2b60af44a418ee490fee193590d8269",
+                "shasum": ""
+            },
+            "require": {
+                "laravel/agent-detector": "^2.0.0",
+                "php": "^8.3"
+            },
+            "conflict": {
+                "laravel/framework": "<12.0.0",
+                "nunomaduro/collision": "<8.9.3",
+                "pestphp/pest": "<4.6.3 || >=6.0.0",
+                "phpunit/phpunit": "<12.5.23 || >=13.0.0 <13.1.7 || >=14.0.0"
+            },
+            "require-dev": {
+                "brianium/paratest": "^7.20.0",
+                "laravel/pint": "^1.29.1",
+                "orchestra/testbench": "^10.11.0 || ^11.1.0",
+                "pestphp/pest": "^4.6.3 || ^5.0.0",
+                "pestphp/pest-plugin-type-coverage": "^4.0.4 || ^5.0.0",
+                "phpstan/phpstan": "^2.1.51",
+                "rector/rector": "^2.4.2",
+                "symfony/process": "^7.4.8 || ^8.1.0",
+                "symfony/var-dumper": "^7.4.8 || ^8.0.8"
+            },
+            "type": "library",
+            "extra": {
+                "pest": {
+                    "plugins": [
+                        "Laravel\\Pao\\Drivers\\Pest\\Plugin"
+                    ]
+                },
+                "laravel": {
+                    "providers": [
+                        "Laravel\\Pao\\Laravel\\ServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "files": [
+                    "src/Autoload.php"
+                ],
+                "psr-4": {
+                    "Laravel\\Pao\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Taylor Otwell",
+                    "email": "taylor@laravel.com"
+                }
+            ],
+            "description": "Agent-optimized output for PHP testing tools",
+            "keywords": [
+                "Agent",
+                "PHPStan",
+                "ai",
+                "dev",
+                "paratest",
+                "pest",
+                "php",
+                "phpunit",
+                "testing"
+            ],
+            "support": {
+                "issues": "https://github.com/laravel/pao/issues",
+                "source": "https://github.com/laravel/pao"
+            },
+            "time": "2026-04-27T22:37:26+00:00"
+        },
+        {
             "name": "laravel/pint",
             "version": "v1.29.1",
             "source": {
@@ -8941,91 +9025,6 @@
                 }
             ],
             "time": "2026-04-21T14:04:20+00:00"
-        },
-        {
-            "name": "nunomaduro/pao",
-            "version": "v1.0.6",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/laravel/pao.git",
-                "reference": "02f62a64c2b60af44a418ee490fee193590d8269"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/laravel/pao/zipball/02f62a64c2b60af44a418ee490fee193590d8269",
-                "reference": "02f62a64c2b60af44a418ee490fee193590d8269",
-                "shasum": ""
-            },
-            "require": {
-                "laravel/agent-detector": "^2.0.0",
-                "php": "^8.3"
-            },
-            "conflict": {
-                "laravel/framework": "<12.0.0",
-                "nunomaduro/collision": "<8.9.3",
-                "pestphp/pest": "<4.6.3 || >=6.0.0",
-                "phpunit/phpunit": "<12.5.23 || >=13.0.0 <13.1.7 || >=14.0.0"
-            },
-            "require-dev": {
-                "brianium/paratest": "^7.20.0",
-                "laravel/pint": "^1.29.1",
-                "orchestra/testbench": "^10.11.0 || ^11.1.0",
-                "pestphp/pest": "^4.6.3 || ^5.0.0",
-                "pestphp/pest-plugin-type-coverage": "^4.0.4 || ^5.0.0",
-                "phpstan/phpstan": "^2.1.51",
-                "rector/rector": "^2.4.2",
-                "symfony/process": "^7.4.8 || ^8.1.0",
-                "symfony/var-dumper": "^7.4.8 || ^8.0.8"
-            },
-            "type": "library",
-            "extra": {
-                "pest": {
-                    "plugins": [
-                        "Laravel\\Pao\\Drivers\\Pest\\Plugin"
-                    ]
-                },
-                "laravel": {
-                    "providers": [
-                        "Laravel\\Pao\\Laravel\\ServiceProvider"
-                    ]
-                }
-            },
-            "autoload": {
-                "files": [
-                    "src/Autoload.php"
-                ],
-                "psr-4": {
-                    "Laravel\\Pao\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Taylor Otwell",
-                    "email": "taylor@laravel.com"
-                }
-            ],
-            "description": "Agent-optimized output for PHP testing tools",
-            "keywords": [
-                "Agent",
-                "PHPStan",
-                "ai",
-                "dev",
-                "paratest",
-                "pest",
-                "php",
-                "phpunit",
-                "testing"
-            ],
-            "support": {
-                "issues": "https://github.com/laravel/pao/issues",
-                "source": "https://github.com/laravel/pao"
-            },
-            "abandoned": "laravel/pao",
-            "time": "2026-04-27T22:37:26+00:00"
         },
         {
             "name": "phar-io/manifest",
