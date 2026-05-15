@@ -181,7 +181,7 @@ return [
     'faq_title' => 'Perguntas frequentes',
     'faq_meta_title' => 'FAQ — Compartilhamento criptografado de segredos e arquivos',
     'faq_intro' => 'Tudo o que você precisa saber antes de nos confiar um segredo.',
-    'faq_cta' => 'Criar um segredo',
+    'faq_cta' => 'Proteger meu primeiro segredo',
     'faq_q1' => 'O Secret Drop é gratuito?',
     'faq_a1' => 'Sim, completamente. Sem conta, sem assinatura, sem custos ocultos.',
     'faq_q2' => 'Preciso de uma conta?',
@@ -261,7 +261,7 @@ return [
     'use_cases_tip1' => 'Use uma expiração curta (1 hora ou 1 dia) para informações muito sensíveis.',
     'use_cases_tip2' => 'Ative o limite de leitura para 1 para garantir que o segredo só possa ser lido uma vez.',
     'use_cases_tip3' => 'Para máxima segurança, use o modo separado e transmita a chave por outro canal.',
-    'use_cases_cta' => 'Experimente agora',
+    'use_cases_cta' => 'Assegurar minhas trocas',
     'use_cases_see_how' => 'Como funciona a criptografia?',
 
     // Legal page

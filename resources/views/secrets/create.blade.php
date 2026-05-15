@@ -225,7 +225,7 @@
                             <button
                                 type="button"
                                 @click="applyMaxSecurity()"
-                                class="flex items-center justify-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-xl bg-amber-500 dark:bg-amber-600 text-white hover:bg-amber-600 dark:hover:bg-amber-500 shadow-sm hover:shadow transition cursor-pointer"
+                                class="flex items-center justify-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-xl bg-amber-500 dark:bg-amber-500 text-amber-950 hover:bg-amber-400 dark:hover:bg-amber-400 shadow-sm hover:shadow transition cursor-pointer"
                             >
                                 <x-icon.shield-check />
                                 {{ __('messages.max_security') }}

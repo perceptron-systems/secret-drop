@@ -5,7 +5,7 @@ return [
     'app_description' => 'Teilen Sie Passwörter und vertrauliche Dateien, ohne sie jemals preiszugeben. Ende-zu-Ende-verschlüsselt. Selbstzerstörend. Kostenlos und Open Source.',
     'home_title' => 'Geheimnisse sicher teilen mit Zero-Knowledge-Verschlüsselung',
     'home_hook' => 'Schluss mit Passwörtern im Klartext.',
-    'home_meta_description' => 'Teilen Sie ein Passwort, einen API-Schlüssel oder eine vertrauliche Datei über einen selbstzerstörenden Link. In Ihrem Browser verschlüsselt — der Server sieht den Inhalt nie.',
+    'home_meta_description' => 'Teilen Sie Passwort, API-Schlüssel oder vertrauliche Datei via selbstzerstörenden Link. Im Browser verschlüsselt — der Server sieht nichts.',
     'home_answer_target' => 'Secret Drop verschlüsselt Ihre Passwörter und vertraulichen Dateien in Ihrem Browser, bevor irgendetwas gesendet wird. Der Server speichert nur unlesbare Daten und kann niemals auf den Inhalt zugreifen. Geheimnisse zerstören sich nach dem Lesen selbst. Kostenlos, ohne Konto, ohne Tracker.',
     'home_view_source' => 'Quellcode ansehen',
 
@@ -181,7 +181,7 @@ return [
     'faq_title' => 'Häufig gestellte Fragen',
     'faq_meta_title' => 'FAQ — Verschlüsselter Austausch von Geheimnissen und Dateien',
     'faq_intro' => 'Alles, was Sie wissen müssen, bevor Sie uns ein Geheimnis anvertrauen.',
-    'faq_cta' => 'Geheimnis erstellen',
+    'faq_cta' => 'Mein erstes Geheimnis schützen',
     'faq_q1' => 'Ist Secret Drop kostenlos?',
     'faq_a1' => 'Ja, vollständig. Kein Konto, kein Abonnement, keine versteckten Kosten.',
     'faq_q2' => 'Brauche ich ein Konto?',
@@ -261,7 +261,7 @@ return [
     'use_cases_tip1' => 'Verwenden Sie eine kurze Ablaufzeit (1 Stunde oder 1 Tag) für hochsensible Informationen.',
     'use_cases_tip2' => 'Aktivieren Sie das Leselimit auf 1, um sicherzustellen, dass das Geheimnis nur einmal gelesen werden kann.',
     'use_cases_tip3' => 'Für maximale Sicherheit verwenden Sie den geteilten Modus und übermitteln den Schlüssel über einen anderen Kanal.',
-    'use_cases_cta' => 'Jetzt ausprobieren',
+    'use_cases_cta' => 'Meinen Austausch sichern',
     'use_cases_see_how' => 'Wie funktioniert die Verschlüsselung?',
 
     // Legal page

@@ -181,7 +181,7 @@ return [
     'faq_title' => 'Często zadawane pytania',
     'faq_meta_title' => 'FAQ — Szyfrowane udostępnianie sekretów i plików',
     'faq_intro' => 'Wszystko, co musisz wiedzieć, zanim powierzysz nam sekret.',
-    'faq_cta' => 'Utwórz sekret',
+    'faq_cta' => 'Chroń mój pierwszy sekret',
     'faq_q1' => 'Czy Secret Drop jest darmowy?',
     'faq_a1' => 'Tak, całkowicie. Bez konta, bez subskrypcji, bez ukrytych opłat.',
     'faq_q2' => 'Czy potrzebuję konta?',
@@ -261,7 +261,7 @@ return [
     'use_cases_tip1' => 'Używaj krótkiego czasu wygaśnięcia (1 godzina lub 1 dzień) dla bardzo wrażliwych informacji.',
     'use_cases_tip2' => 'Włącz limit odczytów na 1, aby zagwarantować, że sekret może być odczytany tylko raz.',
     'use_cases_tip3' => 'Dla maksymalnego bezpieczeństwa użyj trybu rozdzielonego i przekaż klucz innym kanałem.',
-    'use_cases_cta' => 'Wypróbuj teraz',
+    'use_cases_cta' => 'Zabezpiecz moje wymiany',
     'use_cases_see_how' => 'Jak działa szyfrowanie?',
 
     // Legal page

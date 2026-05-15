@@ -5,7 +5,7 @@ return [
     'app_description' => 'Partagez mots de passe et fichiers confidentiels sans jamais les exposer. Chiffré de bout en bout. Autodestructible. Gratuit et open source.',
     'home_title' => 'Partagez vos secrets en toute sécurité',
     'home_hook' => 'Arrêtez d\'envoyer vos mots de passe en clair.',
-    'home_meta_description' => 'Partagez un mot de passe, une clé API ou un fichier confidentiel via un lien qui s\'autodétruit. Chiffré dans votre navigateur, le serveur ne voit jamais le contenu.',
+    'home_meta_description' => 'Partagez mot de passe, clé API ou fichier confidentiel via un lien qui s\'autodétruit. Chiffré côté navigateur, le serveur ne voit jamais le contenu.',
     'home_answer_target' => 'Secret Drop chiffre vos mots de passe et fichiers confidentiels dans votre navigateur avant tout envoi. Le serveur ne stocke que des données illisibles et ne peut jamais accéder au contenu. Les secrets s\'autodétruisent après lecture. Gratuit, sans compte, sans traceur.',
     'home_view_source' => 'Voir le code source',
 
@@ -181,7 +181,7 @@ return [
     'faq_title' => 'Questions fréquentes',
     'faq_meta_title' => 'FAQ — Partage chiffré de secrets et fichiers',
     'faq_intro' => 'Tout ce que vous devez savoir avant de confier un secret.',
-    'faq_cta' => 'Créer un secret',
+    'faq_cta' => 'Protéger mon premier secret',
 
     // Usage
     'faq_q1' => 'Secret Drop est-il gratuit ?',
@@ -269,7 +269,7 @@ return [
     'use_cases_tip1' => 'Expiration courte (1h ou 1j) pour les informations très sensibles.',
     'use_cases_tip2' => 'Limite de lecture à 1 pour garantir que le secret ne peut être lu qu\'une seule fois.',
     'use_cases_tip3' => 'Mode séparé : le lien par un canal, la clé par un autre.',
-    'use_cases_cta' => 'Essayer maintenant',
+    'use_cases_cta' => 'Sécuriser mes échanges',
     'use_cases_see_how' => 'Comment fonctionne le chiffrement ?',
 
     // Legal page

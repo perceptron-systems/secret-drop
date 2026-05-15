@@ -181,7 +181,7 @@ return [
     'faq_title' => 'Veelgestelde vragen',
     'faq_meta_title' => 'FAQ — Versleuteld delen van geheimen en bestanden',
     'faq_intro' => 'Alles wat u moet weten voordat u ons een geheim toevertrouwt.',
-    'faq_cta' => 'Geheim aanmaken',
+    'faq_cta' => 'Mijn eerste geheim beschermen',
     'faq_q1' => 'Is Secret Drop gratis?',
     'faq_a1' => 'Ja, volledig. Geen account, geen abonnement, geen verborgen kosten.',
     'faq_q2' => 'Heb ik een account nodig?',
@@ -261,7 +261,7 @@ return [
     'use_cases_tip1' => 'Gebruik een korte vervaltijd (1 uur of 1 dag) voor zeer gevoelige informatie.',
     'use_cases_tip2' => 'Stel de leeslimiet in op 1 om te garanderen dat het geheim slechts één keer kan worden gelezen.',
     'use_cases_tip3' => 'Voor maximale beveiliging, gebruik de gesplitste modus en verstuur de sleutel via een ander kanaal.',
-    'use_cases_cta' => 'Nu proberen',
+    'use_cases_cta' => 'Mijn uitwisselingen beveiligen',
     'use_cases_see_how' => 'Hoe werkt de encryptie?',
 
     // Legal page

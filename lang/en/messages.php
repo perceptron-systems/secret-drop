@@ -181,7 +181,7 @@ return [
     'faq_title' => 'Frequently asked questions',
     'faq_meta_title' => 'FAQ — Encrypted secret & file sharing explained',
     'faq_intro' => 'Everything you need to know before trusting us with a secret.',
-    'faq_cta' => 'Create a secret',
+    'faq_cta' => 'Protect my first secret',
     'faq_q1' => 'Is Secret Drop free?',
     'faq_a1' => 'Yes, completely. No account, no subscription, no hidden fees.',
     'faq_q2' => 'Do I need an account?',
@@ -261,7 +261,7 @@ return [
     'use_cases_tip1' => 'Use a short expiration (1 hour or 1 day) for highly sensitive information.',
     'use_cases_tip2' => 'Enable the read limit to 1 to ensure the secret can only be read once.',
     'use_cases_tip3' => 'For maximum security, use split mode and transmit the key through another channel.',
-    'use_cases_cta' => 'Try it now',
+    'use_cases_cta' => 'Secure my exchanges',
     'use_cases_see_how' => 'How does encryption work?',
 
     // Legal page
