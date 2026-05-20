@@ -15,6 +15,8 @@
 /public/build
 /public/hot
 /public/storage
+/public/BingSiteAuth.xml
+/public/google*.html
 /storage/*.key
 /storage/pail
 /vendor

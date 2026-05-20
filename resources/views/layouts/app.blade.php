@@ -26,6 +26,10 @@
     <meta name="google-site-verification" content="{{ $verification }}">
     @endif
 
+    @if($verification = config('services.bing.site_verification'))
+    <meta name="msvalidate.01" content="{{ $verification }}">
+    @endif
+
     {{-- SEO: noindex for sensitive pages --}}
     @if(View::hasSection('noindex') || request()->is('s/*') || request()->routeIs('admin.*', 'superadmin.*'))
     <meta name="robots" content="noindex, nofollow">
