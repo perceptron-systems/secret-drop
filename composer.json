@@ -1,9 +1,9 @@
 {
     "$schema": "https://getcomposer.org/schema.json",
-    "name": "laravel/laravel",
+    "name": "perception-systems/secret-drop",
     "type": "project",
-    "description": "The skeleton application for the Laravel framework.",
-    "keywords": ["laravel", "framework"],
+    "description": "Zero-knowledge secret and file sharing application.",
+    "keywords": ["zero-knowledge", "encryption", "secret-sharing", "laravel"],
     "license": "AGPL-3.0-or-later",
     "require": {
         "php": "^8.4",
@@ -87,7 +87,6 @@
             "php": "8.4"
         },
         "allow-plugins": {
-            "pestphp/pest-plugin": true,
             "php-http/discovery": true
         }
     },
