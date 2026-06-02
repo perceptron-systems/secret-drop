@@ -41,11 +41,13 @@ class StatsTrackingTest extends TestCase
     /** Vérifie que la création d'un secret texte incrémente les stats. */
     public function testTextSecretCreationIncrementsStats(): void
     {
+        $ciphertext = 'ZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGQ';
         $initialCount = $this->getMetricTotal(StatsService::SECRETS_CREATED_TEXT);
+        $initialSizeCount = $this->getMetricTotal(StatsService::TOTAL_TEXT_SIZE_BYTES);
 
         $this->postJson('/api/secrets', [
             'type' => 'text',
-            'ciphertext' => 'ZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGQ',
+            'ciphertext' => $ciphertext,
             'cipher_meta' => [
                 'alg' => 'AES-256-GCM',
                 'iv' => 'YWFhYWFhYWFhYWFh',
@@ -55,10 +57,29 @@ class StatsTrackingTest extends TestCase
         ]);
 
         $newCount = $this->getMetricTotal(StatsService::SECRETS_CREATED_TEXT);
+        $newSizeCount = $this->getMetricTotal(StatsService::TOTAL_TEXT_SIZE_BYTES);
+
         $this->assertEquals($initialCount + 1, $newCount);
+        $this->assertEquals($initialSizeCount + strlen($ciphertext), $newSizeCount);
 
         // Cleanup
         Secret::orderBy('id', 'desc')->first()->delete();
+    }
+
+    /** La taille moyenne d'un secret texte se calcule depuis les compteurs persistants. */
+    public function testAverageTextSecretSizeComesFromCounters(): void
+    {
+        $today = now()->toDateString();
+        $this->statsService->increment(StatsService::SECRETS_CREATED_TEXT, 2);
+        $this->statsService->increment(StatsService::TOTAL_TEXT_SIZE_BYTES, 300);
+
+        $createdText = $this->getTodayMetric(StatsService::SECRETS_CREATED_TEXT);
+        $textBytes = $this->getTodayMetric(StatsService::TOTAL_TEXT_SIZE_BYTES);
+
+        $average = $this->statsService->getAverageSecretSize($today);
+
+        $this->assertNotNull($average['text']);
+        $this->assertEqualsWithDelta($textBytes / $createdText, $average['text'], 0.0001);
     }
 
     /** Vérifie que la création d'un secret fichier incrémente les stats. */

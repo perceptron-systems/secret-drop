@@ -95,6 +95,11 @@ class SecretsController extends Controller
     {
         if ($secret->type === 'text') {
             $this->stats->increment(StatsService::SECRETS_CREATED_TEXT);
+
+            $textSize = strlen((string) $secret->ciphertext);
+            if ($textSize > 0) {
+                $this->stats->increment(StatsService::TOTAL_TEXT_SIZE_BYTES, $textSize);
+            }
         } else {
             $this->stats->increment(StatsService::SECRETS_CREATED_FILE);
             if ($fileSize !== null && $fileSize > 0) {

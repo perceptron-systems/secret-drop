@@ -150,7 +150,6 @@ class SuperAdminController extends Controller
             'heatmapCreated' => $this->stats->getHeatmap(StatsService::HEATMAP_SECRETS_CREATED, $startDate),
             'heatmapRead' => $this->stats->getHeatmap(StatsService::HEATMAP_SECRETS_READ, $startDate),
             'avgFirstReadDelay' => $this->stats->getAverageFirstReadDelay($startDate),
-            'medianFirstReadDelay' => $this->stats->getMedianFirstReadDelay($startDate),
             'currentDiskUsage' => $this->stats->getCurrentDiskUsage(),
             'pageviews' => $this->stats->getPageviews($startDate),
             'readRate' => $this->stats->getReadRate($startDate),

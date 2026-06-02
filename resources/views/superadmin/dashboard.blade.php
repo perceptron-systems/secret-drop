@@ -87,7 +87,6 @@
             };
 
             $formattedAvgDelay = $formatDelay($avgFirstReadDelay);
-            $formattedMedianDelay = $formatDelay($medianFirstReadDelay);
 
             $formatBytes = function (int|float $bytes) {
                 if ($bytes >= 1073741824) {
@@ -113,16 +112,7 @@
                 <x-stat-card kpi="secrets_read" :value="nfmt($totals['secrets_read'] ?? 0)" :label="__('messages.stat_secrets_read')" />
                 <x-stat-card kpi="active_secrets" :value="nfmt($systemHealth['active_secrets'])" :label="__('messages.stat_active_secrets')" />
                 <x-stat-card kpi="read_rate" :value="$readRate !== null ? nfmt($readRate, 1) . '%' : '-'" :label="__('messages.stat_read_rate')" />
-                <x-stat-card :label="__('messages.stat_first_read_delay')" :hint="__('messages.hint_first_read_delay')" hintId="hintFirstReadDelay">
-                    <div class="flex items-baseline gap-2">
-                        <span class="text-3xl font-bold text-gray-900 dark:text-white" data-kpi="median_first_read">{{ $formattedMedianDelay }}</span>
-                        <span class="text-sm text-gray-500 dark:text-slate-400">{{ __('messages.stat_median_abbr') }}</span>
-                    </div>
-                    <div class="flex items-baseline gap-2 mt-1">
-                        <span class="text-lg font-semibold text-gray-500 dark:text-slate-400" data-kpi="avg_first_read">{{ $formattedAvgDelay }}</span>
-                        <span class="text-xs text-gray-400 dark:text-slate-500">{{ __('messages.stat_avg_abbr') }}</span>
-                    </div>
-                </x-stat-card>
+                <x-stat-card kpi="avg_first_read" :value="$formattedAvgDelay" :label="__('messages.stat_first_read_delay')" :hint="__('messages.hint_first_read_delay')" hintId="hintFirstReadDelay" />
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -660,7 +650,6 @@
         heatmapRead: @json($heatmapRead),
         pageviewsDaily: @json($pageviews['daily']),
         avgFirstReadDelay: @json($avgFirstReadDelay),
-        medianFirstReadDelay: @json($medianFirstReadDelay),
         currentDiskUsage: @json($currentDiskUsage),
         readRate: @json($readRate),
         creatorConcentration: @json($creatorConcentration),

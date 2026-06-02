@@ -28,6 +28,8 @@ class StatsService
 
     public const TOTAL_FILE_SIZE_BYTES = 'total_file_size_bytes';
 
+    public const TOTAL_TEXT_SIZE_BYTES = 'total_text_size_bytes';
+
     public const SECRETS_READ = 'secrets_read';
 
     public const SECRETS_EXPIRED_UNREAD = 'secrets_expired_unread';
@@ -232,35 +234,6 @@ class StatsService
         }
 
         return $total / $count;
-    }
-
-    /** Compute median from individual secrets (not from aggregated counters). */
-    public function getMedianFirstReadDelay(?string $startDate = null): ?float
-    {
-        $query = Secret::query()
-            ->whereNotNull('first_read_at');
-
-        if ($startDate) {
-            $query->where('created_at', '>=', $startDate);
-        }
-
-        $delays = $query->get(['created_at', 'first_read_at'])
-            ->map(fn (Secret $s) => $s->created_at->diffInSeconds($s->first_read_at))
-            ->sort()
-            ->values();
-
-        if ($delays->isEmpty()) {
-            return null;
-        }
-
-        $count = $delays->count();
-        $middle = intdiv($count, 2);
-
-        if ($count % 2 === 0) {
-            return ($delays[$middle - 1] + $delays[$middle]) / 2;
-        }
-
-        return (float) $delays[$middle];
     }
 
     public function getReadRate(?string $startDate = null): ?float
@@ -561,23 +534,16 @@ class StatsService
 
     /**
      * @return array{text: float|null, file: float|null}
-     * Text avg from ciphertext column length, file avg from aggregated counters.
+     * Both averages from aggregated byte counters, so they survive secret purges.
      */
     public function getAverageSecretSize(?string $startDate = null): array
     {
-        $textQuery = Secret::query()
-            ->where('type', 'text')
-            ->whereNotNull('ciphertext');
-
-        if ($startDate) {
-            $textQuery->where('created_at', '>=', $startDate);
-        }
-
-        $textAvg = $textQuery->count() > 0
-            ? (float) $textQuery->selectRaw('AVG(LENGTH(ciphertext)) as avg_size')->value('avg_size')
-            : null;
-
         $totals = $this->getTotals($startDate);
+
+        $textCount = $totals[self::SECRETS_CREATED_TEXT] ?? 0;
+        $textBytes = $totals[self::TOTAL_TEXT_SIZE_BYTES] ?? 0;
+        $textAvg = $textCount > 0 ? $textBytes / $textCount : null;
+
         $fileCount = $totals[self::SECRETS_CREATED_FILE] ?? 0;
         $fileBytes = $totals[self::TOTAL_FILE_SIZE_BYTES] ?? 0;
         $fileAvg = $fileCount > 0 ? $fileBytes / $fileCount : null;

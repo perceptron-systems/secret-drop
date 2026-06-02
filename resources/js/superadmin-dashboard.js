@@ -110,7 +110,6 @@ function updateKpis(data) {
     kpi('active_secrets', fmt(data.systemHealth?.active_secrets ?? 0));
     kpi('read_rate', data.readRate !== null ? fmtDec(data.readRate) + '%' : '-');
     kpi('avg_first_read', fmtDelay(data.avgFirstReadDelay));
-    kpi('median_first_read', fmtDelay(data.medianFirstReadDelay));
     kpi('files_shared', fmt(t.secrets_created_file || 0));
     kpi('volume', fmtBytes(t.total_file_size_bytes || 0));
     kpi('disk_usage', fmtBytes(data.currentDiskUsage));
@@ -832,7 +831,6 @@ async function poll() {
         data.heatmapRead = newData.heatmapRead;
         data.pageviewsDaily = newData.pageviews.daily;
         data.avgFirstReadDelay = newData.avgFirstReadDelay;
-        data.medianFirstReadDelay = newData.medianFirstReadDelay;
         data.currentDiskUsage = newData.currentDiskUsage;
         data.systemHealth = newData.systemHealth;
         data.readRate = newData.readRate;
