@@ -10,6 +10,11 @@
 #   - deploy dans le groupe www-data (sudo usermod -aG www-data deploy)
 #   - Projet : chown www-data:www-data, chmod 775/664, SGID sur les répertoires
 #   - PHP-FPM : UMask=0002 via systemd override
+#   - /usr/local/bin/restart-php-fpm : script root-owned (chmod 755) qui restarte
+#     tous les pools php*-fpm pour purger l'OPcache (le reload ne le vide pas).
+#     Ne touche NI Apache NI MySQL.
+#   - sudoers : deploy autorisé à `/usr/local/bin/restart-php-fpm` sans mot de passe
+#     (sinon workers FPM en erreur 503 après déploiement)
 #
 # Secrets GitHub requis (Settings > Secrets and variables > Actions) :
 #   - SSH_HOST : adresse IP ou domaine du serveur
@@ -94,5 +99,7 @@ jobs:
             php artisan migrate --force
             php artisan optimize:clear
             php artisan optimize
+
+            sudo /usr/local/bin/restart-php-fpm
 
             php artisan up
